@@ -46,6 +46,7 @@ void DriveWithJoystick::Initialize() {
 	XAxis = 0;
 	YAxis = 0;
 	RotAxis = 0;
+	initEncPosition = RobotMap::driveTrainrightFront->GetSelectedSensorPosition(0);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -82,6 +83,7 @@ void DriveWithJoystick::Execute() {
 
 	double angle = RobotMap::ahrs->GetYaw();
 	frc::SmartDashboard::PutNumber("Angle", angle);
+	frc::SmartDashboard::PutNumber("EncPosition", RobotMap::driveTrainrightFront->GetSelectedSensorPosition(0) - initEncPosition);
 }
 
 // Make this return true when this Command no longer needs to run execute()
