@@ -53,6 +53,8 @@ void RobotMap::init() {
         driveTrainMecanumDrive1->SetExpiration(0.1);
         driveTrainMecanumDrive1->SetMaxOutput(1.0);
 
+        RobotMap::driveTrainrightFront->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 5);
+
         try {
            			/***********************************************************************
            			 * navX-MXP:
