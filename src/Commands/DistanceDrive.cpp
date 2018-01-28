@@ -10,7 +10,7 @@
 	const static double kF = 0.0;
 
 	const static double kToleranceDegrees = 2.0f;
-	const static double WHEEL_DIAMETER = 3;
+	const static double WHEEL_DIAMETER = 8;
 	const static double TICKS_PER_INCH = 360 / (M_PI * WHEEL_DIAMETER);
 
 
