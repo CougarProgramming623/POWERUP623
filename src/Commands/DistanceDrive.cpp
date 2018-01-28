@@ -14,7 +14,7 @@
 	const static double INCHES_PER_TICK = 360 / (M_PI * WHEEL_DIAMETER);
 
 
-DistanceDrive::DistanceDrive(double distance, double speed, int timeout) {
+DistanceDrive::DistanceDrive(double distance, double speed, int timeout) : frc::Command() {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
@@ -80,14 +80,16 @@ void DistanceDrive::Execute() {
 
 	double actualSpeed = coefficient * m_speed;
 
-	Robot::driveTrain->MecanumDrive(0, actualSpeed, rotateToAngleRate, angle);
+	Robot::driveTrain->MecanumDrive(0, actualSpeed, rotateToAngleRate, RobotMap::ahrs->GetYaw());
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool DistanceDrive::IsFinished() {
 	if (fabs(getPosition() - initEncPosition) >= getMaxTicks()) {
 		return true;
-	} else {
+	} else if (m_timer->Get() >= 15) {
+		return true;
+	}else {
 		return false;
 	}
 

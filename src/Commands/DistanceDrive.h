@@ -5,7 +5,7 @@
 #include "../Robot.h"
 #include "WPILib.h"
 
-class DistanceDrive : public frc::Command {
+class DistanceDrive : public frc::Command , public frc::PIDOutput {
 public:
 	DistanceDrive(double, double, int);
 	void Initialize();
