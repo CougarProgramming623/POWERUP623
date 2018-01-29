@@ -2,9 +2,10 @@
 #define DistanceDrive_H
 
 #include "Commands/Subsystem.h"
+#include "../Robot.h"
 #include "WPILib.h"
 
-class DistanceDrive : public frc::Command {
+class DistanceDrive : public frc::Command , public frc::PIDOutput {
 public:
 	DistanceDrive(double, double, int);
 	void Initialize();
@@ -12,14 +13,18 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
-	double getDriveDistance();
+	void PIDWrite(double);
+
+	double getMaxTicks();
+	int getPosition();
 private:
-	Timer *resetTimer;
+	Timer *m_timer;
 	PIDController *turnController;
-	int initEncPosition = 0.0;
-	double m_speed;
 	double m_distance = 0.0;
-	int timeout;
+	double m_speed = 0.0;
+	int m_timeout;
+	int initEncPosition = 0;
+	double rotateToAngleRate;
 };
 
 #endif  // DistanceDrive_H

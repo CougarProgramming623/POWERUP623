@@ -28,7 +28,7 @@
 class Robot : public frc::TimedRobot {
 public:
 	static std::shared_ptr<NetworkTable> table;
-	frc::Command* autonomousCommand = nullptr;
+	std::unique_ptr<Command> autonomousCommand;
 	static std::unique_ptr<OI> oi;
 	frc::LiveWindow *lw = frc::LiveWindow::GetInstance();
 	frc::SendableChooser<frc::Command*> chooser;
