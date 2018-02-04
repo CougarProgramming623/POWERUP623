@@ -76,7 +76,7 @@ void DriveWithJoystick::Execute() {
 	} */
 
 	//Test Code:1/24
-	Robot::driveTrain->MecanumDrive(XAxis, YAxis, RotAxis, RobotMap::ahrs->GetYaw());
+	Robot::driveTrain->MecanumDrive(XAxis, YAxis, RotAxis, -RobotMap::ahrs->GetYaw());
 
 	//Test for COB
 	Robot::table.get()->PutNumber("/SmartDashboard/drive/navx/yaw", RotAxis);

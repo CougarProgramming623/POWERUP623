@@ -18,6 +18,7 @@ const double ROOT_2 = sqrt(2);
 	const static double TICKS_PER_INCH_STRAFE = TICKS_PER_INCH * 2.0;
 
 #define PI 3.141592
+#define ROTATE_FIX_SPEED 0.05
 
 
 DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe) : frc::Command() {
@@ -91,11 +92,11 @@ void DistanceDrive::Execute() {
 		coefficient = 1.0;
 
 	double actualSpeed = coefficient * m_speed;
-
+	double turnAngle = -RobotMap::gyro->GetAngle() * ROTATE_FIX_SPEED;
 	if (m_strafe == true) {
-		Robot::driveTrain->MecanumDrive(actualSpeed, 0, 0, 0);
+		Robot::driveTrain->MecanumDrive(actualSpeed, 0, turnAngle, 0);
 	} else {
-		Robot::driveTrain->MecanumDrive(0, actualSpeed, 0, 0);
+		Robot::driveTrain->MecanumDrive(0, actualSpeed, turnAngle, 0);
 
 	}
 	frc::SmartDashboard::PutNumber("Enc position", getPosition() - initEncPosition);

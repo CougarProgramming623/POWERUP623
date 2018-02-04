@@ -21,6 +21,7 @@ std::shared_ptr<WPI_TalonSRX> RobotMap::driveTrainleftBack;
 std::shared_ptr<WPI_TalonSRX> RobotMap::driveTrainrightFront;
 std::shared_ptr<WPI_TalonSRX> RobotMap::driveTrainrightBack;
 std::shared_ptr<frc::MecanumDrive> RobotMap::driveTrainMecanumDrive1;
+std::shared_ptr<AnalogGyro> RobotMap::gyro;
 
 AHRS *RobotMap::ahrs;
 double RobotMap::turnP;
@@ -52,8 +53,7 @@ void RobotMap::init() {
 			FeedbackDevice::QuadEncoder, 0, 5);
 
 	driveTrainMecanumDrive1.reset(
-			new frc::MecanumDrive(*driveTrainleftFront, *driveTrainleftBack,
-					*driveTrainrightFront, *driveTrainrightBack));
+			new frc::MecanumDrive(*driveTrainleftFront, *driveTrainleftBack, *driveTrainrightFront, *driveTrainrightBack));
 	lw->AddActuator("DriveTrain", "Mecanum Drive 1", driveTrainMecanumDrive1);
 	driveTrainMecanumDrive1->SetSafetyEnabled(true);
 	driveTrainMecanumDrive1->SetExpiration(0.1);
