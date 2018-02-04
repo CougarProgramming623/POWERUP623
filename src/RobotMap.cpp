@@ -48,9 +48,8 @@ void RobotMap::init() {
 
 	RobotMap::driveTrainrightBack->Set(ControlMode::Follower, 11);
 
-	RobotMap::driveTrainrightFront->ConfigSelectedFeedbackSensor(
+	RobotMap::driveTrainleftFront->ConfigSelectedFeedbackSensor(
 			FeedbackDevice::QuadEncoder, 0, 5);
-
 
 	driveTrainMecanumDrive1.reset(
 			new frc::MecanumDrive(*driveTrainleftFront, *driveTrainleftBack,

@@ -83,7 +83,7 @@ void DriveWithJoystick::Execute() {
 
 	double angle = RobotMap::ahrs->GetYaw();
 	frc::SmartDashboard::PutNumber("Angle", angle);
-	frc::SmartDashboard::PutNumber("EncPosition", RobotMap::driveTrainrightFront->GetSelectedSensorPosition(0) - initEncPosition);
+	frc::SmartDashboard::PutNumber("EncPosition", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0) - initEncPosition);
 }
 
 // Make this return true when this Command no longer needs to run execute()

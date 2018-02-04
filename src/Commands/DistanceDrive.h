@@ -7,7 +7,7 @@
 
 class DistanceDrive : public frc::Command , public frc::PIDOutput {
 public:
-	DistanceDrive(double, double, int);
+	DistanceDrive(double, double, int, bool = false);
 	void Initialize();
 	void Execute();
 	bool IsFinished();
@@ -24,6 +24,7 @@ private:
 	double m_speed = 0.0;
 	int m_timeout;
 	int initEncPosition = 0;
+	bool m_strafe;
 	double rotateToAngleRate;
 };
 

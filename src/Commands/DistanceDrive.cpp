@@ -3,6 +3,7 @@
 #include "ctre/Phoenix.h"
 #include "../RobotMap.h"
 #include "Math.h"
+#include <iostream>
 
 const double ROOT_2 = sqrt(2);
 
@@ -14,14 +15,18 @@ const double ROOT_2 = sqrt(2);
 	const static double kToleranceDegrees = 2.0f;
 	const static double WHEEL_DIAMETER = 8;
 	const static double TICKS_PER_INCH = 1290 / 46;
+	const static double TICKS_PER_INCH_STRAFE = TICKS_PER_INCH * 2.0;
+
+#define PI 3.141592
 
 
-DistanceDrive::DistanceDrive(double distance, double speed, int timeout) : frc::Command() {
-	// Use Requires() here to declare subsystem dependencies
+DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe) : frc::Command() {
+	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
 	m_speed = speed;
 	m_timeout = timeout;
+	m_strafe = strafe;
 	Requires(Robot::driveTrain.get());
 }
 
@@ -54,17 +59,21 @@ void DistanceDrive::Initialize() {
 	 turnController->SetContinuous(true);
 
 	 turnController->SetSetpoint(0.0f);
-	 //turnController->Enable();
+	 turnController->Enable();
 
-	 initEncPosition = RobotMap::driveTrainrightFront->GetSelectedSensorPosition(0);
+	 initEncPosition = RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0);
 }
 
 int DistanceDrive::getPosition() {
-	return RobotMap::driveTrainrightFront->GetSelectedSensorPosition(0);
+	return RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0);
 }
 
 double DistanceDrive::getMaxTicks() {
-	return ROOT_2 * TICKS_PER_INCH * m_distance;
+	if(m_strafe) {
+		return ROOT_2 * TICKS_PER_INCH_STRAFE * m_distance;
+	} else {
+		return ROOT_2 * TICKS_PER_INCH * m_distance;
+	}
 }
 
 
@@ -72,6 +81,7 @@ double DistanceDrive::getMaxTicks() {
 void DistanceDrive::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
 	frc::SmartDashboard::PutNumber("/COB/rotation", angle);
+	std::cout << "Encoder " << getPosition() << std::endl;
 
 	double coefficient;
 
@@ -81,7 +91,13 @@ void DistanceDrive::Execute() {
 		coefficient = 1.0;
 
 	double actualSpeed = coefficient * m_speed;
-	Robot::driveTrain->MecanumDrive(0, actualSpeed, 0, RobotMap::ahrs->GetYaw());
+
+	if (m_strafe == true) {
+		Robot::driveTrain->MecanumDrive(actualSpeed, 0, 0, 0);
+	} else {
+		Robot::driveTrain->MecanumDrive(0, actualSpeed, 0, 0);
+
+	}
 	frc::SmartDashboard::PutNumber("Enc position", getPosition() - initEncPosition);
 }
 
@@ -108,10 +124,12 @@ void DistanceDrive::End() {
 		delete turnController;
 	}
 
-	if(m_timer != nullptr) {
+	if(m_timer) {
 		m_timer->Reset();
 		delete m_timer;
 	}
+
+	frc::DriverStation::ReportError("DriveDistance Done.");
 }
 
 // Called when another command which requires one or more of the same

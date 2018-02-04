@@ -53,6 +53,12 @@ void DriveTrain::MecanumDrive(float x, float y, float z, double angle) {
 	mecanumDrive1->DriveCartesian(x, y, z, angle);
 }
 
+void DriveTrain::MecanumDrive(float x, float y, float z) {
+	mecanumDrive1->DrivePolar(x, y, z);
+}
+
+
+
 
 // Put methods for controlling this subsystem
 // here. Call these from Commands.

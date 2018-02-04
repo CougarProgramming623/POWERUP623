@@ -2,13 +2,15 @@
 
 #include "Location.h"
 #include "Path.h"
+#include "RobotConstants.h"
 
 class RobotImpl {
 private:
-	int switchSide, scaleSide, startSide;
+	bool rightSwitch, rightScale;
+	int startSide;
 	Location startLocation;
 public:
-	RobotImpl(int switchSide, int scaleSide, int startSide, Location startLocation);
+	RobotImpl(bool rightSwitch, bool rightScale, int startSide, Location startLocation);
 
 	// Returns the location that represents our starting position
 	Location& getStartingLocation();
@@ -32,6 +34,10 @@ public:
 	 * Always returns false for center starts.
 	 */
 	bool weOwnSwitch();
+
+	bool switchOnRight();
+
+	bool scaleOnRight();
 
 	// Returns true if we are starting in the center.
 	bool isCenterStart();

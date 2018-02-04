@@ -1,8 +1,8 @@
 #include "RobotImpl.h"
 
-RobotImpl::RobotImpl(int switchSide, int scaleSide, int startSide, Location startLocation) :switchSide(switchSide), scaleSide(scaleSide), startSide(startSide), startLocation(startLocation) {
-
-}
+RobotImpl::RobotImpl(bool rightSwitch, bool rightScale, int startSide, Location startLocation)
+: rightSwitch(rightSwitch), rightScale(rightScale), startSide(startSide), startLocation(startLocation)
+{}
 
 // Returns the location that represents our starting position
 Location& RobotImpl::getStartingLocation() {
@@ -31,7 +31,7 @@ Path& RobotImpl::getSwitchLocation(Location& start) {
  * Always returns false for center starts.
  */
 bool RobotImpl::weOwnScale() {
-	return scaleSide == startSide;
+	return (rightScale && startSide == SIDE_RIGHT) || (!rightScale && startSide == SIDE_LEFT);
 }
 
 /*
@@ -40,7 +40,7 @@ bool RobotImpl::weOwnScale() {
  * Always returns false for center starts.
  */
 bool RobotImpl::weOwnSwitch() {
-	return switchSide == startSide;
+	return (rightSwitch && startSide == SIDE_RIGHT) || (!rightSwitch && startSide == SIDE_LEFT);
 }
 
 // Returns true if we are starting in the center.
