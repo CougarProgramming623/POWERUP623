@@ -1,0 +1,231 @@
+/*
+ * CougarOpticBoard.cpp
+ *
+ *  Created on: Feb 7, 2018
+ *      Author: Quintin Harter
+ */
+
+#include "CougarOpticBoard.h"
+#include "networktables/NetworkTableInstance.h"
+#include "Robot.h"
+using namespace nt;
+
+std::shared_ptr<NetworkTable> CougarOpticBoard::table;
+nt::NetworkTableEntry CougarOpticBoard::entryRotation;
+nt::NetworkTableEntry CougarOpticBoard::entryPositionX;
+nt::NetworkTableEntry CougarOpticBoard::entryPositionY;
+nt::NetworkTableEntry CougarOpticBoard::entryVelocityDirection;
+nt::NetworkTableEntry CougarOpticBoard::entryVelocityMagnitude;
+nt::NetworkTableEntry CougarOpticBoard::entryArmHeight;
+nt::NetworkTableEntry CougarOpticBoard::entryArmCubeGrabbed;
+nt::NetworkTableEntry CougarOpticBoard::entryArmClimbStatus;
+nt::NetworkTableEntry CougarOpticBoard::entryAutonomousSignal;
+nt::NetworkTableEntry CougarOpticBoard::entryAutonomousStartPos;
+nt::NetworkTableEntry CougarOpticBoard::entryAutonomousDoSomething;
+
+/**
+ *  The constructor method for the COB.
+ *  When called, it instantiates the table and
+ *  all (private) network table entries.
+ *
+ *  @author Quintin Harter
+ */
+CougarOpticBoard::CougarOpticBoard() {
+
+	CougarOpticBoard::table = NetworkTable::GetTable("cob");
+
+	//place the code to initialize the network table entries here
+	CougarOpticBoard::entryRotation = table->GetEntry("rotation");
+	CougarOpticBoard::entryPositionX = table->GetEntry("position/x");
+	CougarOpticBoard::entryPositionY = table->GetEntry("position/y");
+	CougarOpticBoard::entryVelocityDirection = table->GetEntry("velocity/direction");
+	CougarOpticBoard::entryVelocityMagnitude = table->GetEntry("velocity/magnitude");
+	CougarOpticBoard::entryArmHeight = table->GetEntry("arm/height");
+	CougarOpticBoard::entryArmCubeGrabbed = table->GetEntry("arm/cube-grabbed");
+	CougarOpticBoard::entryArmClimbStatus = table->GetEntry("arm/climb-status");
+	CougarOpticBoard::entryAutonomousSignal = table->GetEntry("autonomous/signal");
+	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/start-pos");
+	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
+
+}
+
+void CougarOpticBoard::InitBoard() {
+	table = NetworkTable::GetTable("cob");
+	//place the code to initialize the network table entries here
+	CougarOpticBoard::entryRotation = table->GetEntry("rotation");
+	CougarOpticBoard::entryPositionX = table->GetEntry("position/x");
+	CougarOpticBoard::entryPositionY = table->GetEntry("position/y");
+	CougarOpticBoard::entryVelocityDirection = table->GetEntry("velocity/direction");
+	CougarOpticBoard::entryVelocityMagnitude = table->GetEntry("velocity/magnitude");
+	CougarOpticBoard::entryArmHeight = table->GetEntry("arm/height");
+	CougarOpticBoard::entryArmCubeGrabbed = table->GetEntry("arm/cube-grabbed");
+	CougarOpticBoard::entryArmClimbStatus = table->GetEntry("arm/climb-status");
+	CougarOpticBoard::entryAutonomousSignal = table->GetEntry("autonomous/signal");
+	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/start-pos");
+	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
+}
+
+//~~~~~~~~~~~~~~~~~~~~~ SET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ *  Pushes the value for the rotation of the robot to the network tables.
+ *  This is then pulled by the COB.
+ *
+ *	Preferably, call this in the teleop & autonomous execute method.
+ *
+ *  Domain: (-360 to 360)
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::PushRotation(double angle) {
+	entryRotation.SetDouble(angle);
+}
+
+/**
+ *  Pushes the value for the x coordinate of the robot to the network tables.
+ *  This is then pulled by the COB.
+ *
+ *  Preferably, call this in the teleop & autonomous execute method.
+ *
+ *  Domain: (??? to ???)
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::PushPositionX(double x) {
+	entryPositionX.SetDouble(x);
+}
+
+/**
+ *  Pushes the value for the y coordinate of the robot to the network tables.
+ *  This is then pulled by the COB.
+ *
+ *  Preferably, call this in the teleop & autonomous execute method.
+ *
+ *  Domain: (??? to ???)
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::PushPositionY(double y) {
+	entryPositionY.SetDouble(y);
+}
+
+/**
+ *  Pushes the value for the direction of movement to the network tables.
+ *  This is then pulled by the COB.
+ *
+ *  Preferably, call this in the teleop & autonomous execute methods.
+ *
+ *  Domain: (-360 to 360)
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::PushVelocityDirection(double angle) {
+	entryVelocityDirection.SetDouble(angle);
+}
+
+/**
+ *  Pushes the value for the relative speed of the robot to the network tables.
+ *  This is then pulled by the COB.
+ *
+ *  Preferably, call this in the teleop & autonomous execute methods.
+ *
+ *  Domain: (0 to 1)
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::PushVelocityMagnitude(double size) {
+	entryVelocityMagnitude.SetDouble(size);
+}
+
+/**
+ *  Pushes the value for the arm height of the robot to the network tables.
+ *  This is then pulled by the COB.
+ *
+ *  Preferably, call this in teleop's execute method.
+ *
+ *  Domain: (??? to ???)
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::PushArmHeight(double height) {
+	entryArmHeight.SetDouble(height);
+}
+
+/**
+ *  Pushes the value of whether or not the cube is grabbed to the network tables.
+ *  This is then pulled by the COB.
+ *
+ *  Preferably, call this in teleop's execute method.
+ *
+ *  Domain: (true or false)
+ *
+ *  NOTE: Depending on the functionality of the robot, this may be removed.
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::PushArmCubeGrabbed(bool cubeGrabbed) {
+	entryArmHeight.SetBoolean(cubeGrabbed);
+}
+
+/**
+ *  Pushes the value of the status of the climb to the network tables.
+ *  This is then pulled by the COB.
+ *
+ *  Preferably, call this in teleop's execute method.
+ *
+ *  Domain: (??? to ???)
+ *
+ *  NOTE: Depending on the functionality of the robot, this may be removed.
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::PushArmClimbStatus(double climbStatus) {
+	entryArmClimbStatus.SetDouble(climbStatus);
+}
+
+/**
+ *  Sends a signal to the COB that autonomous has just begun (so it can
+ *  retrieve the data needed to draw autonomous).
+ *
+ *  Preferably, call this method in autonomous initialization.
+ *
+ *  @author Quintin Harter
+ */
+void CougarOpticBoard::SendAutonomousSignal() {
+	if (entryAutonomousSignal.Exists())
+		entryAutonomousSignal.SetBoolean(!(bool) entryAutonomousSignal.GetValue());
+	else
+		entryAutonomousSignal.SetBoolean(false);
+}
+
+//~~~~~~~~~~~~~~~~~~~~~ GET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ *  Pulls the value of the autonomous starting position from the COB.
+ *
+ *  Preferably, call this method in autonomous initialization.
+ *
+ *  @returns "" (for nothing), "left", "center", or "right".
+ *
+ *  @author Quintin Harter
+ */
+std::string CougarOpticBoard::GetAutonomousStartPos() {
+	if (entryAutonomousStartPos.Exists())
+		return entryAutonomousStartPos.GetValue().get()->GetString();
+	return "";
+}
+
+/**
+ *  Pulls the value of the autonomous starting position from the COB.
+ *
+ *  Preferably, call this method in autonomous initialization.
+ *
+ *  @returns whether or not the drivers have chosen the robot to move.
+ *
+ *  @author Quintin Harter
+ */
+bool CougarOpticBoard::GetAutonomousDoSomething() {
+	if (entryAutonomousStartPos.Exists())
+		return entryAutonomousDoSomething.GetValue().get()->GetBoolean();
+	return false;
+}

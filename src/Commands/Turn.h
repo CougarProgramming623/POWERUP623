@@ -5,8 +5,10 @@
 #include "WPILib.h"
 #include "../RobotMap.h"
 #include "../Robot.h"
+#include "AHRS.h"
+#include "../RobotConstants.h"
 
-class Turn : public frc::Command, frc::PIDOutput {
+class Turn : public frc::Command, public frc::PIDOutput {
 public:
 	Turn(double);
 	void Initialize();
@@ -14,14 +16,13 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
-	void PIDWrite (double output);
+	void PIDWrite(double);
 private:
 	PIDController *turnController;
 	Timer *m_timer;
 	double rotateToAngleRate;
 	double m_angle = 0.0;
 	double initialAngle;
-
 };
 
 #endif  // Turn_H

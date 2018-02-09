@@ -17,6 +17,14 @@ Path& RobotImpl::getScaleLocation(Location& start) {
 	return path;
 }
 
+bool RobotImpl::switchOnRight() {
+	return rightSwitch;
+}
+
+bool RobotImpl::scaleOnRight() {
+	return rightScale;
+}
+
 // Returns a path of points to the switch of the scale we own based on the robot's current location as identified by the parameter start
 Path& RobotImpl::getSwitchLocation(Location& start) {
 	//TODO
@@ -55,5 +63,6 @@ int RobotImpl::getStart() {
 
 bool RobotImpl::canAllianceDoScale() {
 	//TODO
+	return false;
 }
 
