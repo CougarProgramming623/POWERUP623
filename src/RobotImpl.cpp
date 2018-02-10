@@ -1,8 +1,8 @@
 #include "RobotImpl.h"
 
-RobotImpl::RobotImpl(bool rightSwitch, bool rightScale, int startSide, Location startLocation)
-: rightSwitch(rightSwitch), rightScale(rightScale), startSide(startSide), startLocation(startLocation)
-{}
+RobotImpl::RobotImpl(bool rightSwitch, bool rightScale, int startSide, Location startLocation) :
+		rightSwitch(rightSwitch), rightScale(rightScale), startSide(startSide), startLocation(startLocation) {
+}
 
 // Returns the location that represents our starting position
 Location& RobotImpl::getStartingLocation() {
@@ -12,7 +12,7 @@ Location& RobotImpl::getStartingLocation() {
 // Returns a path of points to the side of the scale we own based on the robot's current location as identified by the parameter start
 Path& RobotImpl::getScaleLocation(Location& start) {
 	//TODO
-	Location location{1,2};
+	Location location { 1, 2 };
 	Path path(location);
 	return path;
 }
@@ -28,7 +28,7 @@ bool RobotImpl::scaleOnRight() {
 // Returns a path of points to the switch of the scale we own based on the robot's current location as identified by the parameter start
 Path& RobotImpl::getSwitchLocation(Location& start) {
 	//TODO
-	Location location{1,2};
+	Location location { 1, 2 };
 	Path path(location);
 	return path;
 }

@@ -17,9 +17,16 @@ DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool st
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
+	m_ticks = (int) (distance * TICKS_PER_INCH);
+	std::stringstream str;
+	str << "Ticks " << m_ticks;
+	DriverStation::ReportError(str.str());
 	m_speed = speed;
 	m_timeout = timeout;
 	m_strafe = strafe;
+	m_timer = new Timer();
+	rotateToAngleRate = 0.0;
+	turnController = new PIDController(kP, kI, kD, kF, RobotMap::ahrs, this);
 	Requires(Robot::driveTrain.get());
 }
 
@@ -28,24 +35,21 @@ void DistanceDrive::Initialize() {
 	try {
 		SetTimeout(m_timeout); //timeout for 10ms
 
-		DriverStation::ReportError("DistanceDriveCommand init");
 		/* Communicate w/navX-MXP via the MXP SPI Bus.                                       */
 		/* Alternatively:  I2C::Port::kMXP, SerialPort::Port::kMXP or SerialPort::Port::kUSB */
 		/* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details.   */
 
-		RobotMap::ahrs->ZeroYaw();
+		//RobotMap::ahrs->ZeroYaw();
 
-	} catch (std::exception ex) {
+	} catch (std::exception& ex) {
 		std::string err_string = "Error instantiating navX-MXP:  ";
 		err_string += ex.what();
-		//DriverStation::ReportError(err_string.c_str());
+		DriverStation::ReportError(err_string.c_str());
 	}
-	DriverStation::ReportError("DistanceDrive2::Intialize() done.");
 
 	m_timer = new Timer();
 	m_timer->Start();
 
-	turnController = new PIDController(kP, kI, kD, kF, RobotMap::ahrs, this);
 	turnController->SetInputRange(-180.0f, 180.0f);
 	turnController->SetOutputRange(-1.0, 1.0);
 	turnController->SetAbsoluteTolerance(kToleranceDegrees);
@@ -62,11 +66,7 @@ int DistanceDrive::getPosition() {
 }
 
 double DistanceDrive::getMaxTicks() {
-	if (m_strafe) {
-		return ROOT_2 * TICKS_PER_INCH_STRAFE * m_distance;
-	} else {
-		return ROOT_2 * TICKS_PER_INCH * m_distance;
-	}
+	return m_ticks;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -83,18 +83,23 @@ void DistanceDrive::Execute() {
 	double turnAngle = turnController->Get() * 10;
 	frc::SmartDashboard::PutNumber("Turn angle ", turnAngle);
 	double actualSpeed = coefficient * m_speed;
-	actualSpeed *= sqrt(
-			1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
+	std::stringstream str;
+	str << "percent done % " << (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
+	//DriverStation::ReportError(str.str());
+	//actualSpeed *= sqrt(
+	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
 	if (m_strafe) {
 		Robot::driveTrain->MecanumDrive(actualSpeed, 0, turnAngle, 0);
 	} else {
 		Robot::driveTrain->MecanumDrive(0, actualSpeed, turnAngle, 0);
 	}
-	frc::SmartDashboard::PutNumber("Enc position", getPosition());
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool DistanceDrive::IsFinished() {
+	if(m_timer && m_timer->Get() > m_timeout) {
+		return true;
+	}
 	if (fabs(getPosition() - initEncPosition) >= getMaxTicks()) {
 		return true;
 	}

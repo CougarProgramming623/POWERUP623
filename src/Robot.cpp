@@ -14,13 +14,14 @@ void Robot::RobotInit() {
 	driveTrain.reset(new DriveTrain());
 	SmartDashboard::PutData(driveTrain.get());
 
+
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
 
 	Robot::cob->InitBoard();
 
-	//autonomousCommand.reset(new DistanceDrive(10*12, 0.6, 10, false));
-	autonomousCommand.reset(new AutoSequence());
+	autonomousCommand.reset(new DistanceDrive(5*12, 0.4, 10, false));
+	//autonomousCommand.reset(new AutoSequence());
 	frc::SmartDashboard::PutData("Auto Modes", &chooser);
 
 	//nt::NetworkTable::SetClientMode();

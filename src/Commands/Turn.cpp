@@ -1,8 +1,5 @@
 #include "Turn.h"
 
-const static double kP = RobotMap::turnP;
-const static double kI = RobotMap::turnI;
-const static double kD = RobotMap::turnD;
 const static double kF = 0.0f;
 const static double kToleranceDegrees = 0.5;
 
@@ -10,6 +7,9 @@ Turn::Turn(double setpoint) :
 		frc::Command() {
 	Requires(Robot::driveTrain.get());
 	m_angle = setpoint;
+	m_timer = new Timer();
+	rotateToAngleRate = 0.0;
+	turnController = new PIDController(RobotMap::turnP, RobotMap::turnI, RobotMap::turnD, kF, RobotMap::ahrs, this);
 }
 
 void Turn::Initialize() {
@@ -21,14 +21,13 @@ void Turn::Initialize() {
 
 		DriverStation::ReportError("Zeroed");
 
-	} catch (std::exception ex) {
+	} catch (std::exception& ex) {
 		std::string err_string = "Error instantiating navX-MXP:  ";
 		err_string += ex.what();
 		DriverStation::ReportError(err_string.c_str());
 	}
 
 	DriverStation::ReportError("AHRS Initialized");
-	turnController = new PIDController(RobotMap::turnP, RobotMap::turnI, RobotMap::turnD, kF, RobotMap::ahrs, this);
 	turnController->SetInputRange(-180.0f, 180.0f);
 	turnController->SetOutputRange(-1.0, 1.0);
 	turnController->SetAbsoluteTolerance(kToleranceDegrees);
@@ -37,7 +36,6 @@ void Turn::Initialize() {
 	turnController->SetSetpoint(m_angle);
 	turnController->Enable();
 	DriverStation::ReportError("PID enabled.");
-	m_timer = new Timer();
 	m_timer->Start();
 	frc::DriverStation::ReportError("Turn initialized");
 }

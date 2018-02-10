@@ -9,7 +9,7 @@
 #define W(x) Wait(0.05);
 
 AutoSequence::AutoSequence() :
-		frc::CommandGroup(), RobotImpl(false, true, 2, Location{1,2}){
+		frc::CommandGroup(), RobotImpl(true, true, SIDE_LEFT, Location{1,2}){
 	//AddSequential(new DistanceDrive(DISTANCE, SPEED, TIMEOUT));
 	//AddSequential(new Turn(90.0f));
 
@@ -29,7 +29,6 @@ AutoSequence::AutoSequence() :
 		}
 
 		AddSequential(new Turn(turnAngle));
-		W(x)
 		//change to Cartesian drive with angle after
 		AddSequential(new DistanceDrive(10 * 12, 0.5, 1.5));		//values just for testing
 		AddSequential(new Turn(-1 * turnAngle));
@@ -37,7 +36,7 @@ AutoSequence::AutoSequence() :
 	} else {
 		AddSequential(new DistanceDrive(10 * 12, 0.5, 1.3));		//values just for testing
 		if (weOwnSwitch()) {
-			AddSequential(new Turn((getStart() == 1 ? +1 : -1) * 20));
+			AddSequential(new Turn(((getStart() == SIDE_RIGHT) ? +1 : -1) * 90));
 			//drop block
 		} else {
 

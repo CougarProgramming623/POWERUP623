@@ -30,7 +30,7 @@ private:
 	double m_distance = 0.0;
 	double m_speed = 0.0;
 	int m_timeout;
-	int initEncPosition = 0;
+	int initEncPosition = 0, m_ticks;
 	bool m_strafe;
 	double rotateToAngleRate;
 };

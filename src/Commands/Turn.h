@@ -22,7 +22,6 @@ private:
 	Timer *m_timer;
 	double rotateToAngleRate;
 	double m_angle = 0.0;
-	double initialAngle;
 };
 
 #endif  // Turn_H
