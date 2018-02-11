@@ -63,20 +63,30 @@ void DriveWithJoystick::Initialize() {
 	turnController->Enable();
 	//DriverStation::ReportError("PID enabled.");
 }
-
+double maxZAcel = 0.0;
+double maxAcel = 0.0;
 // Called repeatedly when this Command is scheduled to run
 void DriveWithJoystick::Execute() {
 	XAxis = Robot::oi->getdriverJoystick()->GetRawAxis(0);
 	YAxis = -Robot::oi->getdriverJoystick()->GetRawAxis(1);
 	RotAxis = Robot::oi->getdriverJoystick()->GetRawAxis(2);
+
 	double acrossAccel = sqrt(
 			RobotMap::ahrs->GetWorldLinearAccelX() * RobotMap::ahrs->GetWorldLinearAccelX()
 					+ RobotMap::ahrs->GetWorldLinearAccelY() * RobotMap::ahrs->GetWorldLinearAccelY());
-	if (RobotMap::ahrs->GetWorldLinearAccelZ() > 0.4 && acrossAccel < 0.15)
+	if (maxZAcel < RobotMap::ahrs->GetWorldLinearAccelZ())
+		maxZAcel = RobotMap::ahrs->GetWorldLinearAccelZ();
+	if (maxAcel < acrossAccel)
+		maxAcel = acrossAccel;
+
+	if (RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7 && acrossAccel < 0.15)
 		DriverStation::ReportError("Bump!");
 	std::stringstream str;
-	str << "across acel" << acrossAccel;
-	//DriverStation::ReportError(str.str());
+	str << "max across " << maxAcel;
+	DriverStation::ReportError(str.str());
+	str.clear();
+	str << "max up and down acel " << maxZAcel;
+	DriverStation::ReportError(str.str());
 	/*
 	 if(XAxis > 0.20 && XAxis < -0.20) {
 	 XAxis = 0;
