@@ -10,7 +10,7 @@
 
 class Turn : public frc::Command, public frc::PIDOutput {
 public:
-	Turn(double);
+	Turn(double, double, double);
 	void Initialize();
 	void Execute();
 	bool IsFinished();
@@ -22,6 +22,8 @@ private:
 	Timer *m_timer;
 	double rotateToAngleRate;
 	double m_angle = 0.0;
+	double m_timeout;
+	double m_speed;
 };
 
 #endif  // Turn_H

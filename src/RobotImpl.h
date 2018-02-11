@@ -35,6 +35,9 @@ public:
 	 */
 	bool weOwnSwitch();
 
+	bool switchOnOurSide();
+	bool scaleOnOurSide();
+
 	bool switchOnRight();
 
 	bool scaleOnRight();
@@ -45,7 +48,7 @@ public:
 	//Returns either 1, 2, or 3 depending on where we are starting.
 	int getStart();
 
-	bool canAllianceDoScale();
+	bool canAllianceDoSwitch();
 
 
 };

@@ -18,9 +18,6 @@ DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool st
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
 	m_ticks = (int) (distance * TICKS_PER_INCH);
-	std::stringstream str;
-	str << "Ticks " << m_ticks;
-	DriverStation::ReportError(str.str());
 	m_speed = speed;
 	m_timeout = timeout;
 	m_strafe = strafe;
@@ -40,7 +37,6 @@ void DistanceDrive::Initialize() {
 		/* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details.   */
 
 		//RobotMap::ahrs->ZeroYaw();
-
 	} catch (std::exception& ex) {
 		std::string err_string = "Error instantiating navX-MXP:  ";
 		err_string += ex.what();
@@ -84,7 +80,8 @@ void DistanceDrive::Execute() {
 	frc::SmartDashboard::PutNumber("Turn angle ", turnAngle);
 	double actualSpeed = coefficient * m_speed;
 	std::stringstream str;
-	str << "percent done % " << (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
+	str << "percent done % "
+			<< (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
 	//DriverStation::ReportError(str.str());
 	//actualSpeed *= sqrt(
 	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
@@ -97,10 +94,10 @@ void DistanceDrive::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool DistanceDrive::IsFinished() {
-	if(m_timer && m_timer->Get() > m_timeout) {
+	if (m_timer && m_timer->Get() > m_timeout) {
 		return true;
 	}
-	if (fabs(getPosition() - initEncPosition) >= getMaxTicks()) {
+	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
 		return true;
 	}
 	return false;
@@ -110,8 +107,7 @@ bool DistanceDrive::IsFinished() {
 // Called once after isFinished returns true
 void DistanceDrive::End() {
 	initEncPosition = getPosition();
-
-	Robot::driveTrain->MecanumDrive(0, 0, 0, 0);
+	Robot::driveTrain->Stop();
 
 	if (turnController) {
 		turnController->Disable();
@@ -123,7 +119,6 @@ void DistanceDrive::End() {
 		delete m_timer;
 	}
 
-	frc::DriverStation::ReportError("DriveDistance Done.");
 }
 
 // Called when another command which requires one or more of the same

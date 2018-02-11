@@ -69,6 +69,14 @@ void DriveWithJoystick::Execute() {
 	XAxis = Robot::oi->getdriverJoystick()->GetRawAxis(0);
 	YAxis = -Robot::oi->getdriverJoystick()->GetRawAxis(1);
 	RotAxis = Robot::oi->getdriverJoystick()->GetRawAxis(2);
+	double acrossAccel = sqrt(
+			RobotMap::ahrs->GetWorldLinearAccelX() * RobotMap::ahrs->GetWorldLinearAccelX()
+					+ RobotMap::ahrs->GetWorldLinearAccelY() * RobotMap::ahrs->GetWorldLinearAccelY());
+	if (RobotMap::ahrs->GetWorldLinearAccelZ() > 0.4 && acrossAccel < 0.15)
+		DriverStation::ReportError("Bump!");
+	std::stringstream str;
+	str << "across acel" << acrossAccel;
+	//DriverStation::ReportError(str.str());
 	/*
 	 if(XAxis > 0.20 && XAxis < -0.20) {
 	 XAxis = 0;
@@ -101,9 +109,9 @@ void DriveWithJoystick::Execute() {
 		turnController->SetSetpoint(RobotMap::ahrs->GetYaw());
 		//DriverStation::ReportError("turning");
 	}
-	std::stringstream str;
-	str <<"Ticks " << RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0) - initEncPosition;
-	DriverStation::ReportError(str.str());
+	//std::stringstream str;
+	//str <<"Ticks " << RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0) - initEncPosition;
+	//DriverStation::ReportError(str.str());
 	double angle = RobotMap::ahrs->GetYaw();
 	//frc::SmartDashboard::PutNumber("Angle", angle);
 	//frc::SmartDashboard::PutNumber("EncPosition", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0) - initEncPosition);

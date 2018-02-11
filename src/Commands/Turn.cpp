@@ -1,12 +1,14 @@
 #include "Turn.h"
 
 const static double kF = 0.0f;
-const static double kToleranceDegrees = 0.5;
+const static double kToleranceDegrees = 1.0;
 
-Turn::Turn(double setpoint) :
+Turn::Turn(double setpoint, double timeout, double speed) :
 		frc::Command() {
 	Requires(Robot::driveTrain.get());
 	m_angle = setpoint;
+	m_timeout = timeout;
+	m_speed = speed;
 	m_timer = new Timer();
 	rotateToAngleRate = 0.0;
 	turnController = new PIDController(RobotMap::turnP, RobotMap::turnI, RobotMap::turnD, kF, RobotMap::ahrs, this);
@@ -19,15 +21,12 @@ void Turn::Initialize() {
 		SetTimeout(10);
 		RobotMap::ahrs->ZeroYaw();
 
-		DriverStation::ReportError("Zeroed");
-
 	} catch (std::exception& ex) {
 		std::string err_string = "Error instantiating navX-MXP:  ";
 		err_string += ex.what();
 		DriverStation::ReportError(err_string.c_str());
 	}
 
-	DriverStation::ReportError("AHRS Initialized");
 	turnController->SetInputRange(-180.0f, 180.0f);
 	turnController->SetOutputRange(-1.0, 1.0);
 	turnController->SetAbsoluteTolerance(kToleranceDegrees);
@@ -35,14 +34,12 @@ void Turn::Initialize() {
 
 	turnController->SetSetpoint(m_angle);
 	turnController->Enable();
-	DriverStation::ReportError("PID enabled.");
 	m_timer->Start();
-	frc::DriverStation::ReportError("Turn initialized");
 }
 
 void Turn::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
-	Robot::driveTrain->MecanumDrive(0, 0, rotateToAngleRate, RobotMap::ahrs->GetYaw());
+	Robot::driveTrain->MecanumDrive(0, 0, rotateToAngleRate * m_speed, RobotMap::ahrs->GetYaw());
 
 	frc::SmartDashboard::PutNumber("Current Angle", angle);
 	frc::SmartDashboard::PutNumber("Current Rotation Rate", rotateToAngleRate);
@@ -56,8 +53,7 @@ bool Turn::IsFinished() {
 	if (turnController->OnTarget()) {
 		return true;
 	} else {
-		std::cout << m_timer->Get() << std::endl;
-		return m_timer->Get() > 5;
+		return m_timer->Get() > m_timeout;
 	}
 }
 
@@ -67,7 +63,6 @@ void Turn::End() {
 	frc::SmartDashboard::PutNumber("Time", time);
 	m_timer->Reset();
 	Robot::driveTrain->Stop();
-	frc::DriverStation::ReportError("Turn Complete");
 }
 
 void Turn::Interrupted() {
@@ -76,10 +71,7 @@ void Turn::Interrupted() {
 
 void Turn::PIDWrite(double output) {
 	rotateToAngleRate = output;
-	rotateToAngleRate = minFRC(rotateToAngleRate, map(m_angle, 0.0, 90, 0.2, 1.0));
+	rotateToAngleRate = minFRC(rotateToAngleRate, map(m_angle, 0.0, 90, 0.2, 1.0))
+	;
 }
-
-
-
-
 

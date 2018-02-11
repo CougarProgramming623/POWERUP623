@@ -20,8 +20,8 @@ void Robot::RobotInit() {
 
 	Robot::cob->InitBoard();
 
-	autonomousCommand.reset(new DistanceDrive(5*12, 0.4, 10, false));
-	//autonomousCommand.reset(new AutoSequence());
+	//autonomousCommand.reset(new DistanceDrive(5*12, 0.4, 10, false));
+	autonomousCommand.reset(new AutoSequence());
 	frc::SmartDashboard::PutData("Auto Modes", &chooser);
 
 	//nt::NetworkTable::SetClientMode();

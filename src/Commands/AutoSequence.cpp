@@ -3,45 +3,78 @@
 #include "Turn.h"
 #include "../Robot.h"
 
-#define DISTANCE 14.0 * 12
-#define SPEED 0.75
+#define FEET_TO_INCHES 12
+
+//12 feet to the front plus half of its width for the center
+#define DISTANCE_TO_SWITCH (12.0 * FEET_TO_INCHES + (2.0 * FEET_TO_INCHES) / 2.0)
+#define DISTANCE_TO_SCALE (27.0 * FEET_TO_INCHES)
+#define HALF_ROBOT_WIDTH (ROBOT_WIDTH / 2.0)
+
+#define SPEED 0.45
+#define FAST_SPEED 0.6
 #define TIMEOUT 10
-#define W(x) Wait(0.05);
+
+#define inveretIfRight(x) getStart() == SIDE_RIGHT ? -x : x
+
+#define WAIT_SEC(x) AddSequential(new WaitCommand(x));
+#define WAIT WAIT_SEC(0.35)
 
 AutoSequence::AutoSequence() :
-		frc::CommandGroup(), RobotImpl(true, true, SIDE_LEFT, Location{1,2}){
-	//AddSequential(new DistanceDrive(DISTANCE, SPEED, TIMEOUT));
-	//AddSequential(new Turn(90.0f));
+		frc::CommandGroup(), RobotImpl(true, true, SIDE_RIGHT, Location { 1, 2 }) {
 
-	//try catch block is copy-paste from DriveWithJoystick initialization
 	RobotMap::ahrs->ZeroYaw();		//reset gyro degrees
 
-	//note: I've basically hard coded everything for testing purposes here
-
-
 	if (isCenterStart()) {
-		//note: the robot can just move in direction with angle
+		double turnAngle = inveretIfRight(15);
 
-		//angle is used for testing right now, angle will change after we calculate
-		double turnAngle = 15;
-		if (switchOnRight()) {
-			turnAngle = -1 * turnAngle;
-		}
-
-		AddSequential(new Turn(turnAngle));
-		//change to Cartesian drive with angle after
-		AddSequential(new DistanceDrive(10 * 12, 0.5, 1.5));		//values just for testing
-		AddSequential(new Turn(-1 * turnAngle));
-		//drop block here
-	} else {
-		AddSequential(new DistanceDrive(10 * 12, 0.5, 1.3));		//values just for testing
-		if (weOwnSwitch()) {
-			AddSequential(new Turn(((getStart() == SIDE_RIGHT) ? +1 : -1) * 90));
-			//drop block
+		AddSequential(new Turn(turnAngle, TIMEOUT, SPEED));
+		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));
+		AddSequential(new Turn(-turnAngle, TIMEOUT, SPEED));
+		//drop block
+	} else {		//On left or right
+		if (!canAllianceDoSwitch()) {		//Do switch
+			doSwitch();
 		} else {
-
+			if (scaleOnOurSide()) {
+				doScale();
+			} else {
+				//Were screwed
+			}
 		}
 	}
+
+}
+
+void AutoSequence::doScale() {
+	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE - HALF_ROBOT_WIDTH, FAST_SPEED, TIMEOUT));
+	WAIT
+	AddSequential(new Turn(inveretIfRight(90), TIMEOUT, SPEED));
+	WAIT
+	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	DriverStation::ReportError("Dropping cube!");
+	WAIT_SEC(1.0)
+	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	AddSequential(new DistanceDrive(inveretIfRight(6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
+}
+
+void AutoSequence::doSwitch() {
+	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - HALF_ROBOT_WIDTH, SPEED, TIMEOUT));
+	WAIT
+
+	AddSequential(new Turn(inveretIfRight(90), TIMEOUT, SPEED));
+	WAIT
+	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	DriverStation::ReportError("Dropping cube!");
+	WAIT_SEC(1.0)
+	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	WAIT
+
+	AddSequential(new DistanceDrive(inveretIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
+	WAIT
+	AddSequential(new Turn(inveretIfRight(90), TIMEOUT, SPEED));
+	WAIT
+
+	AddSequential(new DistanceDrive(inveretIfRight(-4 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 
 }
 

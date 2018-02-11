@@ -17,6 +17,14 @@ Path& RobotImpl::getScaleLocation(Location& start) {
 	return path;
 }
 
+bool RobotImpl::switchOnOurSide() {
+	return (rightSwitch && (startSide == SIDE_RIGHT)) || (!rightSwitch && (startSide == SIDE_LEFT));
+}
+
+bool RobotImpl::scaleOnOurSide() {
+	return (rightScale && (startSide == SIDE_RIGHT)) || (!rightScale && (startSide == SIDE_LEFT));
+}
+
 bool RobotImpl::switchOnRight() {
 	return rightSwitch;
 }
@@ -61,7 +69,7 @@ int RobotImpl::getStart() {
 	return startSide;
 }
 
-bool RobotImpl::canAllianceDoScale() {
+bool RobotImpl::canAllianceDoSwitch() {
 	//TODO
 	return false;
 }

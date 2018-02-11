@@ -8,6 +8,7 @@
 #define ENCODER_DIAMETER 2.5
 #define TICKS_PER_REVOLUTION 600
 #define TICKS_PER_INCH 63
+#define ROBOT_WIDTH 39.0// 39 inches
 
 #define normalize(min, max, value) (value - min) / (max - min)
 
