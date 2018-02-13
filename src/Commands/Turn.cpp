@@ -1,7 +1,7 @@
 #include "Turn.h"
 
 const static double kF = 0.0f;
-const static double kToleranceDegrees = 1.0;
+const static double kToleranceDegrees = 2.0;
 
 Turn::Turn(double setpoint, double timeout, double speed) :
 		frc::Command() {
@@ -16,7 +16,6 @@ Turn::Turn(double setpoint, double timeout, double speed) :
 
 void Turn::Initialize() {
 	rotateToAngleRate = 0.0;
-	frc::DriverStation::ReportError("Speed done");
 	try {
 		SetTimeout(10);
 		RobotMap::ahrs->ZeroYaw();
@@ -63,6 +62,7 @@ void Turn::End() {
 	frc::SmartDashboard::PutNumber("Time", time);
 	m_timer->Reset();
 	Robot::driveTrain->Stop();
+	DriverStation::ReportError("Turn Done");
 }
 
 void Turn::Interrupted() {

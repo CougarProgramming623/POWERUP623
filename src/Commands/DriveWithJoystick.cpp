@@ -79,14 +79,14 @@ void DriveWithJoystick::Execute() {
 	if (maxAcel < acrossAccel)
 		maxAcel = acrossAccel;
 
-	if (RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7 && acrossAccel < 0.15)
-		DriverStation::ReportError("Bump!");
+	//if (RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7 && acrossAccel < 0.15)
+	//	DriverStation::ReportError("Bump!");
 	std::stringstream str;
 	str << "max across " << maxAcel;
-	DriverStation::ReportError(str.str());
+	//DriverStation::ReportError(str.str());
 	str.clear();
 	str << "max up and down acel " << maxZAcel;
-	DriverStation::ReportError(str.str());
+	//DriverStation::ReportError(str.str());
 	/*
 	 if(XAxis > 0.20 && XAxis < -0.20) {
 	 XAxis = 0;
@@ -109,7 +109,7 @@ void DriveWithJoystick::Execute() {
 	 } */
 	double push = sqrt(XAxis * XAxis + YAxis * YAxis);
 	//Test Code:1/24
-	if (abs(RotAxis) < 0.005f && push > 0.1f) {
+	if (abs(RotAxis) < 0.00125f && push > 0.1f) {
 		turnController->Enable();
 		Robot::driveTrain->MecanumDrive(XAxis, YAxis, rotateToAngleRate, -RobotMap::ahrs->GetYaw());
 		//DriverStation::ReportError("not turning");

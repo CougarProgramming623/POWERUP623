@@ -5,20 +5,23 @@
  *      Author: frc623
  */
 
+#pragma once
+
 #include "WPILib.h"
 #include "Commands/CommandGroup.h"
 #include "Commands/Command.h"
 #include "../RobotImpl.h"
+#include "DistanceDrive.h"
+#include "Turn.h"
+#include "../Robot.h"
 
-#ifndef SRC_COMMANDS_AUTOSEQUENCE_H_
-#define SRC_COMMANDS_AUTOSEQUENCE_H_
 
 class AutoSequence: public frc::CommandGroup, public RobotImpl {
 public:
 	AutoSequence();
+	static void Init();
 private:
 	void doSwitch();
 	void doScale();
 };
 
-#endif /* SRC_COMMANDS_AUTOSEQUENCE_H_ */

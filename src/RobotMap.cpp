@@ -84,7 +84,7 @@ void RobotMap::init() {
 
 	prefs = Preferences::GetInstance();
 	turnP = prefs->GetDouble("Turn P", 0.04f);
-	turnI = prefs->GetDouble("Turn I", 0.00f);
+	turnI = prefs->GetDouble("Turn I", 0.01f);
 	turnD = prefs->GetDouble("Turn D", 0.02f);
 
 	prefs->PutDouble("Turn P", turnP);

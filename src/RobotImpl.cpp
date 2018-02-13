@@ -1,13 +1,8 @@
 #include "RobotImpl.h"
 
-RobotImpl::RobotImpl(bool rightSwitch, bool rightScale, int startSide, Location startLocation) :
-		rightSwitch(rightSwitch), rightScale(rightScale), startSide(startSide), startLocation(startLocation) {
+RobotImpl::RobotImpl() {
 }
 
-// Returns the location that represents our starting position
-Location& RobotImpl::getStartingLocation() {
-	return startLocation;
-}
 
 // Returns a path of points to the side of the scale we own based on the robot's current location as identified by the parameter start
 Path& RobotImpl::getScaleLocation(Location& start) {
@@ -18,19 +13,30 @@ Path& RobotImpl::getScaleLocation(Location& start) {
 }
 
 bool RobotImpl::switchOnOurSide() {
-	return (rightSwitch && (startSide == SIDE_RIGHT)) || (!rightSwitch && (startSide == SIDE_LEFT));
+	return (switchOnRight() && (startSide == SIDE_RIGHT)) || (!switchOnRight() && (startSide == SIDE_LEFT));
 }
 
 bool RobotImpl::scaleOnOurSide() {
-	return (rightScale && (startSide == SIDE_RIGHT)) || (!rightScale && (startSide == SIDE_LEFT));
+	return (scaleOnRight() && (startSide == SIDE_RIGHT)) || (!scaleOnRight() && (startSide == SIDE_LEFT));
+}
+
+void RobotImpl::CheckFMS() {
+	if (fmsData == nullptr) {
+		//Get data
+		fmsData = new std::string(DriverStation::GetInstance().GetGameSpecificMessage());
+		DriverStation::ReportError("Geting data!");
+		DriverStation::ReportError(*fmsData);
+	}
 }
 
 bool RobotImpl::switchOnRight() {
-	return rightSwitch;
+	CheckFMS();
+	return (*fmsData)[0] == 'R';
 }
 
 bool RobotImpl::scaleOnRight() {
-	return rightScale;
+	CheckFMS();
+	return (*fmsData)[1] == 'R';
 }
 
 // Returns a path of points to the switch of the scale we own based on the robot's current location as identified by the parameter start
@@ -47,7 +53,7 @@ Path& RobotImpl::getSwitchLocation(Location& start) {
  * Always returns false for center starts.
  */
 bool RobotImpl::weOwnScale() {
-	return (rightScale && startSide == SIDE_RIGHT) || (!rightScale && startSide == SIDE_LEFT);
+	return (switchOnRight() && startSide == SIDE_RIGHT) || (!switchOnRight() && startSide == SIDE_LEFT);
 }
 
 /*
@@ -56,12 +62,12 @@ bool RobotImpl::weOwnScale() {
  * Always returns false for center starts.
  */
 bool RobotImpl::weOwnSwitch() {
-	return (rightSwitch && startSide == SIDE_RIGHT) || (!rightSwitch && startSide == SIDE_LEFT);
+	return (scaleOnRight() && startSide == SIDE_RIGHT) || (!scaleOnRight() && startSide == SIDE_LEFT);
 }
 
 // Returns true if we are starting in the center.
 bool RobotImpl::isCenterStart() {
-	return startSide == 2;
+	return startSide == SIDE_CENTER;
 }
 
 //Returns either 1, 2, or 3 depending on where we are starting.

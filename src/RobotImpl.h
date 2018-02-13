@@ -3,14 +3,15 @@
 #include "Location.h"
 #include "Path.h"
 #include "RobotConstants.h"
+#include "WPILib.h"
+#include "string"
 
 class RobotImpl {
 private:
-	bool rightSwitch, rightScale;
-	int startSide;
-	Location startLocation;
+	std::string* fmsData = nullptr;
+	int startSide = SIDE_CENTER;
 public:
-	RobotImpl(bool rightSwitch, bool rightScale, int startSide, Location startLocation);
+	RobotImpl();
 
 	// Returns the location that represents our starting position
 	Location& getStartingLocation();
@@ -49,6 +50,7 @@ public:
 	int getStart();
 
 	bool canAllianceDoSwitch();
-
+private:
+	void CheckFMS();
 
 };

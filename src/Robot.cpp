@@ -17,6 +17,7 @@ void Robot::RobotInit() {
 
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
+	frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
 	Robot::cob->InitBoard();
 
@@ -29,6 +30,10 @@ void Robot::RobotInit() {
 	//nt::NetworkTable::Initialize();
 }
 
+void Robot::RobotPeriodic() {
+
+}
+
 void Robot::DisabledInit() {
 }
 
@@ -39,6 +44,7 @@ void Robot::DisabledPeriodic() {
 void Robot::AutonomousInit() {
 	if (autonomousCommand)
 		autonomousCommand->Start();
+	//DriverStation::ReportError(((std::unique_ptr<RobotImpl>)autonomousCommand)->switchOnRight() ? "Right" : "Left");
 }
 
 void Robot::AutonomousPeriodic() {

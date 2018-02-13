@@ -1,7 +1,4 @@
 #include "AutoSequence.h"
-#include "DistanceDrive.h"
-#include "Turn.h"
-#include "../Robot.h"
 
 #define FEET_TO_INCHES 12
 
@@ -10,6 +7,7 @@
 #define DISTANCE_TO_SCALE (27.0 * FEET_TO_INCHES)
 #define HALF_ROBOT_WIDTH (ROBOT_WIDTH / 2.0)
 
+#define TURN_SPEED 1.0
 #define SPEED 0.45
 #define FAST_SPEED 0.6
 #define TIMEOUT 10
@@ -20,18 +18,20 @@
 #define WAIT WAIT_SEC(0.35)
 
 AutoSequence::AutoSequence() :
-		frc::CommandGroup(), RobotImpl(true, true, SIDE_RIGHT, Location { 1, 2 }) {
+		frc::CommandGroup(), RobotImpl() {
 
 	RobotMap::ahrs->ZeroYaw();		//reset gyro degrees
-
+	DriverStation::GetInstance();
 	if (isCenterStart()) {
 		double turnAngle = inveretIfRight(15);
+		DriverStation::ReportError("doing correct!");
 
-		AddSequential(new Turn(turnAngle, TIMEOUT, SPEED));
+		AddSequential(new Turn(turnAngle, 1, TURN_SPEED));
 		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));
-		AddSequential(new Turn(-turnAngle, TIMEOUT, SPEED));
+		AddSequential(new Turn(-turnAngle, 1, TURN_SPEED));
 		//drop block
 	} else {		//On left or right
+		DriverStation::ReportError("WRONGWRONGWRONGWRONG");
 		if (!canAllianceDoSwitch()) {		//Do switch
 			doSwitch();
 		} else {
