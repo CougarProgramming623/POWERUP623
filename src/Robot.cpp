@@ -1,15 +1,12 @@
 #include "Robot.h"
+#include "RobotConstants.h"
+#include "Commands/AngledDistanceDrive.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
 
 void Robot::RobotInit() {
-
-	bool leftSwitch = true, leftScale = true;
-	int start = 1;
-	Location startLoc {1, 2 };
-
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
 	SmartDashboard::PutData(driveTrain.get());
@@ -21,8 +18,8 @@ void Robot::RobotInit() {
 
 	Robot::cob->InitBoard();
 
-	//autonomousCommand.reset(new DistanceDrive(5*12, 0.4, 10, false));
-	autonomousCommand.reset(new AutoSequence());
+	autonomousCommand.reset(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, 55.0));
+	//autonomousCommand.reset(new AutoSequence());
 	frc::SmartDashboard::PutData("Auto Modes", &chooser);
 
 	//nt::NetworkTable::SetClientMode();

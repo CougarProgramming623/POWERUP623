@@ -43,9 +43,10 @@ CougarOpticBoard::CougarOpticBoard() {
 	CougarOpticBoard::entryArmHeight = table->GetEntry("arm/height");
 	CougarOpticBoard::entryArmCubeGrabbed = table->GetEntry("arm/cube-grabbed");
 	CougarOpticBoard::entryArmClimbStatus = table->GetEntry("arm/climb-status");
-	CougarOpticBoard::entryAutonomousSignal = table->GetEntry("autonomous/signal");
-	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/start-pos");
+	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/side");
 	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
+	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
+	CougarOpticBoard::entryAutonomousOptimize = table->GetEntry("autonomous/optimize");
 
 }
 
@@ -183,21 +184,6 @@ void CougarOpticBoard::PushArmClimbStatus(double climbStatus) {
 	entryArmClimbStatus.SetDouble(climbStatus);
 }
 
-/**
- *  Sends a signal to the COB that autonomous has just begun (so it can
- *  retrieve the data needed to draw autonomous).
- *
- *  Preferably, call this method in autonomous initialization.
- *
- *  @author Quintin Harter
- */
-void CougarOpticBoard::SendAutonomousSignal() {
-	if (entryAutonomousSignal.Exists())
-		entryAutonomousSignal.SetBoolean(!(bool) entryAutonomousSignal.GetValue());
-	else
-		entryAutonomousSignal.SetBoolean(false);
-}
-
 //~~~~~~~~~~~~~~~~~~~~~ GET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
@@ -227,5 +213,31 @@ std::string CougarOpticBoard::GetAutonomousStartPos() {
 bool CougarOpticBoard::GetAutonomousDoSomething() {
 	if (entryAutonomousStartPos.Exists())
 		return entryAutonomousDoSomething.GetValue().get()->GetBoolean();
+	return false;
+}
+
+/**
+ *  Pulls the value of the autonomous information from the COB.
+ *
+ *  Preferably, call this method in autonomous initialization.
+ *
+ *  @returns the information based on the starting position of the robot:
+ *  	~ If we are on the side, returns the instructions for the robot:
+ *  		- 0: Do the switch first (if possible), else the scale (if possible), else drive straight.
+ *  		- 1: Do the scale first (if possible), else drive straight
+ *  		- 2: Drive straight
+ *  	~ If we are in the middle, returns the delay time
+ *
+ *  @author Quintin Harter
+ */
+int CougarOpticBoard::GetAutonomousInstructions() {
+	if (entryAutonomousInstructions.Exists())
+		return (int)(entryAutonomousInstructions.GetValue().get()->GetDouble());
+	return -1;
+}
+
+bool CougarOpticBoard::GetAutonomousOptimization() {
+	if (entryAutonomousOptimization.Exists())
+		return entryAutonomousOptimization.GetValue().get()->GetBoolean();
 	return false;
 }

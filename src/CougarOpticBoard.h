@@ -30,7 +30,21 @@ public:
 	//getters
 	static std::string GetAutonomousStartPos();
 	static bool GetAutonomousDoSomething();
+	static int GetAutonomousInstructions();
+	static bool GetAutonomousOptimization();
 	//insert others
+
+	//static constants-- use these
+	const bool WILL_DO_SOMETHING = false;
+	const bool WILL_NOT_DO_ANYTHING = true;
+	const int LEFT = 0;
+	const int CENTER = 1;
+	const int RIGHT = 2;
+	const int SWITCH_SCALE_DRIVE = 0;
+	const int SCALE_DRIVE = 1;
+	const int DRIVE = 2;
+	const bool WILL_OPTIMIZE = true;
+	const bool WILL_NOT_OPTIMIZE = false;
 
 	static nt::NetworkTableEntry entryRotation;
 	static nt::NetworkTableEntry entryPositionX;
@@ -40,9 +54,10 @@ public:
 	static nt::NetworkTableEntry entryArmHeight;
 	static nt::NetworkTableEntry entryArmCubeGrabbed; //maybe
 	static nt::NetworkTableEntry entryArmClimbStatus; //maybe
-	static nt::NetworkTableEntry entryAutonomousSignal;
 	static nt::NetworkTableEntry entryAutonomousStartPos;
 	static nt::NetworkTableEntry entryAutonomousDoSomething;
+	static nt::NetworkTableEntry entryAutonomousInstructions;
+	static nt::NetworkTableEntry entryAutonomousOptimization;
 };
 
 #endif /* SRC_COMMANDS_COUGAROPTICBOARD_H_ */

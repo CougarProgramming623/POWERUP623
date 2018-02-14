@@ -9,6 +9,7 @@
 #define TICKS_PER_REVOLUTION 600
 #define TICKS_PER_INCH 63
 #define ROBOT_WIDTH 39.0// 39 inches
+#define FEET_TO_INCHES 12.0
 
 #define normalize(min, max, value) (value - min) / (max - min)
 

@@ -1,4 +1,6 @@
-#include "DistanceDrive.h"
+#include "AngledDistanceDrive.h"
+#include <cmath>
+#include "Math.h"
 
 #define ROOT_2 1.41421356237
 
@@ -12,7 +14,7 @@ const static double kToleranceDegrees = 2.0f;
 #define PI 3.141592
 #define ROTATE_FIX_SPEED 0.05
 
-DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe) :
+AngledDistanceDrive::AngledDistanceDrive(double distance, double speed, int timeout, double angle) :
 		frc::Command() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
@@ -20,7 +22,7 @@ DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool st
 	m_ticks = (int) (distance * TICKS_PER_INCH);
 	m_speed = speed;
 	m_timeout = timeout;
-	m_strafe = strafe;
+	m_angle = angle;
 	m_timer = new Timer();
 	rotateToAngleRate = 0.0;
 	turnController = new PIDController(kP, kI, kD, kF, RobotMap::ahrs, this);
@@ -28,7 +30,7 @@ DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool st
 }
 
 // Called just before this Command runs the first time
-void DistanceDrive::Initialize() {
+void AngledDistanceDrive::Initialize() {
 	try {
 		SetTimeout(m_timeout); //timeout for 10ms
 
@@ -57,41 +59,25 @@ void DistanceDrive::Initialize() {
 	initEncPosition = RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0);
 }
 
-int DistanceDrive::getPosition() {
+int AngledDistanceDrive::getPosition() {
 	return RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0);
 }
 
-double DistanceDrive::getMaxTicks() {
+double AngledDistanceDrive::getMaxTicks() {
 	return m_ticks;
 }
 
 // Called repeatedly when this Command is scheduled to run
-void DistanceDrive::Execute() {
+void AngledDistanceDrive::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
 	frc::SmartDashboard::PutNumber("/COB/rotation", angle);
-	//std::cout << "Encoder " << getPosition() << std::endl;
-
-	double coefficient = 1.0;
-
-	if (m_distance < 0)
-		coefficient *= -1.0;
-
-	double actualSpeed = coefficient * m_speed;
-	std::stringstream str;
-	str << "percent done % "
-			<< (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
-	//DriverStation::ReportError(str.str());
-	//actualSpeed *= sqrt(
-	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
-	if (m_strafe) {
-		Robot::driveTrain->MecanumDrive(actualSpeed, 0, rotateToAngleRate, 0);
-	} else {
-		Robot::driveTrain->MecanumDrive(0, actualSpeed, rotateToAngleRate, 0);
-	}
+	double x = cos(m_angle * M_PI / 180) * m_speed;
+	double y = sin(m_angle * M_PI / 180) * m_speed;
+	Robot::driveTrain->MecanumDrive(x, y, 0, RobotMap::ahrs->GetYaw());
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool DistanceDrive::IsFinished() {
+bool AngledDistanceDrive::IsFinished() {
 	if (m_timer && m_timer->Get() > m_timeout) {
 		return true;
 	}
@@ -103,7 +89,7 @@ bool DistanceDrive::IsFinished() {
 }
 
 // Called once after isFinished returns true
-void DistanceDrive::End() {
+void AngledDistanceDrive::End() {
 	initEncPosition = getPosition();
 	Robot::driveTrain->Stop();
 
@@ -121,10 +107,10 @@ void DistanceDrive::End() {
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void DistanceDrive::Interrupted() {
+void AngledDistanceDrive::Interrupted() {
 
 }
 
-void DistanceDrive::PIDWrite(double output) {
+void AngledDistanceDrive::PIDWrite(double output) {
 	rotateToAngleRate = output;
 }
