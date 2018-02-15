@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Location.h"
-#include "Path.h"
 #include "RobotConstants.h"
 #include "WPILib.h"
 #include "string"
@@ -12,15 +10,6 @@ private:
 	int startSide = Robot::cob->GetAutonomousStartPos();
 public:
 	RobotImpl();
-
-	// Returns the location that represents our starting position
-	Location& getStartingLocation();
-
-	// Returns a path of points to the side of the scale we own based on the robot's current location as identified by the parameter start
-	Path& getScaleLocation(Location& start);
-
-	// Returns a path of points to the switch of the scale we own based on the robot's current location as identified by the parameter start
-	Path& getSwitchLocation(Location& start);
 
 	/*
 	 * Returns true if we are on the same side as the side of the scale we own.

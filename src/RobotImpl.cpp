@@ -3,15 +3,6 @@
 RobotImpl::RobotImpl() {
 }
 
-
-// Returns a path of points to the side of the scale we own based on the robot's current location as identified by the parameter start
-Path& RobotImpl::getScaleLocation(Location& start) {
-	//TODO
-	Location location { 1, 2 };
-	Path path(location);
-	return path;
-}
-
 bool RobotImpl::switchOnOurSide() {
 	return (switchOnRight() && (startSide == SIDE_RIGHT)) || (!switchOnRight() && (startSide == SIDE_LEFT));
 }
