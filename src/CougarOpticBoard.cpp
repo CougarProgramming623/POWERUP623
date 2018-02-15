@@ -25,6 +25,7 @@ nt::NetworkTableEntry CougarOpticBoard::entryAutonomousInstructions;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousDisableCrossing;
 
 
+
 /**
  *  The constructor method for the COB.
  *  When called, it instantiates the table and
@@ -48,7 +49,7 @@ CougarOpticBoard::CougarOpticBoard() {
 	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/side");
 	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
 	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
-	CougarOpticBoard::entryAutonomousOptimization = table->GetEntry("autonomous/disable-crossing");
+	CougarOpticBoard::entryAutonomousDisableCrossing = table->GetEntry("autonomous/disable-crossing");
 }
 
 void CougarOpticBoard::InitBoard() {
@@ -65,7 +66,7 @@ void CougarOpticBoard::InitBoard() {
 	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/start-pos");
 	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
 	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
-	CougarOpticBoard::entryAutonomousOptimization = table->GetEntry("autonomous/disable-crossing");
+	CougarOpticBoard::entryAutonomousDisableCrossing = table->GetEntry("autonomous/disable-crossing");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~ SET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -241,7 +242,7 @@ int CougarOpticBoard::GetAutonomousInstructions() {
 }
 
 bool CougarOpticBoard::GetAutonomousDisableCrossing() {
-	if (entryAutonomousOptimization.Exists())
+	if (entryAutonomousDisableCrossing.Exists())
 		return entryAutonomousDisableCrossing.GetValue().get()->GetBoolean();
 	return false;
 }

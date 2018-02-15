@@ -1,7 +1,5 @@
 #include "AutoSequence.h"
 
-#define FEET_TO_INCHES 12
-
 //12 feet to the front plus half of its width for the center
 #define DISTANCE_TO_SWITCH (12.0 * FEET_TO_INCHES + (2.0 * FEET_TO_INCHES) / 2.0)
 #define DISTANCE_TO_SCALE (27.0 * FEET_TO_INCHES)
@@ -31,7 +29,7 @@ AutoSequence::AutoSequence() :
 	} else {
 
 		if (Robot::cob->GetAutonomousInstructions()
-				== CougarOpticBoard::OPTION_DO_EASY) {
+				== OPTION_DO_EASY) {
 			if (switchOnOurSide() && scaleOnOurSide())
 				doSwitchNear();
 			else if (switchOnOurSide() && !scaleOnOurSide())
@@ -46,15 +44,15 @@ AutoSequence::AutoSequence() :
 		} else {		// Everything except easy
 			AutoPlace place;
 			if (Robot::cob->GetAutonomousInstructions()
-					== CougarOpticBoard::OPTION_DO_SWITCH) {
+					== OPTION_DO_SWITCH) {
 				place = switchOnOurSide() ?
 						AutoPlace::SWITCH_NEAR : AutoPlace::SWITCH_FAR;
 			} else if (Robot::cob->GetAutonomousInstructions()
-					== CougarOpticBoard::OPTION_DO_SCALE) {
+					== OPTION_DO_SCALE) {
 				place = scaleOnOurSide() ?
 						AutoPlace::SCALE_NEAR : AutoPlace::SCALE_FAR;
 			} else if (Robot::cob->GetAutonomousInstructions()
-					== CougarOpticBoard::OPTION_DO_BASELINE) {
+					== OPTION_DO_BASELINE) {
 				place = AutoPlace::BASELINE;
 			} else {
 				DriverStation::ReportError(

@@ -7,7 +7,7 @@
 class RobotImpl {
 private:
 	std::string* fmsData = nullptr;
-	int startSide = Robot::cob->GetAutonomousStartPos();
+	int startSide;
 public:
 	RobotImpl();
 

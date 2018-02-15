@@ -1,6 +1,9 @@
 #include "RobotImpl.h"
 
+#include "Robot.h"
+
 RobotImpl::RobotImpl() {
+	startSide = Robot::cob->GetAutonomousStartPos();
 }
 
 bool RobotImpl::switchOnOurSide() {
@@ -30,13 +33,6 @@ bool RobotImpl::scaleOnRight() {
 	return (*fmsData)[1] == 'R';
 }
 
-// Returns a path of points to the switch of the scale we own based on the robot's current location as identified by the parameter start
-Path& RobotImpl::getSwitchLocation(Location& start) {
-	//TODO
-	Location location { 1, 2 };
-	Path path(location);
-	return path;
-}
 
 /*
  * Returns true if we are on the same side as the side of the scale we own.
@@ -65,5 +61,3 @@ bool RobotImpl::isCenterStart() {
 int RobotImpl::getStart() {
 	return startSide;
 }
-
-

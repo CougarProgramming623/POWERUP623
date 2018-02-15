@@ -7,17 +7,19 @@
 
 #pragma once
 
+#include "../RobotImpl.h"
 #include "WPILib.h"
 #include "Commands/CommandGroup.h"
 #include "Commands/Command.h"
-#include "../RobotImpl.h"
+
 #include "DistanceDrive.h"
 #include "Turn.h"
 #include "../Robot.h"
 #include "../RobotConstants.h"
 #include "AngledDistanceDrive.h"
+#include "../AutoPlace.h"
 
-class AutoSequence: public frc::CommandGroup, public RobotImpl {
+class AutoSequence : public frc::CommandGroup , public RobotImpl {
 public:
 	AutoSequence();
 	static void Init();
@@ -27,10 +29,5 @@ private:
 	void doScaleNear();
 	void doScaleFar();
 	void doBaseline();
-};
-
-enum AutoPlace {
-	SCALE_NEAR = 0, SCALE_FAR = 1, SWITCH_NEAR = 2, SWITCH_FAR = 3, BASELINE = 4
-
 };
 

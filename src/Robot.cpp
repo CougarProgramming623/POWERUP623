@@ -39,9 +39,7 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
-	std::string str = (Robot::cob->GetAutonomousDoNothing())? "true" : "false";
-	DriverStation::ReportError(str);
-	if (autonomousCommand && Robot::cob->GetAutonomousDoNothing())
+	if (autonomousCommand)
 		autonomousCommand->Start();
 	//DriverStation::ReportError(((std::unique_ptr<RobotImpl>)autonomousCommand)->switchOnRight() ? "Right" : "Left");
 }
