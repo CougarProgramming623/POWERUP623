@@ -26,17 +26,14 @@ public:
 	static void PushArmHeight(double height);
 	static void PushArmCubeGrabbed(bool cubeGrabbed); //maybe
 	static void PushArmClimbStatus(double climbStatus); //maybe
-	static void SendAutonomousSignal();
 	//getters
 	static std::string GetAutonomousStartPos();
-	static bool GetAutonomousDoSomething();
+	static bool GetAutonomousDoNothing();
 	static int GetAutonomousInstructions();
 	static bool GetAutonomousOptimization();
 	//insert others
 
 	//static constants-- use these
-	const bool WILL_DO_SOMETHING = false;
-	const bool WILL_NOT_DO_ANYTHING = true;
 	const int LEFT = 0;
 	const int CENTER = 1;
 	const int RIGHT = 2;

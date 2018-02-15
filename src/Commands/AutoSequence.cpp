@@ -23,12 +23,9 @@ AutoSequence::AutoSequence() :
 	RobotMap::ahrs->ZeroYaw();		//reset gyro degrees
 	DriverStation::GetInstance();
 	if (isCenterStart()) {
-		double turnAngle = inveretIfRight(15);
+		double turnAngle = scaleOnRight() ? 55 : 135;
 		DriverStation::ReportError("doing correct!");
-
-		AddSequential(new Turn(turnAngle, 1, TURN_SPEED));
-		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));
-		AddSequential(new Turn(-turnAngle, 1, TURN_SPEED));
+		AddSequential(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, turnAngle));
 		//drop block
 	} else {		//On left or right
 		DriverStation::ReportError("WRONGWRONGWRONGWRONG");

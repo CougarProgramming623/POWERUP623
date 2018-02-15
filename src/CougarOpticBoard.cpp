@@ -19,9 +19,11 @@ nt::NetworkTableEntry CougarOpticBoard::entryVelocityMagnitude;
 nt::NetworkTableEntry CougarOpticBoard::entryArmHeight;
 nt::NetworkTableEntry CougarOpticBoard::entryArmCubeGrabbed;
 nt::NetworkTableEntry CougarOpticBoard::entryArmClimbStatus;
-nt::NetworkTableEntry CougarOpticBoard::entryAutonomousSignal;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousStartPos;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousDoSomething;
+nt::NetworkTableEntry CougarOpticBoard::entryAutonomousInstructions;
+nt::NetworkTableEntry CougarOpticBoard::entryAutonomousOptimization;
+
 
 /**
  *  The constructor method for the COB.
@@ -46,8 +48,7 @@ CougarOpticBoard::CougarOpticBoard() {
 	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/side");
 	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
 	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
-	CougarOpticBoard::entryAutonomousOptimize = table->GetEntry("autonomous/optimize");
-
+	CougarOpticBoard::entryAutonomousOptimization = table->GetEntry("autonomous/optimize");
 }
 
 void CougarOpticBoard::InitBoard() {
@@ -61,9 +62,10 @@ void CougarOpticBoard::InitBoard() {
 	CougarOpticBoard::entryArmHeight = table->GetEntry("arm/height");
 	CougarOpticBoard::entryArmCubeGrabbed = table->GetEntry("arm/cube-grabbed");
 	CougarOpticBoard::entryArmClimbStatus = table->GetEntry("arm/climb-status");
-	CougarOpticBoard::entryAutonomousSignal = table->GetEntry("autonomous/signal");
 	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/start-pos");
 	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
+	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
+	CougarOpticBoard::entryAutonomousOptimization = table->GetEntry("autonomous/optimize");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~ SET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -210,9 +212,11 @@ std::string CougarOpticBoard::GetAutonomousStartPos() {
  *
  *  @author Quintin Harter
  */
-bool CougarOpticBoard::GetAutonomousDoSomething() {
-	if (entryAutonomousStartPos.Exists())
+bool CougarOpticBoard::GetAutonomousDoNothing() {
+	if (entryAutonomousStartPos.Exists()) {
+		DriverStation::ReportError("this works");
 		return entryAutonomousDoSomething.GetValue().get()->GetBoolean();
+	}
 	return false;
 }
 

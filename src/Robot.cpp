@@ -18,8 +18,8 @@ void Robot::RobotInit() {
 
 	Robot::cob->InitBoard();
 
-	autonomousCommand.reset(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, 55.0));
-	//autonomousCommand.reset(new AutoSequence());
+	//autonomousCommand.reset(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, 55.0));
+	autonomousCommand.reset(new AutoSequence());
 	frc::SmartDashboard::PutData("Auto Modes", &chooser);
 
 	//nt::NetworkTable::SetClientMode();
@@ -39,7 +39,9 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
-	if (autonomousCommand)
+	std::string str = (Robot::cob->GetAutonomousDoNothing())? "true" : "false";
+	DriverStation::ReportError(str);
+	if (autonomousCommand && Robot::cob->GetAutonomousDoNothing())
 		autonomousCommand->Start();
 	//DriverStation::ReportError(((std::unique_ptr<RobotImpl>)autonomousCommand)->switchOnRight() ? "Right" : "Left");
 }

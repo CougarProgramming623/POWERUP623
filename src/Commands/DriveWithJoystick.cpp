@@ -126,7 +126,7 @@ void DriveWithJoystick::Execute() {
 	//frc::SmartDashboard::PutNumber("Angle", angle);
 	//frc::SmartDashboard::PutNumber("EncPosition", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0) - initEncPosition);
 
-	//Robot::cob->PushRotation(angle);11,623 12946
+	Robot::cob->PushRotation(angle);
 }
 
 // Make this return true when this Command no longer needs to run execute()

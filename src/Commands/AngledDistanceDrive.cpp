@@ -70,7 +70,6 @@ double AngledDistanceDrive::getMaxTicks() {
 // Called repeatedly when this Command is scheduled to run
 void AngledDistanceDrive::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
-	frc::SmartDashboard::PutNumber("/COB/rotation", angle);
 	double x = cos(m_angle * M_PI / 180) * m_speed;
 	double y = sin(m_angle * M_PI / 180) * m_speed;
 	Robot::driveTrain->MecanumDrive(x, y, 0, RobotMap::ahrs->GetYaw());
