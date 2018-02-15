@@ -75,8 +75,4 @@ int RobotImpl::getStart() {
 	return startSide;
 }
 
-bool RobotImpl::canAllianceDoSwitch() {
-	//TODO
-	return false;
-}
 

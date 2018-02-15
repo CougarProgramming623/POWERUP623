@@ -22,7 +22,7 @@ nt::NetworkTableEntry CougarOpticBoard::entryArmClimbStatus;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousStartPos;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousDoSomething;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousInstructions;
-nt::NetworkTableEntry CougarOpticBoard::entryAutonomousOptimization;
+nt::NetworkTableEntry CougarOpticBoard::entryAutonomousDisableCrossing;
 
 
 /**
@@ -48,7 +48,7 @@ CougarOpticBoard::CougarOpticBoard() {
 	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/side");
 	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
 	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
-	CougarOpticBoard::entryAutonomousOptimization = table->GetEntry("autonomous/optimize");
+	CougarOpticBoard::entryAutonomousOptimization = table->GetEntry("autonomous/disable-crossing");
 }
 
 void CougarOpticBoard::InitBoard() {
@@ -65,7 +65,7 @@ void CougarOpticBoard::InitBoard() {
 	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/start-pos");
 	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
 	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
-	CougarOpticBoard::entryAutonomousOptimization = table->GetEntry("autonomous/optimize");
+	CougarOpticBoard::entryAutonomousOptimization = table->GetEntry("autonomous/disable-crossing");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~ SET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -197,10 +197,10 @@ void CougarOpticBoard::PushArmClimbStatus(double climbStatus) {
  *
  *  @author Quintin Harter
  */
-std::string CougarOpticBoard::GetAutonomousStartPos() {
+int CougarOpticBoard::GetAutonomousStartPos() {
 	if (entryAutonomousStartPos.Exists())
-		return entryAutonomousStartPos.GetValue().get()->GetString();
-	return "";
+		return (int) entryAutonomousStartPos.GetValue().get()->GetDouble();
+	return 0;
 }
 
 /**
@@ -240,8 +240,8 @@ int CougarOpticBoard::GetAutonomousInstructions() {
 	return -1;
 }
 
-bool CougarOpticBoard::GetAutonomousOptimization() {
+bool CougarOpticBoard::GetAutonomousDisableCrossing() {
 	if (entryAutonomousOptimization.Exists())
-		return entryAutonomousOptimization.GetValue().get()->GetBoolean();
+		return entryAutonomousDisableCrossing.GetValue().get()->GetBoolean();
 	return false;
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-#define SIDE_RIGHT 1
-#define SIDE_CENTER 2
-#define SIDE_LEFT 3
+#define SIDE_LEFT   0
+#define SIDE_CENTER 1
+#define SIDE_RIGHT  2
 
 #define WHEEL_DIAMETER 8;
 #define ENCODER_DIAMETER 2.5

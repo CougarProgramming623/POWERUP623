@@ -9,7 +9,7 @@
 class RobotImpl {
 private:
 	std::string* fmsData = nullptr;
-	int startSide = SIDE_CENTER;
+	int startSide = Robot::cob->GetAutonomousStartPos();
 public:
 	RobotImpl();
 
@@ -46,10 +46,8 @@ public:
 	// Returns true if we are starting in the center.
 	bool isCenterStart();
 
-	//Returns either 1, 2, or 3 depending on where we are starting.
+	//Returns either 0 1, or 2 depending on where we are starting.
 	int getStart();
-
-	bool canAllianceDoSwitch();
 private:
 	void CheckFMS();
 
