@@ -20,9 +20,12 @@ nt::NetworkTableEntry CougarOpticBoard::entryArmHeight;
 nt::NetworkTableEntry CougarOpticBoard::entryArmCubeGrabbed;
 nt::NetworkTableEntry CougarOpticBoard::entryArmClimbStatus;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousStartPos;
-nt::NetworkTableEntry CougarOpticBoard::entryAutonomousDoSomething;
+nt::NetworkTableEntry CougarOpticBoard::entryAutonomousNoAuto;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousInstructions;
-nt::NetworkTableEntry CougarOpticBoard::entryAutonomousDisableCrossing;
+nt::NetworkTableEntry CougarOpticBoard::entryAutonomousEnableCrossing;
+nt::NetworkTableEntry CougarOpticBoard::entryFMSAlliance;
+nt::NetworkTableEntry CougarOpticBoard::entryFMSTime;
+nt::NetworkTableEntry CougarOpticBoard::entryFMSField;
 
 
 
@@ -47,9 +50,12 @@ CougarOpticBoard::CougarOpticBoard() {
 	CougarOpticBoard::entryArmCubeGrabbed = table->GetEntry("arm/cube-grabbed");
 	CougarOpticBoard::entryArmClimbStatus = table->GetEntry("arm/climb-status");
 	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/side");
-	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
+	CougarOpticBoard::entryAutonomousNoAuto = table->GetEntry("autonomous/emergency-no-auto");
 	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
-	CougarOpticBoard::entryAutonomousDisableCrossing = table->GetEntry("autonomous/disable-crossing");
+	CougarOpticBoard::entryAutonomousEnableCrossing = table->GetEntry("autonomous/enable-crossing");
+	CougarOpticBoard::entryFMSTime = table->GetEntry("fms/time");
+	CougarOpticBoard::entryFMSAlliance = table->GetEntry("fms/alliance");
+	CougarOpticBoard::entryFMSField = table->GetEntry("fms/field");
 }
 
 void CougarOpticBoard::InitBoard() {
@@ -63,10 +69,13 @@ void CougarOpticBoard::InitBoard() {
 	CougarOpticBoard::entryArmHeight = table->GetEntry("arm/height");
 	CougarOpticBoard::entryArmCubeGrabbed = table->GetEntry("arm/cube-grabbed");
 	CougarOpticBoard::entryArmClimbStatus = table->GetEntry("arm/climb-status");
-	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/start-pos");
-	CougarOpticBoard::entryAutonomousDoSomething = table->GetEntry("autonomous/do-something");
+	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/side");
+	CougarOpticBoard::entryAutonomousNoAuto = table->GetEntry("autonomous/emergency-no-auto");
 	CougarOpticBoard::entryAutonomousInstructions = table->GetEntry("autonomous/instructions");
-	CougarOpticBoard::entryAutonomousDisableCrossing = table->GetEntry("autonomous/disable-crossing");
+	CougarOpticBoard::entryAutonomousEnableCrossing = table->GetEntry("autonomous/enable-crossing");
+	CougarOpticBoard::entryFMSTime = table->GetEntry("fms/time");
+	CougarOpticBoard::entryFMSAlliance = table->GetEntry("fms/alliance");
+	CougarOpticBoard::entryFMSField = table->GetEntry("fms/field");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~ SET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -200,7 +209,7 @@ void CougarOpticBoard::PushArmClimbStatus(double climbStatus) {
  */
 int CougarOpticBoard::GetAutonomousStartPos() {
 	if (entryAutonomousStartPos.Exists())
-		return (int) entryAutonomousStartPos.GetValue().get()->GetDouble();
+		return ((int) entryAutonomousStartPos.GetValue().get()->GetDouble()) - 1;
 	return 0;
 }
 
@@ -213,10 +222,9 @@ int CougarOpticBoard::GetAutonomousStartPos() {
  *
  *  @author Quintin Harter
  */
-bool CougarOpticBoard::GetAutonomousDoNothing() {
-	if (entryAutonomousStartPos.Exists()) {
-		DriverStation::ReportError("this works");
-		return entryAutonomousDoSomething.GetValue().get()->GetBoolean();
+bool CougarOpticBoard::GetAutonomousNoAuto() {
+	if (entryAutonomousNoAuto.Exists()) {
+		return entryAutonomousNoAuto.GetValue().get()->GetBoolean();
 	}
 	return false;
 }
@@ -241,8 +249,21 @@ int CougarOpticBoard::GetAutonomousInstructions() {
 	return -1;
 }
 
-bool CougarOpticBoard::GetAutonomousDisableCrossing() {
-	if (entryAutonomousDisableCrossing.Exists())
-		return entryAutonomousDisableCrossing.GetValue().get()->GetBoolean();
+bool CougarOpticBoard::GetAutonomousEnableCrossing() {
+	if (entryAutonomousEnableCrossing.Exists())
+		return entryAutonomousEnableCrossing.GetValue().get()->GetBoolean();
 	return false;
+
+}
+
+void CougarOpticBoard::PushFMSAlliance(bool isRed) {
+	entryFMSAlliance.SetBoolean(isRed);
+}
+
+void CougarOpticBoard::PushFMSTime(double time) {
+	entryFMSTime.SetDouble(time);
+}
+
+void CougarOpticBoard::PushFMSField(std::string data) {
+	entryFMSField.SetString(data);
 }

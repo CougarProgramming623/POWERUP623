@@ -29,5 +29,6 @@ private:
 	void doScaleNear();
 	void doScaleFar();
 	void doBaseline();
+	void TestBumpDetection();
 };
 

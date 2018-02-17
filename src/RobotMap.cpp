@@ -20,6 +20,7 @@ std::shared_ptr<WPI_TalonSRX> RobotMap::driveTrainleftFront;
 std::shared_ptr<WPI_TalonSRX> RobotMap::driveTrainleftBack;
 std::shared_ptr<WPI_TalonSRX> RobotMap::driveTrainrightFront;
 std::shared_ptr<WPI_TalonSRX> RobotMap::driveTrainrightBack;
+std::shared_ptr<WPI_TalonSRX> RobotMap::liftController;
 std::shared_ptr<frc::MecanumDrive> RobotMap::driveTrainMecanumDrive1;
 std::shared_ptr<AnalogGyro> RobotMap::gyro;
 
@@ -45,6 +46,8 @@ void RobotMap::init() {
 	driveTrainrightFront.reset(new WPI_TalonSRX(13));
 
 	driveTrainrightBack.reset(new WPI_TalonSRX(14));
+
+	liftController.reset(new WPI_TalonSRX(0));
 
 	RobotMap::driveTrainleftBack->Set(ControlMode::Follower, 12);
 

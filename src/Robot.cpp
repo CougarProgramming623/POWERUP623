@@ -19,8 +19,6 @@ void Robot::RobotInit() {
 	Robot::cob->InitBoard();
 
 	//autonomousCommand.reset(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, 55.0));
-	autonomousCommand.reset(new AutoSequence());
-	frc::SmartDashboard::PutData("Auto Modes", &chooser);
 
 	//nt::NetworkTable::SetClientMode();
 	//nt::NetworkTable::SetIPAddress("10.6.23.2");
@@ -39,12 +37,15 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
+	autonomousCommand.reset(new AutoSequence());
 	if (autonomousCommand)
 		autonomousCommand->Start();
 	//DriverStation::ReportError(((std::unique_ptr<RobotImpl>)autonomousCommand)->switchOnRight() ? "Right" : "Left");
 }
 
 void Robot::AutonomousPeriodic() {
+	//push time to cob
+	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());
 	frc::Scheduler::GetInstance()->Run();
 }
 
@@ -54,6 +55,8 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+	//push time to cob
+	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());
 	frc::Scheduler::GetInstance()->Run();
 }
 

@@ -7,6 +7,7 @@ RobotImpl::RobotImpl() {
 }
 
 bool RobotImpl::switchOnOurSide() {
+	DriverStation::ReportError((startSide == 2)? "side 2" : "side not 2");
 	return (switchOnRight() && (startSide == SIDE_RIGHT)) || (!switchOnRight() && (startSide == SIDE_LEFT));
 }
 

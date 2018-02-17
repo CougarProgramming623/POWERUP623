@@ -11,8 +11,10 @@ const static double kToleranceDegrees = 2.0f;
 
 #define PI 3.141592
 #define ROTATE_FIX_SPEED 0.05
+#define BUMP_DETECTION_DELAY 4.0
 
-DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe) :
+
+DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection) :
 		frc::Command() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
@@ -22,6 +24,7 @@ DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool st
 	m_timeout = timeout;
 	m_strafe = strafe;
 	m_timer = new Timer();
+	m_doBumpDetection = bumpDetection;
 	rotateToAngleRate = 0.0;
 	turnController = new PIDController(kP, kI, kD, kF, RobotMap::ahrs, this);
 	Requires(Robot::driveTrain.get());
@@ -65,10 +68,17 @@ double DistanceDrive::getMaxTicks() {
 	return m_ticks;
 }
 
+//checks for the bump, returns true if we hit it
+bool DistanceDrive::checkForBump() {
+	double acrossAccel = sqrt(
+				RobotMap::ahrs->GetWorldLinearAccelX() * RobotMap::ahrs->GetWorldLinearAccelX()
+						+ RobotMap::ahrs->GetWorldLinearAccelY() * RobotMap::ahrs->GetWorldLinearAccelY());
+	return RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7 && acrossAccel < 0.05; //these values may need to be changed
+}
+
 // Called repeatedly when this Command is scheduled to run
 void DistanceDrive::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
-	frc::SmartDashboard::PutNumber("/COB/rotation", angle);
 	//std::cout << "Encoder " << getPosition() << std::endl;
 
 	double coefficient = 1.0;
@@ -92,6 +102,10 @@ void DistanceDrive::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool DistanceDrive::IsFinished() {
+	if (m_doBumpDetection && checkForBump()) {
+		DriverStation::ReportError("Detected bump. Stopping DDC.");
+		return true;
+	}
 	if (m_timer && m_timer->Get() > m_timeout) {
 		return true;
 	}

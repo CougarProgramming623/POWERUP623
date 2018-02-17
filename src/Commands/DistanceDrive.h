@@ -14,7 +14,7 @@
 
 class DistanceDrive : public frc::Command , public frc::PIDOutput {
 public:
-	DistanceDrive(double, double, int, bool = false);
+	DistanceDrive(double, double, int, bool = false, bool = false);
 	void Initialize();
 	void Execute();
 	bool IsFinished();
@@ -24,6 +24,7 @@ public:
 
 	double getMaxTicks();
 	int getPosition();
+	bool checkForBump();
 private:
 	Timer *m_timer;
 	PIDController *turnController;
@@ -33,6 +34,9 @@ private:
 	int initEncPosition = 0, m_ticks;
 	bool m_strafe;
 	double rotateToAngleRate;
+
+	//bump detection
+	bool m_doBumpDetection = false;
 };
 
 #endif  // DistanceDrive_H

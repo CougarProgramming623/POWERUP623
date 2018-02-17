@@ -15,8 +15,8 @@
 #define OPTION_DO_SWITCH 1
 #define OPTION_DO_SCALE 2
 #define OPTION_DO_BASELINE 3
-#define CROSSING_ENABLED false
-#define CROSSING_DISABLED true
+#define CROSSING_ENABLED true
+#define CROSSING_DISABLED false
 
 class CougarOpticBoard {
 public:
@@ -33,11 +33,14 @@ public:
 	static void PushArmHeight(double height);
 	static void PushArmCubeGrabbed(bool cubeGrabbed); //maybe
 	static void PushArmClimbStatus(double climbStatus); //maybe
+	static void PushFMSTime(double time);
+	static void PushFMSField(std::string data);
+	static void PushFMSAlliance(bool isRed);
 	//getters
 	static int GetAutonomousStartPos();
-	static bool GetAutonomousDoNothing();
+	static bool GetAutonomousNoAuto();
 	static int GetAutonomousInstructions();
-	static bool GetAutonomousDisableCrossing();
+	static bool GetAutonomousEnableCrossing();
 	//insert others
 
 	//static constants-- use these
@@ -51,9 +54,12 @@ public:
 	static nt::NetworkTableEntry entryArmCubeGrabbed; //maybe
 	static nt::NetworkTableEntry entryArmClimbStatus; //maybe
 	static nt::NetworkTableEntry entryAutonomousStartPos;
-	static nt::NetworkTableEntry entryAutonomousDoSomething;
+	static nt::NetworkTableEntry entryAutonomousNoAuto;
 	static nt::NetworkTableEntry entryAutonomousInstructions;
-	static nt::NetworkTableEntry entryAutonomousDisableCrossing;
+	static nt::NetworkTableEntry entryAutonomousEnableCrossing;
+	static nt::NetworkTableEntry entryFMSTime;
+	static nt::NetworkTableEntry entryFMSField;
+	static nt::NetworkTableEntry entryFMSAlliance;
 };
 
 #endif /* SRC_COMMANDS_COUGAROPTICBOARD_H_ */
