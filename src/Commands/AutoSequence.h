@@ -18,17 +18,20 @@
 #include "../RobotConstants.h"
 #include "AngledDistanceDrive.h"
 #include "../AutoPlace.h"
+#include <cmath>
 
 class AutoSequence : public frc::CommandGroup , public RobotImpl {
 public:
 	AutoSequence();
 	static void Init();
 private:
-	void doSwitchNear();
-	void doSwitchFar();
-	void doScaleNear();
-	void doScaleFar();
-	void doBaseline();
+	void DoCenter();
+	void DoSwitchNear();
+	void DoSwitchFar();
+	void DoScaleNear();
+	void DoScaleFar();
+	void DoBaseline();
 	void TestBumpDetection();
+	void DropCube();
 };
 

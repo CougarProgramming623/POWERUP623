@@ -6,6 +6,7 @@ std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
 
+//Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());

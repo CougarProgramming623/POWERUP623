@@ -15,6 +15,9 @@
 
 #define FEET_TO_INCHES 12.0
 
+#define CAMERA_WIDTH 960
+#define HALF_CAMERA_WIDTH CAMERA_WIDTH /2
+
 //12 feet to the front plus half of its width for the center
 #define DISTANCE_TO_SWITCH (12.0 * FEET_TO_INCHES + (2.0 * FEET_TO_INCHES) / 3.0)
 #define DISTANCE_TO_SCALE (27.0 * FEET_TO_INCHES)
