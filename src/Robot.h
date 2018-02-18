@@ -34,7 +34,7 @@
 #include "RobotImpl.h"
 
 
-class Robot : public frc::IterativeRobot {
+class Robot : public frc::TimedRobot {
 public:
 	static std::shared_ptr<CougarOpticBoard> cob;
 	std::unique_ptr<Command> autonomousCommand;

@@ -75,7 +75,7 @@ AutoSequence::AutoSequence() :
 }
 
 void AutoSequence::TestBumpDetection() {
-	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE, SPEED, TIMEOUT, false, true));
+	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE * 2, SPEED, TIMEOUT, false, true));
 	WAIT
 }
 

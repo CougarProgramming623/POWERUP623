@@ -1,5 +1,9 @@
 #pragma once
 
+#define BUMP_DELTA_PITCH_LIMIT 0.5
+#define BUMP_DELAY 1.0
+
+
 #define SIDE_LEFT   0
 #define SIDE_CENTER 1
 #define SIDE_RIGHT  2

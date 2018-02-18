@@ -12,13 +12,8 @@ const static double kToleranceDegrees = 2.0f;
 
 #define PI 3.141592
 #define ROTATE_FIX_SPEED 0.05
-//the pitch of the bump
-#define BUMP_PITCH_LIMIT 2
-//the delay before we begin reading for the bump
-#define BUMP_DELAY 2
 
-static double maxPitch = 0;
-
+static double lastPitch = 0;
 
 DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection) :
 	frc::Command("DistanceDrive"), frc::PIDOutput() {
@@ -77,18 +72,11 @@ double DistanceDrive::getMaxTicks() {
 
 //checks for the bump, returns true if we hit it
 bool DistanceDrive::checkForBump() {
-	/*
-	double acrossAccel = sqrt(
-				RobotMap::ahrs->GetWorldLinearAccelX() * RobotMap::ahrs->GetWorldLinearAccelX()
-						+ RobotMap::ahrs->GetWorldLinearAccelY() * RobotMap::ahrs->GetWorldLinearAccelY());
-	DriverStation::ReportError("vertical acceleration: " + std::to_string(RobotMap::ahrs->GetWorldLinearAccelZ()));
-	return m_timer->Get() >= 2 && RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7; //these values may need to be changed
-	*/
-	//DriverStation::ReportError("barometric pressure: " + std::to_string(RobotMap::ahrs->GetBarometricPressure()));
-	if (maxPitch < RobotMap::ahrs->GetPitch())
-		maxPitch = RobotMap::ahrs->GetPitch();
-	//DriverStation::ReportError("pitch: " + std::to_string(maxPitch));
-	return RobotMap::ahrs->GetPitch() >= BUMP_PITCH_LIMIT && m_timer->HasPeriodPassed(BUMP_DELAY);
+	double deltaPitch = fabs(RobotMap::ahrs->GetPitch() - lastPitch);
+	std::cout << "Delta Pitch: " << deltaPitch << std::endl;
+	lastPitch = RobotMap::ahrs->GetPitch();
+	DriverStation::ReportError("delta pitch: " + std::to_string(deltaPitch));
+	return deltaPitch >= BUMP_DELTA_PITCH_LIMIT && m_timer->HasPeriodPassed(BUMP_DELAY);
 }
 
 // Called repeatedly when this Command is scheduled to run
