@@ -19,6 +19,10 @@ const static double kToleranceDegrees = 2.0f;
 
 static double maxPitch = 0;
 
+/**
+ * This command uses the encoders to drive a certain distance at a set speed.
+ * This command will also stop when it detects a bump if the last parameter is true
+ */
 DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection) :
 		frc::Command("DistanceDrive"), frc::PIDOutput() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
@@ -74,7 +78,7 @@ double DistanceDrive::getMaxTicks() {
 	return m_ticks;
 }
 
-//checks for the bump, returns true if we hit it
+//checks for the bump, returns true if we hit it and we are passed the detection delay.
 bool DistanceDrive::checkForBump() {
 	/*
 	 double acrossAccel = sqrt(
@@ -91,6 +95,8 @@ bool DistanceDrive::checkForBump() {
 }
 
 // Called repeatedly when this Command is scheduled to run
+// Calling this function will set power to the motors, and cause the robot to turn back to the initial angle if the turn manager
+// says that we need to turn to correct the robot's heading.
 void DistanceDrive::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
 	//std::cout << "Encoder " << getPosition() << std::endl;

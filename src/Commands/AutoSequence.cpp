@@ -4,6 +4,15 @@
 #define invertIfRight(x) getStart() == SIDE_RIGHT ? -x : x
 #define invertIfLeft(x) getStart() == SIDE_LEFT ? -x : x
 
+/*
+ * Our autonomous works by getting the selected options from the COB, and getting the scale / switch possession data from FMS. After that,
+ * we check if do easy is selected. If so we use the FMS data to pick the easiest route. Otherwise we determine where the robot will go depending
+ * on FMS and the disabled options. After that we switch to just crossing the auto line if we are going to cross the field, and the driver
+ * disabled field crossing.
+ *
+ * Calling this constructor will add all of the commands to do autonomous based on FMS and data from the COB.
+ * Just be sure to run the FRC scheduler so that the commands are actually executed.
+ */
 AutoSequence::AutoSequence()
 		: frc::CommandGroup(), RobotImpl() {
 
@@ -82,7 +91,10 @@ void AutoSequence::TestBumpDetection() {
 	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE, SPEED, TIMEOUT, false, true));
 	WAIT
 }
-
+/**
+ * Called when we want to deposit a cube on the same side of the switch that we are starting on.
+ * This function is only to be used when we are starting on the outside.
+ */
 void AutoSequence::doSwitchNear() {
 	//Go forward to the switch, then turn toward the inside of the field, then move in, drop cube, move back,
 	//strafe toward the center, rotate and setup for teleop
@@ -108,6 +120,10 @@ void AutoSequence::doSwitchNear() {
 
 }
 
+/**
+ * Called when we want to deposit a cube on the opposite side of the switch than we are starting on.
+ * This function is only to be used when we are starting on the outside.
+ */
 void AutoSequence::doSwitchFar() {
 	AddSequential(new DistanceDrive(
 	DISTANCE_TO_SWITCH + (3 * FEET_TO_INCHES) - HALF_ROBOT_WIDTH,
@@ -118,6 +134,10 @@ void AutoSequence::doSwitchFar() {
 	WAIT
 }
 
+/**
+ * Called when we want to deposit a cube on the same side of the scale that we are starting on.
+ * This function is only to be used when we are starting on the outside.
+ */
 void AutoSequence::doScaleNear() {
 	//drive to bump
 	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE - HALF_ROBOT_LENGTH, FAST_SPEED,
@@ -139,6 +159,10 @@ void AutoSequence::doScaleNear() {
 	AddSequential(new DistanceDrive(invertIfRight(6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 }
 
+/**
+ * Called when we want to deposit a cube on the opposite side of the scale than we are starting on.
+ * This function is only to be used when we are starting on the outside.
+ */
 void AutoSequence::doScaleFar() {
 	AddSequential(new DistanceDrive(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH,
 	FAST_SPEED, TIMEOUT));

@@ -36,6 +36,8 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
+	//Create auto sequence here so that we have access to game time only information.
+	//Otherwise we would be trying to read FMS at robot init which happens before game time.
 	autonomousCommand.reset(new AutoSequence());
 	if (autonomousCommand)
 		autonomousCommand->Start();
