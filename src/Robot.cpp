@@ -6,11 +6,11 @@ std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
 
+//Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
 	//SmartDashboard::PutData(driveTrain.get());
-
 
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
@@ -37,6 +37,8 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
+	//Create auto sequence here so that we have access to game time only information.
+	//Otherwise we would be trying to read FMS at robot init which happens before game time.
 	autonomousCommand.reset(new AutoSequence());
 	if (autonomousCommand)
 		autonomousCommand->Start();

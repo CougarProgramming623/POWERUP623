@@ -4,7 +4,7 @@ const static double kF = 0.0f;
 const static double kToleranceDegrees = 2.0;
 
 Turn::Turn(double setpoint, double timeout, double speed) :
-		frc::Command() {
+		frc::Command(), frc::PIDOutput() {
 	Requires(Robot::driveTrain.get());
 	m_angle = setpoint;
 	m_timeout = timeout;

@@ -13,10 +13,17 @@ const static double kToleranceDegrees = 2.0f;
 #define PI 3.141592
 #define ROTATE_FIX_SPEED 0.05
 
+
 static double lastPitch = 0;
 
+
+/**
+ * This command uses the encoders to drive a certain distance at a set speed.
+ * This command will also stop when it detects a bump if the last parameter is true
+ */
+
 DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection) :
-	frc::Command("DistanceDrive"), frc::PIDOutput() {
+		frc::Command("DistanceDrive"), frc::PIDOutput() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
@@ -70,7 +77,7 @@ double DistanceDrive::getMaxTicks() {
 	return m_ticks;
 }
 
-//checks for the bump, returns true if we hit it
+//checks for the bump, returns true if we hit it and we are passed the detection delay.
 bool DistanceDrive::checkForBump() {
 	double deltaPitch = fabs(RobotMap::ahrs->GetPitch() - lastPitch);
 	std::cout << "Delta Pitch: " << deltaPitch << std::endl;
@@ -80,6 +87,8 @@ bool DistanceDrive::checkForBump() {
 }
 
 // Called repeatedly when this Command is scheduled to run
+// Calling this function will set power to the motors, and cause the robot to turn back to the initial angle if the turn manager
+// says that we need to turn to correct the robot's heading.
 void DistanceDrive::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
 	//std::cout << "Encoder " << getPosition() << std::endl;
@@ -91,8 +100,7 @@ void DistanceDrive::Execute() {
 
 	double actualSpeed = coefficient * m_speed;
 	std::stringstream str;
-	str << "percent done % "
-			<< (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
+	str << "percent done % " << (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
 	//DriverStation::ReportError(str.str());
 	//actualSpeed *= sqrt(
 	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
@@ -114,7 +122,7 @@ bool DistanceDrive::IsFinished() {
 	}
 	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
 		DriverStation::ReportError("Distance Drove.");
-		std::cout << "Distance Driven " <<  std::endl;
+		std::cout << "Distance Driven " << std::endl;
 		return true;
 	}
 	return false;

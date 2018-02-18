@@ -141,7 +141,7 @@ void DriveWithJoystick::Execute() {
 	if (push > maxSpeed)
 		maxSpeed = push;
 	Robot::cob->PushVelocityMagnitude(push / maxSpeed);
-
+	SmartDashboard::PutNumber("Encoder", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0));
 }
 
 // Make this return true when this Command no longer needs to run execute()
