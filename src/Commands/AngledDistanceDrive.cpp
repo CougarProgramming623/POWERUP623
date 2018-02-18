@@ -19,7 +19,7 @@ AngledDistanceDrive::AngledDistanceDrive(double distance, double speed, int time
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
-	m_ticks = (int) (distance * TICKS_PER_INCH);
+	m_ticks = (int) (m_distance * TICKS_PER_INCH);
 	m_speed = speed;
 	m_timeout = timeout;
 	m_angle = angle;

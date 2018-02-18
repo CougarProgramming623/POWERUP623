@@ -18,7 +18,7 @@ void Turn::Initialize() {
 	rotateToAngleRate = 0.0;
 	try {
 		SetTimeout(10);
-		RobotMap::ahrs->ZeroYaw();
+		//RobotMap::ahrs->ZeroYaw();
 
 	} catch (std::exception& ex) {
 		std::string err_string = "Error instantiating navX-MXP:  ";

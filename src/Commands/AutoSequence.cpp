@@ -107,7 +107,7 @@ void AutoSequence::DoSwitchNear() {
 	if (Robot::cob->GetAutonomousEnableCrossing()) {
 		AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 		WAIT
-		AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
+		AddSequential(new Turn(invertIfRight(180), TIMEOUT, SPEED));
 		WAIT
 		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 	}
@@ -137,7 +137,7 @@ void AutoSequence::DoScaleNear() {
 	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE - HALF_ROBOT_LENGTH, FAST_SPEED, TIMEOUT, false, true));
 	WAIT
 	//strafe
-	AddSequential(new AngledDistanceDrive(10, SPEED, TIMEOUT, invertIfRight(90)));
+	AddSequential(new DistanceDrive(invertIfRight(10), SPEED, TIMEOUT, true, false));
 	//turn
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
 	WAIT
@@ -190,7 +190,7 @@ void AutoSequence::DropCube() {
 }
 
 void AutoSequence::DoCenter() {
-	double turnAngle = switchOnRight() ? 40 : 155;
+	double turnAngle = switchOnRight() ? 4 : 155;
 	DriverStation::ReportError("doing correct!");
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	if (true) {	//Use ticks
