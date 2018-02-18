@@ -1,20 +1,8 @@
 #include "AutoSequence.h"
 #include <iostream>
 
-//12 feet to the front plus half of its width for the center
-#define DISTANCE_TO_SWITCH (12.0 * FEET_TO_INCHES + (2.0 * FEET_TO_INCHES) / 3.0)
-#define DISTANCE_TO_SCALE (27.0 * FEET_TO_INCHES)
-#define HALF_ROBOT_WIDTH (ROBOT_WIDTH / 2.0)
-
-#define TURN_SPEED 1.0
-#define SPEED 0.45
-#define FAST_SPEED 0.6
-#define TIMEOUT 10
-
 #define invertIfRight(x) getStart() == SIDE_RIGHT ? -x : x
-
-#define WAIT_SEC(x) AddSequential(new WaitCommand(x));
-#define WAIT WAIT_SEC(0.35)
+#define invertIfLeft(x) getStart() == SIDE_LEFT ? -x : x
 
 AutoSequence::AutoSequence() :
 		frc::CommandGroup(), RobotImpl() {
@@ -35,7 +23,8 @@ AutoSequence::AutoSequence() :
 	if (isCenterStart()) {
 		double turnAngle = scaleOnRight() ? 55 : 135;
 		DriverStation::ReportError("doing correct!");
-		AddSequential(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, turnAngle));
+		//AddSequential(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, turnAngle));
+		AddSequential(new AngledDistanceDrive(20, 0.5, 10, 45));
 	} else {
 		if (Robot::cob->GetAutonomousInstructions() == OPTION_DO_EASY) {
 			if (switchOnOurSide() && scaleOnOurSide())
@@ -91,7 +80,7 @@ void AutoSequence::TestBumpDetection() {
 }
 
 void AutoSequence::doSwitchNear() {
-	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - HALF_ROBOT_WIDTH, SPEED,
+	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - HALF_ROBOT_LENGTH, SPEED,
 	TIMEOUT, false, false));
 	WAIT
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
@@ -122,15 +111,23 @@ void AutoSequence::doSwitchFar() {
 }
 
 void AutoSequence::doScaleNear() {
-	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE - HALF_ROBOT_WIDTH, FAST_SPEED,
-	TIMEOUT));
+	//drive to bump
+	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE - HALF_ROBOT_LENGTH, FAST_SPEED,
+	TIMEOUT, false, true));
 	WAIT
+	//strafe
+	AddSequential(new AngledDistanceDrive(10, SPEED, TIMEOUT, invertIfRight(90)));
+	//turn
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
 	WAIT
+	//drive forward
 	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	//dropping cube
 	DriverStation::ReportError("Dropping cube!");
 	WAIT_SEC(1.0)
+	//move back
 	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	//drive back
 	AddSequential(new DistanceDrive(invertIfRight(6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 }
 

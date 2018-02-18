@@ -9,12 +9,12 @@ std::shared_ptr<CougarOpticBoard> Robot::cob;
 void Robot::RobotInit() {
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
-	SmartDashboard::PutData(driveTrain.get());
+	//SmartDashboard::PutData(driveTrain.get());
 
 
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
-	frc::DriverStation::GetInstance().GetGameSpecificMessage();
+	//frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
 	Robot::cob->InitBoard();
 

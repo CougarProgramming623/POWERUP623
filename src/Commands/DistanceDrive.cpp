@@ -1,4 +1,5 @@
 #include "DistanceDrive.h"
+#include <iostream>
 
 #define ROOT_2 1.41421356237
 
@@ -11,11 +12,16 @@ const static double kToleranceDegrees = 2.0f;
 
 #define PI 3.141592
 #define ROTATE_FIX_SPEED 0.05
-#define BUMP_DETECTION_DELAY 4.0
+//the pitch of the bump
+#define BUMP_PITCH_LIMIT 2
+//the delay before we begin reading for the bump
+#define BUMP_DELAY 2
+
+static double maxPitch = 0;
 
 
 DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection) :
-		frc::Command() {
+	frc::Command("DistanceDrive"), frc::PIDOutput() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
@@ -46,7 +52,8 @@ void DistanceDrive::Initialize() {
 		DriverStation::ReportError(err_string.c_str());
 	}
 
-	m_timer = new Timer();
+	//m_timer = new Timer();
+	m_timer->Reset();
 	m_timer->Start();
 
 	turnController->SetInputRange(-180.0f, 180.0f);
@@ -70,10 +77,18 @@ double DistanceDrive::getMaxTicks() {
 
 //checks for the bump, returns true if we hit it
 bool DistanceDrive::checkForBump() {
+	/*
 	double acrossAccel = sqrt(
 				RobotMap::ahrs->GetWorldLinearAccelX() * RobotMap::ahrs->GetWorldLinearAccelX()
 						+ RobotMap::ahrs->GetWorldLinearAccelY() * RobotMap::ahrs->GetWorldLinearAccelY());
-	return RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7 && acrossAccel < 0.05; //these values may need to be changed
+	DriverStation::ReportError("vertical acceleration: " + std::to_string(RobotMap::ahrs->GetWorldLinearAccelZ()));
+	return m_timer->Get() >= 2 && RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7; //these values may need to be changed
+	*/
+	//DriverStation::ReportError("barometric pressure: " + std::to_string(RobotMap::ahrs->GetBarometricPressure()));
+	if (maxPitch < RobotMap::ahrs->GetPitch())
+		maxPitch = RobotMap::ahrs->GetPitch();
+	//DriverStation::ReportError("pitch: " + std::to_string(maxPitch));
+	return RobotMap::ahrs->GetPitch() >= BUMP_PITCH_LIMIT && m_timer->HasPeriodPassed(BUMP_DELAY);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -110,6 +125,8 @@ bool DistanceDrive::IsFinished() {
 		return true;
 	}
 	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
+		DriverStation::ReportError("Distance Drove.");
+		std::cout << "Distance Driven " <<  std::endl;
 		return true;
 	}
 	return false;
