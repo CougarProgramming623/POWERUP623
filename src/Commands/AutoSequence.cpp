@@ -4,14 +4,14 @@
 #define invertIfRight(x) getStart() == SIDE_RIGHT ? -x : x
 #define invertIfLeft(x) getStart() == SIDE_LEFT ? -x : x
 
-AutoSequence::AutoSequence() :
-		frc::CommandGroup(), RobotImpl() {
+AutoSequence::AutoSequence()
+		: frc::CommandGroup(), RobotImpl() {
 
 	//send to cob
 	Robot::cob->PushFMSAlliance(DriverStation::GetInstance().GetAlliance() == DriverStation::Alliance::kRed);
 	Robot::cob->PushFMSField(DriverStation::GetInstance().GetGameSpecificMessage());
 
-	if(Robot::cob->GetAutonomousNoAuto()) {
+	if (Robot::cob->GetAutonomousNoAuto()) {
 		DriverStation::ReportError("Testing bump detection... ");
 		TestBumpDetection(); //remove this before the match
 		return;
@@ -25,6 +25,12 @@ AutoSequence::AutoSequence() :
 		DriverStation::ReportError("doing correct!");
 		//AddSequential(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, turnAngle));
 		AddSequential(new AngledDistanceDrive(20, 0.5, 10, 45));
+		//Vision stuff
+		//Drop cube
+
+		//Go back but more sharply so that we arrive not at the wall, but in front of the cubes
+		AddSequential(new AngledDistanceDrive(20, 0.5, 10, 225 - 15));
+
 	} else {
 		if (Robot::cob->GetAutonomousInstructions() == OPTION_DO_EASY) {
 			if (switchOnOurSide() && scaleOnOurSide())
@@ -49,10 +55,9 @@ AutoSequence::AutoSequence() :
 			} else if (Robot::cob->GetAutonomousInstructions() == OPTION_DO_BASELINE) {
 				place = AutoPlace::BASELINE;
 			} else {
-				DriverStation::ReportError(
-						"BADBADBAD CASE DOESNT EXIST FOR AUTO OPTIONS CHECK WITH PROGRAMMING AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR AUTO OPTIONS CHECK WITH PROGRAMMING AutoSequence.cpp");
 			}
-			if (Robot::cob->GetAutonomousEnableCrossing() && (place == AutoPlace::SCALE_FAR || place == AutoPlace::SWITCH_FAR)) {
+			if (!Robot::cob->GetAutonomousEnableCrossing() && (place == AutoPlace::SCALE_FAR || place == AutoPlace::SWITCH_FAR)) {
 				place = AutoPlace::BASELINE;
 			}
 			if (place == AutoPlace::SWITCH_NEAR)
@@ -66,8 +71,7 @@ AutoSequence::AutoSequence() :
 			else if (place == AutoPlace::BASELINE) {
 				std::cout << "test spot 2" << std::endl;
 				doBaseline();
-			}
-			else
+			} else
 				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE AutoSequence.cpp");
 		}
 
@@ -80,6 +84,8 @@ void AutoSequence::TestBumpDetection() {
 }
 
 void AutoSequence::doSwitchNear() {
+	//Go forward to the switch, then turn toward the inside of the field, then move in, drop cube, move back,
+	//strafe toward the center, rotate and setup for teleop
 	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - HALF_ROBOT_LENGTH, SPEED,
 	TIMEOUT, false, false));
 	WAIT
@@ -92,18 +98,20 @@ void AutoSequence::doSwitchNear() {
 	WAIT
 	if (!Robot::cob->GetAutonomousEnableCrossing()) {
 		AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED,
-				TIMEOUT, true));
+		TIMEOUT, true));
 		WAIT
 		AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
 		WAIT
 		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), SPEED,
-				TIMEOUT, true));
+		TIMEOUT, true));
 	}
 
 }
 
 void AutoSequence::doSwitchFar() {
-	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + (3 * FEET_TO_INCHES) - HALF_ROBOT_WIDTH, FAST_SPEED,
+	AddSequential(new DistanceDrive(
+	DISTANCE_TO_SWITCH + (3 * FEET_TO_INCHES) - HALF_ROBOT_WIDTH,
+	FAST_SPEED,
 	TIMEOUT));
 	WAIT
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
@@ -132,9 +140,11 @@ void AutoSequence::doScaleNear() {
 }
 
 void AutoSequence::doScaleFar() {
-	AddSequential(new DistanceDrive(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH, FAST_SPEED, TIMEOUT));
+	AddSequential(new DistanceDrive(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH,
+	FAST_SPEED, TIMEOUT));
 	WAIT
-	AddSequential(new DistanceDrive(invertIfRight(14 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
+	AddSequential(new DistanceDrive(invertIfRight(14 * FEET_TO_INCHES), SPEED,
+	TIMEOUT, true));
 	WAIT
 	AddSequential(new DistanceDrive(0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 }

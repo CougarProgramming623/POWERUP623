@@ -11,7 +11,6 @@ void Robot::RobotInit() {
 	driveTrain.reset(new DriveTrain());
 	//SmartDashboard::PutData(driveTrain.get());
 
-
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
 	//frc::DriverStation::GetInstance().GetGameSpecificMessage();

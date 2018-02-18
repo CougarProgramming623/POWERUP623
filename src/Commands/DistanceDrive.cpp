@@ -19,9 +19,8 @@ const static double kToleranceDegrees = 2.0f;
 
 static double maxPitch = 0;
 
-
 DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection) :
-	frc::Command("DistanceDrive"), frc::PIDOutput() {
+		frc::Command("DistanceDrive"), frc::PIDOutput() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
@@ -78,12 +77,12 @@ double DistanceDrive::getMaxTicks() {
 //checks for the bump, returns true if we hit it
 bool DistanceDrive::checkForBump() {
 	/*
-	double acrossAccel = sqrt(
-				RobotMap::ahrs->GetWorldLinearAccelX() * RobotMap::ahrs->GetWorldLinearAccelX()
-						+ RobotMap::ahrs->GetWorldLinearAccelY() * RobotMap::ahrs->GetWorldLinearAccelY());
-	DriverStation::ReportError("vertical acceleration: " + std::to_string(RobotMap::ahrs->GetWorldLinearAccelZ()));
-	return m_timer->Get() >= 2 && RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7; //these values may need to be changed
-	*/
+	 double acrossAccel = sqrt(
+	 RobotMap::ahrs->GetWorldLinearAccelX() * RobotMap::ahrs->GetWorldLinearAccelX()
+	 + RobotMap::ahrs->GetWorldLinearAccelY() * RobotMap::ahrs->GetWorldLinearAccelY());
+	 DriverStation::ReportError("vertical acceleration: " + std::to_string(RobotMap::ahrs->GetWorldLinearAccelZ()));
+	 return m_timer->Get() >= 2 && RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7; //these values may need to be changed
+	 */
 	//DriverStation::ReportError("barometric pressure: " + std::to_string(RobotMap::ahrs->GetBarometricPressure()));
 	if (maxPitch < RobotMap::ahrs->GetPitch())
 		maxPitch = RobotMap::ahrs->GetPitch();
@@ -103,8 +102,7 @@ void DistanceDrive::Execute() {
 
 	double actualSpeed = coefficient * m_speed;
 	std::stringstream str;
-	str << "percent done % "
-			<< (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
+	str << "percent done % " << (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
 	//DriverStation::ReportError(str.str());
 	//actualSpeed *= sqrt(
 	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
@@ -126,7 +124,7 @@ bool DistanceDrive::IsFinished() {
 	}
 	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
 		DriverStation::ReportError("Distance Drove.");
-		std::cout << "Distance Driven " <<  std::endl;
+		std::cout << "Distance Driven " << std::endl;
 		return true;
 	}
 	return false;
