@@ -17,6 +17,7 @@ nt::NetworkTableEntry CougarOpticBoard::entryPositionY;
 nt::NetworkTableEntry CougarOpticBoard::entryVelocityDirection;
 nt::NetworkTableEntry CougarOpticBoard::entryVelocityMagnitude;
 nt::NetworkTableEntry CougarOpticBoard::entryArmHeight;
+nt::NetworkTableEntry CougarOpticBoard::entryArmRotation;
 nt::NetworkTableEntry CougarOpticBoard::entryArmCubeGrabbed;
 nt::NetworkTableEntry CougarOpticBoard::entryArmClimbStatus;
 nt::NetworkTableEntry CougarOpticBoard::entryAutonomousStartPos;
@@ -162,6 +163,17 @@ void CougarOpticBoard::PushVelocityMagnitude(double size) {
  */
 void CougarOpticBoard::PushArmHeight(double height) {
 	entryArmHeight.SetDouble(height);
+}
+
+void CougarOpticBoard::TriggerArmRotation(bool up) {
+	if (up) {
+		double rotation = entryArmRotation.GetValue().get()->GetDouble();
+		while(rotation > 0) {
+			entryArmRotation.SetDouble(--rotation);
+		}
+	} else {
+		entryArmRotation.SetDouble(135);
+	}
 }
 
 /**

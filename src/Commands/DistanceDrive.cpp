@@ -66,11 +66,16 @@ void DistanceDrive::Initialize() {
 	turnController->SetSetpoint(0.0f);
 	turnController->Enable();
 
-	initEncPosition = RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0);
+
+	initEncPosition = getPosition();
 }
 
 int DistanceDrive::getPosition() {
+#ifdef TEST_BOT
 	return RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0);
+#else
+	return RobotMap::driveTrainleftBack->GetSelectedSensorPosition(0);
+#endif
 }
 
 double DistanceDrive::getMaxTicks() {
@@ -80,9 +85,9 @@ double DistanceDrive::getMaxTicks() {
 //checks for the bump, returns true if we hit it and we are passed the detection delay.
 bool DistanceDrive::checkForBump() {
 	double deltaPitch = fabs(RobotMap::ahrs->GetPitch() - lastPitch);
-	std::cout << "Delta Pitch: " << deltaPitch << std::endl;
+	//std::cout << "Delta Pitch: " << deltaPitch << std::endl;
 	lastPitch = RobotMap::ahrs->GetPitch();
-	DriverStation::ReportError("delta pitch: " + std::to_string(deltaPitch));
+	//DriverStation::ReportError("delta pitch: " + std::to_string(deltaPitch));
 	return deltaPitch >= BUMP_DELTA_PITCH_LIMIT && m_timer->HasPeriodPassed(BUMP_DELAY);
 }
 
@@ -91,7 +96,7 @@ bool DistanceDrive::checkForBump() {
 // says that we need to turn to correct the robot's heading.
 void DistanceDrive::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
-	//std::cout << "Encoder " << getPosition() << std::endl;
+	std::cout << "Distance: " << getPosition() - initEncPosition << std::endl;
 
 	double coefficient = 1.0;
 
@@ -99,26 +104,29 @@ void DistanceDrive::Execute() {
 		coefficient *= -1.0;
 
 	double actualSpeed = coefficient * m_speed;
-	std::stringstream str;
-	str << "percent done % " << (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
+	//std::stringstream str;
+	//str << "percent done % " << (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
 	//DriverStation::ReportError(str.str());
 	//actualSpeed *= sqrt(
 	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
 	if (m_strafe) {
 		Robot::driveTrain->MecanumDrive(actualSpeed, 0, rotateToAngleRate, 0);
+		std::cout << "Velocity" << RobotMap::ahrs->GetVelocityX();
 	} else {
 		Robot::driveTrain->MecanumDrive(0, actualSpeed, rotateToAngleRate, 0);
+		std::cout << "Velocity" << RobotMap::ahrs->GetVelocityY();
 	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool DistanceDrive::IsFinished() {
+	DriverStation::ReportError(std::to_string(getPosition() - initEncPosition));
 	if (m_doBumpDetection && checkForBump()) {
 		DriverStation::ReportError("Detected bump. Stopping DDC.");
 		return true;
 	}
 	if (m_timer && m_timer->Get() > m_timeout) {
-		return true;
+		return false;
 	}
 	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
 		DriverStation::ReportError("Distance Drove.");

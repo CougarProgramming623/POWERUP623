@@ -45,8 +45,6 @@ void DriveWithJoystick::Initialize() {
 		// Alternatively:  I2C::Port::kMXP, SerialPort::Port::kMXP or SerialPort::Port::kUSB
 		// See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details.
 
-		//RobotMap::ahrs->ZeroYaw();
-
 	} catch (std::exception& ex) {
 		std::string err_string = "Error instantiating navX-MXP:  ";
 		err_string += ex.what();
@@ -70,10 +68,6 @@ double maxAcel = 0.0;
 // Called repeatedly when this Command is scheduled to run
 void DriveWithJoystick::Execute() {
 
-	//pitch testing
-	DriverStation::ReportError("pitch: " + std::to_string(RobotMap::ahrs->GetPitch()));
-
-
 	XAxis = Robot::oi->getdriverJoystick()->GetRawAxis(0);
 	YAxis = -Robot::oi->getdriverJoystick()->GetRawAxis(1);
 	RotAxis = Robot::oi->getdriverJoystick()->GetRawAxis(2);
@@ -86,37 +80,14 @@ void DriveWithJoystick::Execute() {
 	if (maxAcel < acrossAccel)
 		maxAcel = acrossAccel;
 
-	if (RobotMap::ahrs->GetWorldLinearAccelZ() > 0.7 && acrossAccel < 0.15) //seems to work, especially if we are going slow
-		DriverStation::ReportError("Bump!");
-	std::stringstream str;
-	str << "max across " << maxAcel;
-	//DriverStation::ReportError(str.str());
-	str.clear();
-	str << "max up and down acel " << maxZAcel;
-	//DriverStation::ReportError(str.str());
-	/*
-	 if(XAxis > 0.20 && XAxis < -0.20) {
-	 XAxis = 0;
-	 }
 
-	 if(YAxis > 0.20 && YAxis < -0.20) {
-	 YAxis = 0;
-	 }
-
-	 if(RotAxis > 0.20 && RotAxis < -0.20) {
-	 RotAxis = 0;
-	 }
-
-
-
-	 if (RobotMap::ahrs->GetYaw() < 0) {
-	 Robot::driveTrain->MecanumDrive(-XAxis, YAxis, RotAxis, RobotMap::ahrs->GetYaw());
-	 } else {
-	 Robot::driveTrain->MecanumDrive(XAxis, -YAxis, RotAxis, RobotMap::ahrs->GetYaw());
-	 } */
 	double push = sqrt(XAxis * XAxis + YAxis * YAxis);
 	//Test Code:1/24
-	if (abs(RotAxis) < 0.00100f && push > 0.1f) {
+	std::stringstream str;
+	str << "Rot axis " << abs(RotAxis) << " push " << push;
+	DriverStation::ReportError(str.str());
+
+	if (abs(RotAxis) < 0.0001f && push > 0.1f) {
 		turnController->Enable();
 		Robot::driveTrain->MecanumDrive(XAxis, YAxis, rotateToAngleRate, -RobotMap::ahrs->GetYaw());
 		//DriverStation::ReportError("not turning");

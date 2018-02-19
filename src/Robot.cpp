@@ -17,6 +17,7 @@ void Robot::RobotInit() {
 	//frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
 	Robot::cob->InitBoard();
+	RobotMap::ahrs->ZeroYaw();
 
 	//autonomousCommand.reset(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, 55.0));
 

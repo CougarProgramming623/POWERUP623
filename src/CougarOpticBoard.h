@@ -31,6 +31,7 @@ public:
 	static void PushVelocityDirection(double angle);
 	static void PushVelocityMagnitude(double size);
 	static void PushArmHeight(double height);
+	static void TriggerArmRotation(bool up);
 	static void PushArmCubeGrabbed(bool cubeGrabbed); //maybe
 	static void PushArmClimbStatus(double climbStatus); //maybe
 	static void PushFMSTime(double time);
@@ -51,6 +52,7 @@ public:
 	static nt::NetworkTableEntry entryVelocityDirection;
 	static nt::NetworkTableEntry entryVelocityMagnitude;
 	static nt::NetworkTableEntry entryArmHeight;
+	static nt::NetworkTableEntry entryArmRotation;
 	static nt::NetworkTableEntry entryArmCubeGrabbed; //maybe
 	static nt::NetworkTableEntry entryArmClimbStatus; //maybe
 	static nt::NetworkTableEntry entryAutonomousStartPos;

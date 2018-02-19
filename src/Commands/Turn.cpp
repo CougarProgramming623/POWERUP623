@@ -1,7 +1,7 @@
 #include "Turn.h"
 
 const static double kF = 0.0f;
-const static double kToleranceDegrees = 2.0;
+const static double kToleranceDegrees = 1.0;
 
 Turn::Turn(double setpoint, double timeout, double speed) :
 		frc::Command(), frc::PIDOutput() {

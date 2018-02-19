@@ -33,6 +33,8 @@ private:
 	void DoScaleFar();
 	void DoBaseline();
 	void TestBumpDetection();
+	void TestTickCount();
+	void TestPIDTurn();
 	void DropCube();
 };
 

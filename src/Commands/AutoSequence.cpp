@@ -14,16 +14,16 @@
  * Calling this constructor will add all of the commands to do autonomous based on FMS and data from the COB.
  * Just be sure to run the FRC scheduler so that the commands are actually executed.
  */
-AutoSequence::AutoSequence()
-		: frc::CommandGroup(), RobotImpl() {
+AutoSequence::AutoSequence() :
+		frc::CommandGroup(), RobotImpl() {
 
 	//send to cob
 	Robot::cob->PushFMSAlliance(DriverStation::GetInstance().GetAlliance() == DriverStation::Alliance::kRed);
 	Robot::cob->PushFMSField(DriverStation::GetInstance().GetGameSpecificMessage());
 
 	if (Robot::cob->GetAutonomousNoAuto()) {
-		DriverStation::ReportError("Testing bump detection... ");
-		TestBumpDetection(); //remove this before the match
+		DriverStation::ReportError("Testing tick count... ");
+		TestPIDTurn(); //remove this before the match
 		return;
 	}
 	RobotMap::ahrs->ZeroYaw();		//reset gyro degrees
@@ -61,7 +61,8 @@ AutoSequence::AutoSequence()
 				place = AutoPlace::BASELINE;
 			} else {
 				place = AutoPlace::BASELINE;
-				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING line 74 AutoSequence.cpp");
+				DriverStation::ReportError(
+						"BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING line 74 AutoSequence.cpp");
 			}
 			if (!Robot::cob->GetAutonomousEnableCrossing() && (place == AutoPlace::SCALE_FAR || place == AutoPlace::SWITCH_FAR)) {
 				place = AutoPlace::BASELINE;
@@ -89,6 +90,15 @@ void AutoSequence::TestBumpDetection() {
 	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE * 2, SPEED, TIMEOUT, false, true));
 	WAIT
 }
+
+void AutoSequence::TestTickCount() {
+	AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));
+}
+
+void AutoSequence::TestPIDTurn() {
+	AddSequential(new Turn(90, TIMEOUT, SPEED));
+}
+
 /**
  * Called when we want to deposit a cube on the same side of the switch that we are starting on.
  * This function is only to be used when we are starting on the outside.
@@ -96,9 +106,9 @@ void AutoSequence::TestBumpDetection() {
 void AutoSequence::DoSwitchNear() {
 	//Go forward to the switch, then turn toward the inside of the field, then move in, drop cube, move back,
 	//strafe toward the center, rotate and setup for teleop
-	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - HALF_ROBOT_LENGTH, SPEED, TIMEOUT, false, false));
+	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + WIDTH_OF_SWITCH / 2 - ROBOT_LENGTH / 2, SPEED, TIMEOUT, false, false));
 	WAIT
-	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
+	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SLOW_SPEED));
 	WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
@@ -107,7 +117,7 @@ void AutoSequence::DoSwitchNear() {
 	if (Robot::cob->GetAutonomousEnableCrossing()) {
 		AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 		WAIT
-		AddSequential(new Turn(invertIfRight(180), TIMEOUT, SPEED));
+		AddSequential(new Turn(invertIfRight(180), TIMEOUT, SLOW_SPEED));
 		WAIT
 		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 	}
@@ -134,21 +144,36 @@ void AutoSequence::DoSwitchFar() {
  */
 void AutoSequence::DoScaleNear() {
 	//drive to bump
-	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE - HALF_ROBOT_LENGTH, FAST_SPEED, TIMEOUT, false, true));
+	AddSequential(new DistanceDrive(22 * FEET_TO_INCHES, 1.0, TIMEOUT, false));
+	//Can we raise here? Or after we detect the bump on the next line
+	AddSequential(new DistanceDrive(20 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, true));
 	WAIT
 	//strafe
-	AddSequential(new DistanceDrive(invertIfRight(10), SPEED, TIMEOUT, true, false));
+	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
 	//turn
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
 	WAIT
 	//drive forward
-	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
 	//dropping cube
 	DropCube();
 	//move back
-	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
+	WAIT
+	//turn
+	AddSequential(new Turn(invertIfRight(180), TIMEOUT, SPEED));
+	WAIT
 	//drive back
-	AddSequential(new DistanceDrive(invertIfRight(6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
+	AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false));
+	WAIT
+	if (Robot::cob->GetAutonomousEnableCrossing()) {
+		//AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, false));
+		//WAIT
+		//AddSequential(new Turn(invertIfRight(180), TIMEOUT, SPEED));
+		//WAIT
+		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), FAST_SPEED, TIMEOUT, true));
+	}
+
 }
 
 /**
@@ -172,12 +197,12 @@ void AutoSequence::DoBaseline() {
 	if (isCenterStart()) {
 		AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, SPEED, TIMEOUT, true));	//Go right 2 feet
 		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));	//drive forward to break the auto line
-		AddSequential(new DistanceDrive(-6 * FEET_TO_INCHES, SPEED, TIMEOUT));	//drive back towards the start but stop 4 feet out from the wall
+		AddSequential(new DistanceDrive(-6 * FEET_TO_INCHES, SPEED, TIMEOUT));//drive back towards the start but stop 4 feet out from the wall
 		AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, SPEED, TIMEOUT, true));	//Go right 2 feet
 		//We should be in front of the cubes
 	} else {	//If we are on the outside
 		//Just drive across since there are no blocks to pervent our passage
-		AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, SPEED, TIMEOUT));
+		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	}
 }
 
@@ -190,19 +215,25 @@ void AutoSequence::DropCube() {
 }
 
 void AutoSequence::DoCenter() {
-	double turnAngle = switchOnRight() ? 4 : 155;
+	double angleFromCenter = 40;
+	double turnAngle = switchOnRight() ? 90 - (angleFromCenter + 20) : 90 + angleFromCenter;
 	DriverStation::ReportError("doing correct!");
-	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
+	WAIT_SEC(Robot::cob->GetAutonomousInstructions());//In this case, because we are in the center, the auto instructions contain the timeout
+	AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
-		AddSequential(new AngledDistanceDrive(14 * FEET_TO_INCHES, 0.5, 10, turnAngle));
-
+		WAIT
 	} else {		//Use vision
-		AddSequential(new AngledDistanceDrive(10, 0.5, 10, turnAngle));
-		//AddSequential(new VisionDrive(SPEED, TIMEOUT, 100, 98));
+		AddSequential(new VisionDrive(SPEED, TIMEOUT, 100, turnAngle));
 		//Vision stuff
-
+		WAIT
 	}
 	DropCube();
 	//Go back but more sharply so that we arrive not at the wall, but in front of the cubes
-	AddSequential(new AngledDistanceDrive(20, 0.5, 10, 225 - 15));
+	AddSequential(new DistanceDrive(-4 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	WAIT
+	if(switchOnRight()) {
+		AddSequential(new DistanceDrive(-4.5 * FEET_TO_INCHES, SPEED, TIMEOUT, true, false));
+	} else {
+		AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, SPEED, TIMEOUT, true, false));
+	}
 }

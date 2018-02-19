@@ -1,8 +1,9 @@
 #pragma once
 
 #define BUMP_DELTA_PITCH_LIMIT 0.5
-#define BUMP_DELAY 1.0
+#define BUMP_DELAY 0.5
 
+//#define TEST_ROBOT
 
 #define SIDE_LEFT   0
 #define SIDE_CENTER 1
@@ -11,7 +12,12 @@
 #define WHEEL_DIAMETER 8;
 #define ENCODER_DIAMETER 2.5
 #define TICKS_PER_REVOLUTION 600
+
+#ifdef TEST_BOT
 #define TICKS_PER_INCH 63/2
+#else //real bot
+#define TICKS_PER_INCH 21.08
+#endif
 
 #define ROBOT_WIDTH 34.0// inches
 #define ROBOT_LENGTH 39.0// inches
@@ -31,12 +37,14 @@
 #define TURN_SPEED 1.0
 #define SPEED 0.45
 #define FAST_SPEED 0.6
+#define SLOW_SPEED 0.2
 #define TIMEOUT 10
 
 #define WAIT_SEC(x) AddSequential(new WaitCommand(x));
 #define WAIT WAIT_SEC(0.35)
 
 #define LENGTH_OF_SWITCH 12 * FEET_TO_IN
+#define WIDTH_OF_SWITCH 56
 
 
 #define normalize(min, max, value) (value - min) / (max - min)
