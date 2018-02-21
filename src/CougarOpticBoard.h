@@ -10,6 +10,7 @@
 
 #include "networktables/NetworkTableEntry.h"
 #include "networktables/NetworkTable.h"
+#include "DriverStation.h"
 
 #define OPTION_DO_EASY 0
 #define OPTION_DO_SWITCH 1
@@ -37,11 +38,17 @@ public:
 	static void PushFMSTime(double time);
 	static void PushFMSField(std::string data);
 	static void PushFMSAlliance(bool isRed);
+	static void PushTeleop(bool isTeleop);
+	static void PushAutonomous(bool isAutonomous);
+	static void PushEnabled(bool isEnabled);
 	//getters
 	static int GetAutonomousStartPos();
 	static bool GetAutonomousNoAuto();
 	static int GetAutonomousInstructions();
 	static bool GetAutonomousEnableCrossing();
+	static bool IsEndGame();
+
+
 	//insert others
 
 	//static constants-- use these
@@ -62,6 +69,10 @@ public:
 	static nt::NetworkTableEntry entryFMSTime;
 	static nt::NetworkTableEntry entryFMSField;
 	static nt::NetworkTableEntry entryFMSAlliance;
+	static nt::NetworkTableEntry entryIsAutonomous;
+	static nt::NetworkTableEntry entryIsTeleop;
+	static nt::NetworkTableEntry entryIsEnabled;
+
 };
 
 #endif /* SRC_COMMANDS_COUGAROPTICBOARD_H_ */

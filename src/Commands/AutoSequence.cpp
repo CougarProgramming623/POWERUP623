@@ -26,7 +26,6 @@ AutoSequence::AutoSequence() :
 		TestPIDTurn(); //remove this before the match
 		return;
 	}
-	RobotMap::ahrs->ZeroYaw();		//reset gyro degrees
 	std::cout << "instructions " << Robot::cob->GetAutonomousInstructions() << std::endl;
 	std::cout << "no cross map " << Robot::cob->GetAutonomousEnableCrossing() << std::endl;
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
@@ -87,16 +86,16 @@ AutoSequence::AutoSequence() :
 }
 
 void AutoSequence::TestBumpDetection() {
-	AddSequential(new DistanceDrive(DISTANCE_TO_SCALE * 2, SPEED, TIMEOUT, false, true));
+	AddSequential(new DistanceDrive(20, FAST_SPEED, TIMEOUT, false, true));
 	WAIT
 }
 
 void AutoSequence::TestTickCount() {
-	AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));
+	//AddSequential(new DistanceDrive(100000000000000000000000000000000.0 * FEET_TO_INCHES, 0.5, TIMEOUT));
 }
 
 void AutoSequence::TestPIDTurn() {
-	AddSequential(new Turn(90, TIMEOUT, SPEED));
+	AddSequential(new Turn(90, TIMEOUT));
 }
 
 /**
@@ -108,7 +107,7 @@ void AutoSequence::DoSwitchNear() {
 	//strafe toward the center, rotate and setup for teleop
 	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + WIDTH_OF_SWITCH / 2 - ROBOT_LENGTH / 2, SPEED, TIMEOUT, false, false));
 	WAIT
-	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SLOW_SPEED));
+	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
 	WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
@@ -117,7 +116,7 @@ void AutoSequence::DoSwitchNear() {
 	if (Robot::cob->GetAutonomousEnableCrossing()) {
 		AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 		WAIT
-		AddSequential(new Turn(invertIfRight(180), TIMEOUT, SLOW_SPEED));
+		AddSequential(new Turn(invertIfRight(180), TIMEOUT));
 		WAIT
 		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 	}
@@ -133,7 +132,7 @@ void AutoSequence::DoSwitchFar() {
 	WAIT
 	AddSequential(new DistanceDrive(invertIfRight(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH), FAST_SPEED, TIMEOUT, true));
 	WAIT
-	AddSequential(new Turn(180, TIMEOUT, SPEED));
+	AddSequential(new Turn(180, TIMEOUT));
 	WAIT
 	DropCube();
 }
@@ -144,14 +143,14 @@ void AutoSequence::DoSwitchFar() {
  */
 void AutoSequence::DoScaleNear() {
 	//drive to bump
-	AddSequential(new DistanceDrive(22 * FEET_TO_INCHES, 1.0, TIMEOUT, false));
+	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false));
 	//Can we raise here? Or after we detect the bump on the next line
 	AddSequential(new DistanceDrive(20 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, true));
 	WAIT
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
 	//turn
-	AddSequential(new Turn(invertIfRight(90), TIMEOUT, SPEED));
+	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
 	WAIT
 	//drive forward
 	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
@@ -161,7 +160,7 @@ void AutoSequence::DoScaleNear() {
 	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
 	WAIT
 	//turn
-	AddSequential(new Turn(invertIfRight(180), TIMEOUT, SPEED));
+	AddSequential(new Turn(invertIfRight(180), TIMEOUT));
 	WAIT
 	//drive back
 	AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false));

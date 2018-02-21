@@ -10,7 +10,7 @@
 
 class Turn : public frc::Command, public frc::PIDOutput {
 public:
-	Turn(double, double, double);
+	Turn(double, double);
 	void Initialize();
 	void Execute();
 	bool IsFinished();

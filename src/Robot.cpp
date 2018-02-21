@@ -1,6 +1,7 @@
 #include "Robot.h"
 #include "RobotConstants.h"
 #include "Commands/AngledDistanceDrive.h"
+#include "DriverStation.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::unique_ptr<OI> Robot::oi;
@@ -8,6 +9,9 @@ std::shared_ptr<CougarOpticBoard> Robot::cob;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
+	std::stringstream str;
+	str << "sizeof double " << sizeof(double);
+	DriverStation::ReportError(str.str());
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
 	//SmartDashboard::PutData(driveTrain.get());
@@ -27,7 +31,9 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
-
+	Robot::cob->PushEnabled(DriverStation::GetInstance().IsEnabled());
+	Robot::cob->PushAutonomous(DriverStation::GetInstance().IsAutonomous());
+	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl());
 }
 
 void Robot::DisabledInit() {

@@ -27,7 +27,7 @@ DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool st
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
-	m_ticks = (int) (distance * TICKS_PER_INCH);
+	m_ticks = (int)(distance * (strafe ? TICKS_PER_INCH_STRAFE : TICKS_PER_INCH));
 	m_speed = speed;
 	m_timeout = timeout;
 	m_strafe = strafe;
@@ -40,20 +40,8 @@ DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool st
 
 // Called just before this Command runs the first time
 void DistanceDrive::Initialize() {
-	try {
-		SetTimeout(m_timeout); //timeout for 10ms
 
-		/* Communicate w/navX-MXP via the MXP SPI Bus.                                       */
-		/* Alternatively:  I2C::Port::kMXP, SerialPort::Port::kMXP or SerialPort::Port::kUSB */
-		/* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details.   */
-
-		//RobotMap::ahrs->ZeroYaw();
-	} catch (std::exception& ex) {
-		std::string err_string = "Error instantiating navX-MXP:  ";
-		err_string += ex.what();
-		DriverStation::ReportError(err_string.c_str());
-	}
-
+	SetTimeout(m_timeout); //timeout for 10ms
 	//m_timer = new Timer();
 	m_timer->Reset();
 	m_timer->Start();
@@ -95,8 +83,8 @@ bool DistanceDrive::checkForBump() {
 // Calling this function will set power to the motors, and cause the robot to turn back to the initial angle if the turn manager
 // says that we need to turn to correct the robot's heading.
 void DistanceDrive::Execute() {
-	double angle = RobotMap::ahrs->GetYaw();
 	std::cout << "Distance: " << getPosition() - initEncPosition << std::endl;
+	SmartDashboard::PutNumber("Encoder Ticks: ", getPosition() - initEncPosition);
 
 	double coefficient = 1.0;
 
@@ -109,12 +97,11 @@ void DistanceDrive::Execute() {
 	//DriverStation::ReportError(str.str());
 	//actualSpeed *= sqrt(
 	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
-	if (m_strafe) {
-		Robot::driveTrain->MecanumDrive(actualSpeed, 0, rotateToAngleRate, 0);
-		std::cout << "Velocity" << RobotMap::ahrs->GetVelocityX();
+	if (m_strafe)
+	{
+		Robot::driveTrain->MecanumDrive(actualSpeed, 0, 0, 0);
 	} else {
-		Robot::driveTrain->MecanumDrive(0, actualSpeed, rotateToAngleRate, 0);
-		std::cout << "Velocity" << RobotMap::ahrs->GetVelocityY();
+		Robot::driveTrain->MecanumDrive(0, actualSpeed, 0, 0);
 	}
 }
 

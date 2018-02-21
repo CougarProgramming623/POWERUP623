@@ -27,7 +27,9 @@ nt::NetworkTableEntry CougarOpticBoard::entryAutonomousEnableCrossing;
 nt::NetworkTableEntry CougarOpticBoard::entryFMSAlliance;
 nt::NetworkTableEntry CougarOpticBoard::entryFMSTime;
 nt::NetworkTableEntry CougarOpticBoard::entryFMSField;
-
+nt::NetworkTableEntry CougarOpticBoard::entryIsAutonomous;
+nt::NetworkTableEntry CougarOpticBoard::entryIsTeleop;
+nt::NetworkTableEntry CougarOpticBoard::entryIsEnabled;
 
 
 /**
@@ -57,6 +59,9 @@ CougarOpticBoard::CougarOpticBoard() {
 	CougarOpticBoard::entryFMSTime = table->GetEntry("fms/time");
 	CougarOpticBoard::entryFMSAlliance = table->GetEntry("fms/alliance");
 	CougarOpticBoard::entryFMSField = table->GetEntry("fms/field");
+	CougarOpticBoard::entryIsAutonomous = table->GetEntry("gamedata/is-autonomous");
+	CougarOpticBoard::entryIsTeleop = table->GetEntry("gamedata/is-teleop");
+	CougarOpticBoard::entryIsEnabled = table->GetEntry("gamedata/is-enabled");
 }
 
 void CougarOpticBoard::InitBoard() {
@@ -77,6 +82,9 @@ void CougarOpticBoard::InitBoard() {
 	CougarOpticBoard::entryFMSTime = table->GetEntry("fms/time");
 	CougarOpticBoard::entryFMSAlliance = table->GetEntry("fms/alliance");
 	CougarOpticBoard::entryFMSField = table->GetEntry("fms/field");
+	CougarOpticBoard::entryIsAutonomous = table->GetEntry("gamedata/is-autonomous");
+	CougarOpticBoard::entryIsTeleop = table->GetEntry("gamedata/is-teleop");
+	CougarOpticBoard::entryIsEnabled = table->GetEntry("gamedata/is-enabled");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~ SET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -168,7 +176,7 @@ void CougarOpticBoard::PushArmHeight(double height) {
 void CougarOpticBoard::TriggerArmRotation(bool up) {
 	if (up) {
 		double rotation = entryArmRotation.GetValue().get()->GetDouble();
-		while(rotation > 0) {
+		while (rotation > 0) {
 			entryArmRotation.SetDouble(--rotation);
 		}
 	} else {
@@ -257,7 +265,7 @@ bool CougarOpticBoard::GetAutonomousNoAuto() {
  */
 int CougarOpticBoard::GetAutonomousInstructions() {
 	if (entryAutonomousInstructions.Exists())
-		return (int)(entryAutonomousInstructions.GetValue().get()->GetDouble());
+		return (int) (entryAutonomousInstructions.GetValue().get()->GetDouble());
 	return -1;
 }
 
@@ -278,4 +286,16 @@ void CougarOpticBoard::PushFMSTime(double time) {
 
 void CougarOpticBoard::PushFMSField(std::string data) {
 	entryFMSField.SetString(data);
+}
+
+void CougarOpticBoard::PushAutonomous(bool isAutonomous) {
+	entryIsAutonomous.SetBoolean(isAutonomous);
+}
+
+void CougarOpticBoard::PushTeleop(bool isTeleop) {
+	entryIsTeleop.SetBoolean(isTeleop);
+}
+
+void CougarOpticBoard::PushEnabled(bool isEnabled) {
+	entryIsEnabled.SetBoolean(isEnabled);
 }

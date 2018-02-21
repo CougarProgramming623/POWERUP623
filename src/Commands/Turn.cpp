@@ -3,12 +3,11 @@
 const static double kF = 0.0f;
 const static double kToleranceDegrees = 1.0;
 
-Turn::Turn(double setpoint, double timeout, double speed) :
+Turn::Turn(double setpoint, double timeout) :
 		frc::Command(), frc::PIDOutput() {
 	Requires(Robot::driveTrain.get());
 	m_angle = setpoint;
 	m_timeout = timeout;
-	m_speed = speed;
 	m_timer = new Timer();
 	rotateToAngleRate = 0.0;
 	turnController = new PIDController(RobotMap::turnP, RobotMap::turnI, RobotMap::turnD, kF, RobotMap::ahrs, this);
@@ -16,16 +15,6 @@ Turn::Turn(double setpoint, double timeout, double speed) :
 
 void Turn::Initialize() {
 	rotateToAngleRate = 0.0;
-	try {
-		SetTimeout(10);
-		//RobotMap::ahrs->ZeroYaw();
-
-	} catch (std::exception& ex) {
-		std::string err_string = "Error instantiating navX-MXP:  ";
-		err_string += ex.what();
-		DriverStation::ReportError(err_string.c_str());
-	}
-
 	turnController->SetInputRange(-180.0f, 180.0f);
 	turnController->SetOutputRange(-1.0, 1.0);
 	turnController->SetAbsoluteTolerance(kToleranceDegrees);
@@ -38,7 +27,7 @@ void Turn::Initialize() {
 
 void Turn::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
-	Robot::driveTrain->MecanumDrive(0, 0, rotateToAngleRate * m_speed, RobotMap::ahrs->GetYaw());
+	Robot::driveTrain->MecanumDrive(0, 0, rotateToAngleRate, RobotMap::ahrs->GetYaw());
 
 	frc::SmartDashboard::PutNumber("Current Angle", angle);
 	frc::SmartDashboard::PutNumber("Current Rotation Rate", rotateToAngleRate);
@@ -49,11 +38,7 @@ void Turn::Execute() {
 }
 
 bool Turn::IsFinished() {
-	if (turnController->OnTarget()) {
-		return true;
-	} else {
-		return m_timer->Get() > m_timeout;
-	}
+	return false;
 }
 
 void Turn::End() {
