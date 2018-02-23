@@ -68,7 +68,7 @@ void DriveWithJoystick::Execute() {
 		//DriverStation::ReportError("not turning");
 	} else {*/
 		turnController->Disable();
-		Robot::driveTrain->MecanumDrive(XAxis, YAxis, RotAxis, -RobotMap::ahrs->GetYaw());
+		Robot::driveTrain->MecanumDrive(XAxis, 0, RotAxis, -RobotMap::ahrs->GetYaw());
 		//turnController->SetSetpoint(RobotMap::ahrs->GetYaw());
 		//DriverStation::ReportError("turning");
 	//}
@@ -83,6 +83,7 @@ void DriveWithJoystick::Execute() {
 		maxSpeed = push;
 	Robot::cob->PushVelocityMagnitude(push / maxSpeed);
 	SmartDashboard::PutNumber("Encoder", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0));
+	RobotMap::shaftController->Set(YAxis);
 }
 
 // Make this return true when this Command no longer needs to run execute()

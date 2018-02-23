@@ -3,7 +3,7 @@
 #define BUMP_DELTA_PITCH_LIMIT 0.5
 #define BUMP_DELAY 0.5
 
-//#define TEST_ROBOT
+#define TEST_ROBOT
 
 #define SIDE_LEFT   0
 #define SIDE_CENTER 1
@@ -38,7 +38,6 @@
 #define DISTANCE_TO_SWITCH 12.0 * FEET_TO_INCHES + (2.0 * FEET_TO_INCHES)
 #define DISTANCE_TO_SCALE (27.0 * FEET_TO_INCHES)
 #define HALF_ROBOT_WIDTH (ROBOT_WIDTH / 2.0)
-#define HALF_ROBOT_LENGTH (ROBOT_LENGTH / 2.0)
 
 #define TURN_SPEED 1.0
 #define SPEED 0.45
@@ -52,6 +51,8 @@
 #define LENGTH_OF_SWITCH 12 * FEET_TO_IN
 #define WIDTH_OF_SWITCH 56
 
+#define ELEVATOR_TOP 0
+#define ELEVATOR_DELTA 0
 
 #define normalize(min, max, value) (value - min) / (max - min)
 
