@@ -36,10 +36,10 @@ void Robot::RobotPeriodic() {
 	Robot::cob->PushEnabled(DriverStation::GetInstance().IsEnabled());
 	Robot::cob->PushAutonomous(DriverStation::GetInstance().IsAutonomous());
 	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
-	std::stringstream str;
-	str << " Elevator Position " << Robot::elevator->GetPosition();
-	str << " Potientiometer " << RobotMap::pot->Get();
-	DriverStation::ReportError(str.str());
+	//std::stringstream str;
+	//str << " Elevator Position " << Robot::elevator->GetPosition();
+	//str << " Potientiometer " << RobotMap::pot->Get();
+	//DriverStation::ReportError(str.str());
 }
 
 void Robot::DisabledInit() {

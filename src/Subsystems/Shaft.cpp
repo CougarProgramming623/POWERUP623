@@ -12,19 +12,18 @@
 #include "../Robot.h"
 #include "../RobotMap.h"
 
-Shaft::Shaft() : PIDSubsystem("Shaft", 1.0, 0.0, 0.0) {
+Shaft::Shaft() : PIDSubsystem("Shaft", 9.0, 0.0, 0.0) {
 	shaftDrive = RobotMap::shaftController;
-	SetSetpoint(avg(ELEVATOR_BOTTOM, ELEVATOR_TOP));
-	Enable();
+	SetInputRange(ELEVATOR_BOTTOM, ELEVATOR_TOP);
+	SetOutputRange(-1.0, 1.0);
 }
 
 double Shaft::ReturnPIDInput() {
-	return RobotMap::analogInput->GetVoltage();
+	return RobotMap::pot->Get();
 }
 
 void Shaft::UsePIDOutput(double output) {
 	shaftDrive->Set(output);
-
 }
 
 void Shaft::InitDefaultCommand() {

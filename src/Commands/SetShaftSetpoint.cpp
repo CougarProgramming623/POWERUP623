@@ -24,13 +24,10 @@ void SetShaftSetpoint::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void SetShaftSetpoint::Execute() {
-	std::cout << RobotMap::shaftController->GetOutputCurrent() << std::endl;
-	if(goUp)
-		RobotMap::shaftController->Set(0.5);
-	else
-		RobotMap::shaftController->Set(-0.5);
+	std::stringstream str;
+	str << " Elevator Displacement " << Robot::elevator->GetElevatorPosition() - m_setpoint;
+	DriverStation::ReportError(str.str());
 }
-
 // Make this return true when this Command no longer needs to run execute()
 bool SetShaftSetpoint::IsFinished() {
 	return (fabs(Robot::elevator->GetElevatorPosition() - m_setpoint) < .08f);
@@ -38,6 +35,7 @@ bool SetShaftSetpoint::IsFinished() {
 
 // Called once after isFinished returns true
 void SetShaftSetpoint::End() {
+	DriverStation::ReportError("done");
 	RobotMap::shaftController->StopMotor();
 }
 
