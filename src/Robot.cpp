@@ -2,10 +2,13 @@
 #include "RobotConstants.h"
 #include "Commands/AngledDistanceDrive.h"
 #include "DriverStation.h"
+#include "Commands/CubeIntakeCommand.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
+std::shared_ptr<CubeIntake> Robot::cubeIntake;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
+std::shared_ptr<ButtonBoard> Robot::buttonBoard;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
@@ -14,8 +17,9 @@ void Robot::RobotInit() {
 	DriverStation::ReportError(str.str());
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
+	cubeIntake.reset(new CubeIntake());
 	//SmartDashboard::PutData(driveTrain.get());
-
+	buttonBoard.reset(new ButtonBoard(1));
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
 	//frc::DriverStation::GetInstance().GetGameSpecificMessage();
@@ -60,6 +64,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+	CubeIntakeCommand::ResetSpikes();
 	if (autonomousCommand)
 		autonomousCommand->Cancel();
 }

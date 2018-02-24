@@ -3,7 +3,7 @@
 #define BUMP_DELTA_PITCH_LIMIT 0.5
 #define BUMP_DELAY 0.5
 
-//#define TEST_ROBOT
+#define TEST_ROBOT
 
 #define SIDE_LEFT   0
 #define SIDE_CENTER 1
@@ -45,6 +45,11 @@
 #define FAST_SPEED 0.6
 #define SLOW_SPEED 0.2
 #define TIMEOUT 10
+
+#define INTAKE_SPEED 1
+#define EXPUNGE_SPEED 1
+#define INTAKE_MAX_CURRENT 1
+#define INTAKE_MAX_NUM_SPIKES 3
 
 #define WAIT_SEC(x) AddSequential(new WaitCommand(x));
 #define WAIT WAIT_SEC(0.35)
