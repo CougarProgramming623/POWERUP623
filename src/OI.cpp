@@ -31,8 +31,8 @@ OI::OI() {
     expungeButton.reset(new frc::JoystickButton(buttonBoard.get(), 5));
     intakeButton.reset(new frc::JoystickButton(buttonBoard.get(), 6));
 
-    elevatorUp->WhileHeld(new SetShaftSetpoint(true));
-    elevatorDown->WhileHeld(new SetShaftSetpoint(false));
+    elevatorUp->WhileHeld(new SetShaftSetpoint(0.5f, true));
+    elevatorDown->WhileHeld(new SetShaftSetpoint(0.1f, false));
 
     expungeButton->WhileHeld(new CubeIntakeCommand(false));
     intakeButton->WhileHeld(new CubeIntakeCommand(true));

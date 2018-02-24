@@ -56,8 +56,9 @@
 #define LENGTH_OF_SWITCH 12 * FEET_TO_IN
 #define WIDTH_OF_SWITCH 56
 
-#define ELEVATOR_TOP 0
-#define ELEVATOR_DELTA 0
+#define ELEVATOR_BOTTOM .0743
+#define ELEVATOR_DELTA .6657
+#define ELEVATOR_TOP ELEVATOR_DELTA + ELEVATOR_BOTTOM
 
 #define normalize(min, max, value) (value - min) / (max - min)
 
@@ -68,3 +69,5 @@
 #define minFRC(a, b) a < b ? a : b;
 
 #define maxFRC(a, b) a > b ? a : b;
+
+#define avg(a, b) (a + b) / 2

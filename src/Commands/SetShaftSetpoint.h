@@ -14,7 +14,7 @@
 
 class SetShaftSetpoint : public frc::Command {
 public:
-	SetShaftSetpoint(bool, bool = false);
+	SetShaftSetpoint(float, bool);
 	void Initialize() override;
 	void Execute() override;
 	bool IsFinished() override;
@@ -24,6 +24,5 @@ private:
 	double m_setpoint = 0.0;
 	bool goUp;
 	bool autonomous;
-	Timer *m_timer;
 };
 

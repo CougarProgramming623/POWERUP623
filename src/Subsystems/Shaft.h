@@ -20,6 +20,7 @@ public:
 	double ReturnPIDInput() override;
 	void UsePIDOutput(double output) override;
 	void InitDefaultCommand() override;
+	double GetElevatorPosition();
 private:
 	std::shared_ptr<WPI_TalonSRX> shaftDrive;
 };

@@ -14,8 +14,8 @@
 
 Shaft::Shaft() : PIDSubsystem("Shaft", 1.0, 0.0, 0.0) {
 	shaftDrive = RobotMap::shaftController;
-	//SetSetpoint(ELEVATOR_TOP - ELEVATOR_DELTA);
-	//Enable();
+	SetSetpoint(avg(ELEVATOR_BOTTOM, ELEVATOR_TOP));
+	Enable();
 }
 
 double Shaft::ReturnPIDInput() {
@@ -30,4 +30,7 @@ void Shaft::UsePIDOutput(double output) {
 void Shaft::InitDefaultCommand() {
 }
 
+double Shaft::GetElevatorPosition() {
+	return RobotMap::pot->Get();
+}
 
