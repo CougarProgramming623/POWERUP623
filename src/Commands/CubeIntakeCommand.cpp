@@ -8,10 +8,13 @@
 #include "CubeIntakeCommand.h"
 #include "../RobotMap.h"
 #include "../Robot.h"
+using namespace std;
+
+int CubeIntakeCommand::numSpikes;
 
 CubeIntakeCommand::CubeIntakeCommand(bool intake) {
-	std::cout << "constructing CubeIntakeCommand\n";
 	type = intake;
+	numSpikes = 0;
 }
 
 void CubeIntakeCommand::Initialize() {
@@ -19,18 +22,19 @@ void CubeIntakeCommand::Initialize() {
 }
 
 void CubeIntakeCommand::Execute() {
-	if (numSpikes >= INTAKE_MAX_NUM_SPIKES) {
-		if (type) {
+	if (type) {
+		if (numSpikes <= INTAKE_MAX_NUM_SPIKES) {
 			//std::cout << "executing intake\n";
 			Robot::cubeIntake->Intake();
-		} else {
-			//std::cout << "executing expunge\n";
-			Robot::cubeIntake->Expunge();
 		}
+	} else {
+		//std::cout << "executing expunge\n";
+		Robot::cubeIntake->Expunge();
 	}
-	if (Robot::cubeIntake->GetCurrent() > INTAKE_MAX_CURRENT) {
-		numSpikes++;
-	}
+	//std::cout << Robot::cubeIntake->GetCurrent() << std::endl;
+	//if (Robot::cubeIntake->GetCurrent() > INTAKE_MAX_CURRENT) {
+	//	numSpikes++;
+	//}
 
 }
 
@@ -46,6 +50,6 @@ void CubeIntakeCommand::Interrupted() {
 	End();
 }
 
-static void CubeIntakeCommand::ResetSpikes() {
+void CubeIntakeCommand::ResetSpikes() {
 	numSpikes = 0;
 }

@@ -6,7 +6,7 @@
 #define CUBE_EJECT_WAIT_TIME 2.0
 
 /*
- * Our autonomous works by getting the selected options from the COB, and getting the scale / switch possession data from FMS. After that,
+ * Our autonomous wolrks by getting the selected options from the COB, and getting the scale / switch possession data from FMS. After that,
  * we check if do easy is selected. If so we use the FMS data to pick the easiest route. Otherwise we determine where the robot will go depending
  * on FMS and the disabled options. After that we switch to just crossing the auto line if we are going to cross the field, and the driver
  * disabled field crossing.
@@ -208,8 +208,7 @@ void AutoSequence::DoBaseline() {
 void AutoSequence::DropCube() {
 	//Drops the cube by setting power to the holding motors
 	//Robot::motor1->setPower...
-
-	WAIT_SEC(CUBE_EJECT_WAIT_TIME)
+	WAIT_SEC(CUBE_EJECT_WAIT_TIME);
 	//Wait for the motors to spin and the cube to fly out...
 }
 

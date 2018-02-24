@@ -33,12 +33,17 @@ public:
 	static std::shared_ptr<WPI_TalonSRX> driveTrainleftBack;
 	static std::shared_ptr<WPI_TalonSRX> driveTrainrightFront;
 	static std::shared_ptr<WPI_TalonSRX> driveTrainrightBack;
+
 	static std::shared_ptr<WPI_TalonSRX> liftController;
 
 	static std::shared_ptr<WPI_TalonSRX> intake;
 
+	static std::shared_ptr<WPI_TalonSRX> shaftController;
+
 	static std::shared_ptr<frc::MecanumDrive> driveTrainMecanumDrive1;
 	static std::shared_ptr<AnalogGyro> gyro;
+	static std::shared_ptr<AnalogPotentiometer> pot;
+	static std::shared_ptr<AnalogInput> analogInput;
 
 	static AHRS *ahrs;
 	static double turnP;

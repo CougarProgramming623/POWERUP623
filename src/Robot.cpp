@@ -6,20 +6,18 @@
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
+std::shared_ptr<Shaft> Robot::elevator;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
-std::shared_ptr<ButtonBoard> Robot::buttonBoard;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
-	std::stringstream str;
-	str << "sizeof double " << sizeof(double);
-	DriverStation::ReportError(str.str());
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
 	cubeIntake.reset(new CubeIntake());
+
+	elevator.reset(new Shaft());
 	//SmartDashboard::PutData(driveTrain.get());
-	buttonBoard.reset(new ButtonBoard(1));
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
 	//frc::DriverStation::GetInstance().GetGameSpecificMessage();
@@ -37,7 +35,11 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic() {
 	Robot::cob->PushEnabled(DriverStation::GetInstance().IsEnabled());
 	Robot::cob->PushAutonomous(DriverStation::GetInstance().IsAutonomous());
-	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl());
+	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
+	std::stringstream str;
+	str << " Elevator Position " << Robot::elevator->GetPosition();
+	str << " Potientiometer " << RobotMap::pot->Get();
+	DriverStation::ReportError(str.str());
 }
 
 void Robot::DisabledInit() {
@@ -64,7 +66,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-	CubeIntakeCommand::ResetSpikes();
+
 	if (autonomousCommand)
 		autonomousCommand->Cancel();
 }

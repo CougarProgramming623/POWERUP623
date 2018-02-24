@@ -14,7 +14,7 @@
 class CubeIntakeCommand : public frc::Command {
 private:
 	bool type;
-	static unsigned int numSpikes = 0;
+	static int numSpikes;
 public:
 	CubeIntakeCommand(bool intake);
 	virtual void Initialize();

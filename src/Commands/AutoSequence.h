@@ -14,6 +14,7 @@
 
 #include "DistanceDrive.h"
 #include "Turn.h"
+#include "CubeIntakeCommand.h"
 #include "../Robot.h"
 #include "../RobotConstants.h"
 #include "AngledDistanceDrive.h"
