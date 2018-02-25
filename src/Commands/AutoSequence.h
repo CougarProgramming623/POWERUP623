@@ -11,14 +11,16 @@
 #include "WPILib.h"
 #include "Commands/CommandGroup.h"
 #include "Commands/Command.h"
+#include "SetShaftSetpoint.h"
+#include "TeleOp/CubeIntakeCommand.h"
 
-#include "DistanceDrive.h"
+#include "Drive/DistanceDrive.h"
 #include "Turn.h"
-#include "CubeIntakeCommand.h"
+#include "TeleOp/CubeIntakeCommand.h"
 #include "../Robot.h"
 #include "../RobotConstants.h"
-#include "AngledDistanceDrive.h"
-#include "VisionDrive.h"
+#include "Drive/AngledDistanceDrive.h"
+#include "Drive/VisionDrive.h"
 #include "../AutoPlace.h"
 #include <cmath>
 
@@ -37,5 +39,7 @@ private:
 	void TestTickCount();
 	void TestPIDTurn();
 	void DropCube();
+	void RaiseElevatorToSwitch();
+	void RaiseElevatorToScale();
 };
 

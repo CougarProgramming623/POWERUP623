@@ -6,8 +6,8 @@
  */
 
 #include "CubeIntakeCommand.h"
-#include "../RobotMap.h"
-#include "../Robot.h"
+#include "../../RobotMap.h"
+#include "../../Robot.h"
 using namespace std;
 
 int CubeIntakeCommand::numSpikes;

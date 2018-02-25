@@ -60,8 +60,7 @@ AutoSequence::AutoSequence() :
 				place = AutoPlace::BASELINE;
 			} else {
 				place = AutoPlace::BASELINE;
-				DriverStation::ReportError(
-						"BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING line 74 AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING line 74 AutoSequence.cpp");
 			}
 			if (!Robot::cob->GetAutonomousEnableCrossing() && (place == AutoPlace::SCALE_FAR || place == AutoPlace::SWITCH_FAR)) {
 				place = AutoPlace::BASELINE;
@@ -87,7 +86,6 @@ AutoSequence::AutoSequence() :
 
 void AutoSequence::TestBumpDetection() {
 	AddSequential(new DistanceDrive(20, FAST_SPEED, TIMEOUT, false, true));
-	WAIT
 }
 
 void AutoSequence::TestTickCount() {
@@ -109,6 +107,8 @@ void AutoSequence::DoSwitchNear() {
 	WAIT
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
 	WAIT
+	RaiseElevatorToSwitch();
+	WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
 	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
@@ -120,7 +120,6 @@ void AutoSequence::DoSwitchNear() {
 		WAIT
 		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 	}
-
 }
 
 /**
@@ -131,6 +130,8 @@ void AutoSequence::DoSwitchFar() {
 	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + (3 * FEET_TO_INCHES) - HALF_ROBOT_WIDTH, FAST_SPEED, TIMEOUT));
 	WAIT
 	AddSequential(new DistanceDrive(invertIfRight(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH), FAST_SPEED, TIMEOUT, true));
+	WAIT
+	RaiseElevatorToSwitch();
 	WAIT
 	AddSequential(new Turn(180, TIMEOUT));
 	WAIT
@@ -154,6 +155,8 @@ void AutoSequence::DoScaleNear() {
 	WAIT
 	//drive forward
 	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
+	WAIT
+	RaiseElevatorToScale();
 	//dropping cube
 	DropCube();
 	//move back
@@ -186,6 +189,8 @@ void AutoSequence::DoScaleFar() {
 	WAIT
 	AddSequential(new DistanceDrive(0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	WAIT
+	RaiseElevatorToScale();
+	WAIT
 	DropCube();
 }
 
@@ -195,8 +200,11 @@ void AutoSequence::DoScaleFar() {
 void AutoSequence::DoBaseline() {
 	if (isCenterStart()) {
 		AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, SPEED, TIMEOUT, true));	//Go right 2 feet
+		WAIT
 		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));	//drive forward to break the auto line
-		AddSequential(new DistanceDrive(-6 * FEET_TO_INCHES, SPEED, TIMEOUT));//drive back towards the start but stop 4 feet out from the wall
+		WAIT
+		AddSequential(new DistanceDrive(-6 * FEET_TO_INCHES, SPEED, TIMEOUT));	//drive back towards the start but stop 4 feet out from the wall
+		WAIT
 		AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, SPEED, TIMEOUT, true));	//Go right 2 feet
 		//We should be in front of the cubes
 	} else {	//If we are on the outside
@@ -205,18 +213,24 @@ void AutoSequence::DoBaseline() {
 	}
 }
 
+void AutoSequence::RaiseElevatorToSwitch() {
+	AddSequential(new SetShaftSetpoint(ELEVATOR_SWITCH, 3, true));
+}
+
+void AutoSequence::RaiseElevatorToScale() {
+	AddSequential(new SetShaftSetpoint(ELEVATOR_SCALE, 3, true));
+}
+
 void AutoSequence::DropCube() {
-	//Drops the cube by setting power to the holding motors
-	//Robot::motor1->setPower...
+	AddSequential(new CubeIntakeCommand(false));
 	WAIT_SEC(CUBE_EJECT_WAIT_TIME);
-	//Wait for the motors to spin and the cube to fly out...
 }
 
 void AutoSequence::DoCenter() {
 	double angleFromCenter = 40;
 	double turnAngle = switchOnRight() ? 90 - (angleFromCenter + 20) : 90 + angleFromCenter;
 	DriverStation::ReportError("doing correct!");
-	WAIT_SEC(Robot::cob->GetAutonomousInstructions());//In this case, because we are in the center, the auto instructions contain the timeout
+	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
 		WAIT
@@ -225,11 +239,14 @@ void AutoSequence::DoCenter() {
 		//Vision stuff
 		WAIT
 	}
+
+	RaiseElevatorToScale();
+	WAIT_SEC(2)
 	DropCube();
 	//Go back but more sharply so that we arrive not at the wall, but in front of the cubes
 	AddSequential(new DistanceDrive(-4 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	WAIT
-	if(switchOnRight()) {
+	if (switchOnRight()) {
 		AddSequential(new DistanceDrive(-4.5 * FEET_TO_INCHES, SPEED, TIMEOUT, true, false));
 	} else {
 		AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, SPEED, TIMEOUT, true, false));

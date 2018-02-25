@@ -59,6 +59,8 @@
 #define ELEVATOR_BOTTOM .0743
 #define ELEVATOR_DELTA .6657
 #define ELEVATOR_TOP ELEVATOR_DELTA + ELEVATOR_BOTTOM
+#define ELEVATOR_SWITCH ELEVATOR_TOP
+#define ELEVATOR_SCALE ELEVATOR_TOP
 
 #define normalize(min, max, value) (value - min) / (max - min)
 

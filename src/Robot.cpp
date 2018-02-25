@@ -1,20 +1,22 @@
 #include "Robot.h"
 #include "RobotConstants.h"
-#include "Commands/AngledDistanceDrive.h"
+#include "Commands/Drive/AngledDistanceDrive.h"
 #include "DriverStation.h"
-#include "Commands/CubeIntakeCommand.h"
+#include "Commands/TeleOp/CubeIntakeCommand.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
 std::shared_ptr<Shaft> Robot::elevator;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
+std::shared_ptr<Release> Robot::release;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
 	cubeIntake.reset(new CubeIntake());
+	release.reset(new Release());
 
 	elevator.reset(new Shaft());
 	//SmartDashboard::PutData(driveTrain.get());

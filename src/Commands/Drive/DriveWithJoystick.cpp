@@ -10,10 +10,10 @@
 
 #include "DriveWithJoystick.h"
 #include "ahrs.h"
-#include "../RobotMap.h"
+#include "../../RobotMap.h"
 #include "networktables/NetworkTable.h"
-#include "../CougarOpticBoard.h"
-#include "../Robot.h"
+#include "../../CougarOpticBoard.h"
+#include "../../Robot.h"
 #include "Math.h"
 
 const static double kF = 0.0f;
