@@ -1,7 +1,6 @@
 #include "VisionDrive.h"
 #include <cmath>
 #include "Math.h"
-#include "networktables/NetworkTableInstance.h"
 
 #define ROOT_2 1.41421356237
 
