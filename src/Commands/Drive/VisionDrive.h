@@ -1,19 +1,20 @@
 #pragma once
 
 #include "Commands/Subsystem.h"
-#include "../../Robot.h"
+#include "../Robot.h"
 #include "WPILib.h"
 #include "ahrs.h"
 #include "ctre/Phoenix.h"
-#include "../../RobotMap.h"
+#include "../RobotMap.h"
 #include "Math.h"
 #include <iostream>
 #include "cmath"
-#include "../../RobotConstants.h"
+#include "../RobotConstants.h"
 
 class VisionDrive : public frc::Command , public frc::PIDOutput {
 public:
-	VisionDrive(double, int, double, double);
+	std::shared_ptr<NetworkTable> visionTable;
+	VisionDrive(double, int);
 	void Initialize();
 	void Execute();
 	bool IsFinished();
@@ -37,4 +38,5 @@ private:
 	PIDController *turnController;
 	double rotateToAngleRate;
 	int initEncPosition;
+
 };
