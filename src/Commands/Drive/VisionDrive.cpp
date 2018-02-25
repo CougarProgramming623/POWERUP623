@@ -1,6 +1,7 @@
 #include "VisionDrive.h"
 #include <cmath>
 #include "Math.h"
+#include "networktables/NetworkTableInstance.h"
 
 #define ROOT_2 1.41421356237
 
@@ -57,6 +58,10 @@ void VisionDrive::Execute() {
 	std::vector<double> arr = vision.GetDoubleArray(llvm::ArrayRef<double>());
 	m_currentAngle = GetVisionTargetDriveAngle(arr[0], arr[1]); //Put in real values later
 	m_distanceToTarget = GetVisionTargetDriveDistance(arr[0], arr[1]); //drawn from networktables
+
+	SmartDashboard::PutString(llvm::StringRef("DB/String 0"), llvm::StringRef("Vision angle is :" + std::to_string(m_currentAngle)));
+	SmartDashboard::PutString(llvm::StringRef("DB/String 1"), llvm::StringRef("Distance is :" + std::to_string(m_distanceToTarget)));
+
 
 	double x = cos(m_currentAngle * M_PI / 180) * m_speed;
 	double y = sin(m_currentAngle * M_PI / 180) * m_speed;
