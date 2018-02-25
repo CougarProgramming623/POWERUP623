@@ -1,6 +1,7 @@
 #include "VisionDrive.h"
 #include <cmath>
 #include "Math.h"
+#include "networktables/NetworkTableInstance.h"
 
 #define ROOT_2 1.41421356237
 
@@ -9,23 +10,27 @@ const static double kI = RobotMap::turnI;
 const static double kD = RobotMap::turnD;
 const static double kF = 0.0;
 
+
 const static double kToleranceDegrees = 2.0f;
 
 #define PI 3.141592
 #define ROTATE_FIX_SPEED 0.05
 
-VisionDrive::VisionDrive(double speed, int timeout, double distance, double angle)
+VisionDrive::VisionDrive(double speed, int timeout)
 		: frc::Command(), frc::PIDOutput() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
-	m_distanceToTarget = distance;
+	m_distanceToTarget = 0.0;
 	m_speed = speed;
 	m_timeout = timeout;
-	m_currentAngle = angle;
+	m_currentAngle = 0.0;
 	rotateToAngleRate = 0.0;
 	initEncPosition = RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0);
 	m_timer = new Timer();
 	turnController = new PIDController(kP, kI, kD, kF, RobotMap::ahrs, this);
+
+	visionTable = NetworkTable::GetTable("vision");
+
 	Requires(Robot::driveTrain.get());
 }
 
@@ -35,6 +40,7 @@ void VisionDrive::Initialize() {
 
 	m_timer = new Timer();
 	m_timer->Start();
+
 }
 
 int VisionDrive::getPosition() {
@@ -47,8 +53,11 @@ int VisionDrive::getMaxTicks() {
 
 // Called repeatedly when this Command is scheduled to run
 void VisionDrive::Execute() {
-	m_currentAngle = GetVisionTargetDriveAngle(0, 0); //Put in real values later
-	m_distanceToTarget = GetVisionTargetDriveDistance(0, 0);
+	nt::NetworkTableEntry vision = visionTable->GetEntry("vision");
+
+	std::vector<double> arr = vision.GetDoubleArray(llvm::ArrayRef<double>());
+	m_currentAngle = GetVisionTargetDriveAngle(arr[0], arr[1]); //Put in real values later
+	m_distanceToTarget = GetVisionTargetDriveDistance(arr[0], arr[1]); //drawn from networktables
 
 	double x = cos(m_currentAngle * M_PI / 180) * m_speed;
 	double y = sin(m_currentAngle * M_PI / 180) * m_speed;
@@ -95,20 +104,31 @@ void VisionDrive::PIDWrite(double output) {
 }
 
 #define HORIZONTAL_THETA 1558.32
-
 #define VERTICAL_THETA 1558.32
-#define TAPE_HEIGHT 15.75
 #define CAMERA_HEIGHT 544
 
-double VisionDrive::GetVisionTargetDriveAngle(double x1, double x2) {
-	double averageX = (x1 + x2) / 2.0;
+#define FOCAL_LENGTH 814.88
+#define TAPE_WIDTH 6
+#define TAPE_HEIGHT 15.75
+
+double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
+
+	/*if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
+		return acos(-1 * VisionDrive::GetVisionTargetDriveDistance(y1, y2)/TAPE_WIDTH);
+	else*/
+		return acos(VisionDrive::GetVisionTargetDriveDistance(y1, y2)/TAPE_WIDTH);
+
+
+	/*double averageX = (x1 + x2) / 2.0;
 	double distanceFromTapeCenterToImageCenter = HALF_CAMERA_WIDTH - averageX;
 	double phi = atan(distanceFromTapeCenterToImageCenter / HORIZONTAL_THETA) * 180 / M_PI;
-	return 90.0 - phi;
+	return 90.0 - phi;*/
 }
 
 double VisionDrive::GetVisionTargetDriveDistance(double y1, double y2) {
 	double averageHeight = (y1 + y2) / 2.0;
-	double value = (TAPE_HEIGHT * CAMERA_HEIGHT) / (2 * averageHeight * tan(VERTICAL_THETA * M_PI / 180));
-	return value;
+	double straightDistance = (TAPE_HEIGHT * FOCAL_LENGTH)/averageHeight;
+	double trueDistance = straightDistance/ cos(m_currentAngle);
+	//double value = (TAPE_HEIGHT * CAMERA_HEIGHT) / (2 * averageHeight * tan(VERTICAL_THETA * M_PI / 180));
+	return trueDistance;
 }
