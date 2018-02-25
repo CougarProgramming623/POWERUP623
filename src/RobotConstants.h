@@ -3,7 +3,7 @@
 #define BUMP_DELTA_PITCH_LIMIT 0.5
 #define BUMP_DELAY 0.5
 
-#define TEST_ROBOT
+#define TEST_BOT
 
 #define SIDE_LEFT   0
 #define SIDE_CENTER 1
@@ -15,7 +15,7 @@
 
 #ifdef TEST_BOT
 #define TICKS_PER_INCH 63/2
-#define TICKS_PER_INCH 63/2
+#define TICKS_PER_INCH_STRAFE TICKS_PER_INCH
 
 
 #else //real bot

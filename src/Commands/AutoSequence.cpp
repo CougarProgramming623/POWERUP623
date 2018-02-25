@@ -29,6 +29,7 @@ AutoSequence::AutoSequence() :
 	std::cout << "instructions " << Robot::cob->GetAutonomousInstructions() << std::endl;
 	std::cout << "no cross map " << Robot::cob->GetAutonomousEnableCrossing() << std::endl;
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
+	//releaseShaft();
 	if (isCenterStart()) {
 		DoCenter();
 	} else {		//We are on the sides
@@ -47,20 +48,22 @@ AutoSequence::AutoSequence() :
 					DoBaseline();
 				}
 			} else {
-				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR DO EASY!!! line 61AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR DO EASY!!! line 51 AutoSequence.cpp");
 				DoBaseline();
 			}
-		} else {		// Cases except do easy (Only Switch, Only Scale, Baseline)
+		} else {// Cases except do easy (Only Switch, Only Scale, Baseline)
 			AutoPlace place;
-			if (Robot::cob->GetAutonomousInstructions() == OPTION_DO_SWITCH) {
+			int autoInstructions = Robot::cob->GetAutonomousInstructions();
+
+			if (autoInstructions == OPTION_DO_SWITCH) {
 				place = switchOnOurSide() ? AutoPlace::SWITCH_NEAR : AutoPlace::SWITCH_FAR;
-			} else if (Robot::cob->GetAutonomousInstructions() == OPTION_DO_SCALE) {
+			} else if (autoInstructions == OPTION_DO_SCALE) {
 				place = scaleOnOurSide() ? AutoPlace::SCALE_NEAR : AutoPlace::SCALE_FAR;
-			} else if (Robot::cob->GetAutonomousInstructions() == OPTION_DO_BASELINE) {
+			} else if (autoInstructions == OPTION_DO_BASELINE) {
 				place = AutoPlace::BASELINE;
 			} else {
 				place = AutoPlace::BASELINE;
-				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING line 74 AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING line 64 AutoSequence.cpp");
 			}
 			if (!Robot::cob->GetAutonomousEnableCrossing() && (place == AutoPlace::SCALE_FAR || place == AutoPlace::SWITCH_FAR)) {
 				place = AutoPlace::BASELINE;
@@ -78,18 +81,35 @@ AutoSequence::AutoSequence() :
 				DoBaseline();
 			} else {
 				DoBaseline();
-				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR NOT DO EASY line 92 AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR NOT DO EASY line 82 AutoSequence.cpp");
 			}
 		}
 	}
 }
 
-void AutoSequence::TestBumpDetection() {
-	AddSequential(new DistanceDrive(20, FAST_SPEED, TIMEOUT, false, true));
+void AutoSequence::releaseShaft() {
+	AddSequential(new ReleaseShaft());
+	WAIT
 }
 
-void AutoSequence::TestTickCount() {
-	//AddSequential(new DistanceDrive(100000000000000000000000000000000.0 * FEET_TO_INCHES, 0.5, TIMEOUT));
+void AutoSequence::RaiseElevatorToSwitch() {
+	AddSequential(new SetShaftSetpoint(ELEVATOR_SWITCH, 3, true));
+	WAIT
+}
+
+void AutoSequence::RaiseElevatorToScale() {
+	AddSequential(new SetShaftSetpoint(ELEVATOR_SCALE, 3, true));
+	WAIT
+}
+
+void AutoSequence::DropCube() {
+	AddSequential(new CubeIntakeCommand(false));
+	WAIT_SEC(CUBE_EJECT_WAIT_TIME);
+}
+
+void AutoSequence::TestBumpDetection() {
+	AddSequential(new DistanceDrive(20, FAST_SPEED, TIMEOUT, false, true));
+	WAIT
 }
 
 void AutoSequence::TestPIDTurn() {
@@ -211,19 +231,6 @@ void AutoSequence::DoBaseline() {
 		//Just drive across since there are no blocks to pervent our passage
 		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	}
-}
-
-void AutoSequence::RaiseElevatorToSwitch() {
-	AddSequential(new SetShaftSetpoint(ELEVATOR_SWITCH, 3, true));
-}
-
-void AutoSequence::RaiseElevatorToScale() {
-	AddSequential(new SetShaftSetpoint(ELEVATOR_SCALE, 3, true));
-}
-
-void AutoSequence::DropCube() {
-	AddSequential(new CubeIntakeCommand(false));
-	WAIT_SEC(CUBE_EJECT_WAIT_TIME);
 }
 
 void AutoSequence::DoCenter() {

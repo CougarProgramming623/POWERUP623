@@ -44,6 +44,8 @@ public:
 	static std::shared_ptr<AnalogGyro> gyro;
 	static std::shared_ptr<AnalogPotentiometer> pot;
 	static std::shared_ptr<AnalogInput> analogInput;
+	static std::shared_ptr<Relay> shaftOrRampRelay;
+
 
 	static AHRS *ahrs;
 	static double turnP;

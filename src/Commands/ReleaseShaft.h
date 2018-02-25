@@ -8,18 +8,14 @@
 #pragma once
 
 #include <Commands/Command.h>
-#include "Timer.h"
 
-class ReleaseRamp : public frc::Command {
+class ReleaseShaft : public frc::Command {
 public:
-	ReleaseRamp();
+	ReleaseShaft();
 	void Initialize() override;
 	void Execute() override;
 	bool IsFinished() override;
 	void End() override;
 	void Interrupted() override;
-private:
-	Timer* m_timer;
-	bool startedRampUp = false;
 };
 

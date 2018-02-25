@@ -11,17 +11,19 @@
 #include "WPILib.h"
 #include "Commands/CommandGroup.h"
 #include "Commands/Command.h"
+
+#include "ReleaseShaft.h"
 #include "SetShaftSetpoint.h"
 #include "TeleOp/CubeIntakeCommand.h"
-
 #include "Drive/DistanceDrive.h"
 #include "Turn.h"
 #include "TeleOp/CubeIntakeCommand.h"
-#include "../Robot.h"
-#include "../RobotConstants.h"
+
 #include "Drive/AngledDistanceDrive.h"
 #include "Drive/VisionDrive.h"
 #include "../AutoPlace.h"
+#include "../Robot.h"
+#include "../RobotConstants.h"
 #include <cmath>
 
 class AutoSequence : public frc::CommandGroup , public RobotImpl {
@@ -36,10 +38,10 @@ private:
 	void DoScaleFar();
 	void DoBaseline();
 	void TestBumpDetection();
-	void TestTickCount();
 	void TestPIDTurn();
 	void DropCube();
 	void RaiseElevatorToSwitch();
 	void RaiseElevatorToScale();
+	void releaseShaft();
 };
 
