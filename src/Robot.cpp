@@ -26,7 +26,9 @@ void Robot::RobotInit() {
 	//frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
 	Robot::cob->InitBoard();
+	Robot::cob->PushArmHeight(0);
 	RobotMap::ahrs->ZeroYaw();
+
 
 	//autonomousCommand.reset(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, 55.0));
 
@@ -39,6 +41,8 @@ void Robot::RobotPeriodic() {
 	Robot::cob->PushEnabled(DriverStation::GetInstance().IsEnabled());
 	Robot::cob->PushAutonomous(DriverStation::GetInstance().IsAutonomous());
 	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
+
+	Robot::cob->PushArmHeight((elevator->GetElevatorPosition() - ELEVATOR_BOTTOM) / ELEVATOR_DELTA);
 	//std::stringstream str;
 	//str << " Elevator Position " << Robot::elevator->GetPosition();
 	//str << " Potientiometer " << RobotMap::pot->Get();

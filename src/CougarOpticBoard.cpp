@@ -73,6 +73,7 @@ void CougarOpticBoard::InitBoard() {
 	CougarOpticBoard::entryVelocityDirection = table->GetEntry("velocity/direction");
 	CougarOpticBoard::entryVelocityMagnitude = table->GetEntry("velocity/magnitude");
 	CougarOpticBoard::entryArmHeight = table->GetEntry("arm/height");
+	CougarOpticBoard::entryArmRotation = table->GetEntry("arm/rotation");
 	CougarOpticBoard::entryArmCubeGrabbed = table->GetEntry("arm/cube-grabbed");
 	CougarOpticBoard::entryArmClimbStatus = table->GetEntry("arm/climb-status");
 	CougarOpticBoard::entryAutonomousStartPos = table->GetEntry("autonomous/side");
@@ -173,6 +174,7 @@ void CougarOpticBoard::PushArmHeight(double height) {
 	entryArmHeight.SetDouble(height);
 }
 
+/*
 void CougarOpticBoard::TriggerArmRotation(bool up) {
 	if (up) {
 		double rotation = entryArmRotation.GetValue().get()->GetDouble();
@@ -182,6 +184,11 @@ void CougarOpticBoard::TriggerArmRotation(bool up) {
 	} else {
 		entryArmRotation.SetDouble(135);
 	}
+}
+*/
+
+void CougarOpticBoard::PushArmRotation(double rotation) {
+	entryArmHeight.SetDouble(rotation);
 }
 
 /**

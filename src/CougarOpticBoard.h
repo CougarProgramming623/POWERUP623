@@ -32,7 +32,8 @@ public:
 	static void PushVelocityDirection(double angle);
 	static void PushVelocityMagnitude(double size);
 	static void PushArmHeight(double height);
-	static void TriggerArmRotation(bool up);
+	static void PushArmRotation(double rotation);
+	//static void TriggerArmRotation(bool up);
 	static void PushArmCubeGrabbed(bool cubeGrabbed); //maybe
 	static void PushArmClimbStatus(double climbStatus); //maybe
 	static void PushFMSTime(double time);
