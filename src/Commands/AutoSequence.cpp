@@ -240,11 +240,10 @@ void AutoSequence::DoCenter() {
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
-
-		AddSequential(new AngledDistanceDrive(10, 0.3, 10, turnAngle));
+		AddSequential(new AngledDistanceDrive(10, 0.3, turnAngle));
 		AddSequential(new VisionDrive(0.3, TIMEOUT));
 	} else {		//Use vision
-		AddSequential(new AngledDistanceDrive(14 * FEET_TO_INCHES, 0.5, 10, turnAngle));
+		AddSequential(new AngledDistanceDrive(14 * FEET_TO_INCHES, 0.5, turnAngle));
 		//AddSequential(new VisionDrive(SPEED, TIMEOUT, 100, 98));
 		//Vision stuff
 	}
