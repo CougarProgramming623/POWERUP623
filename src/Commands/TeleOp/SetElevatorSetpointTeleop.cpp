@@ -5,39 +5,34 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "ReleaseShaft.h"
-#include "../Robot.h"
-#include "../RobotMap.h"
+#include "SetElevatorSetpointTeleop.h"
+#include "../../Robot.h"
 
-#define DELPOY_TIME 0.5
-
-ReleaseShaft::ReleaseShaft() {
-	Requires(Robot::release.get());
-	SetTimeout(DELPOY_TIME);
+SetElevatorSetpointTeleop::SetElevatorSetpointTeleop() : frc::Command() {
+	Requires(Robot::elevator.get());
 }
 
 // Called just before this Command runs the first time
-void ReleaseShaft::Initialize() {
-	RobotMap::shaftOrRampRelay->Set(Relay::Value::kForward);// FIXME put in proper direction
+void SetElevatorSetpointTeleop::Initialize() {
+	Robot::elevator->Enable();
 }
 
 // Called repeatedly when this Command is scheduled to run
-void ReleaseShaft::Execute() {
+void SetElevatorSetpointTeleop::Execute() {
 
 }
-
 // Make this return true when this Command no longer needs to run execute()
-bool ReleaseShaft::IsFinished() {
+bool SetElevatorSetpointTeleop::IsFinished() {
 	return false;
 }
 
 // Called once after isFinished returns true
-void ReleaseShaft::End() {
-	//RobotMap::shaftOrRampRelay->Set(Relay::Value::kOff);
+void SetElevatorSetpointTeleop::End() {
+
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void ReleaseShaft::Interrupted() {
-	End();
+void SetElevatorSetpointTeleop::Interrupted() {
+
 }

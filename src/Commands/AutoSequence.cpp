@@ -6,7 +6,7 @@
 #define CUBE_EJECT_WAIT_TIME 2.0
 
 /*
- * Our autonomous wolrks by getting the selected options from the COB, and getting the scale / switch possession data from FMS. After that,
+ * Our autonomous works by getting the selected options from the COB, and getting the scale / switch possession data from FMS. After that,
  * we check if do easy is selected. If so we use the FMS data to pick the easiest route. Otherwise we determine where the robot will go depending
  * on FMS and the disabled options. After that we switch to just crossing the auto line if we are going to cross the field, and the driver
  * disabled field crossing.
@@ -30,6 +30,9 @@ AutoSequence::AutoSequence() :
 	std::cout << "no cross map " << Robot::cob->GetAutonomousEnableCrossing() << std::endl;
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
 	//releaseShaft();
+	RaiseElevatorToSwitch();
+	DropCube();
+	/*
 	if (isCenterStart()) {
 		DoCenter();
 	} else {		//We are on the sides
@@ -84,26 +87,23 @@ AutoSequence::AutoSequence() :
 				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR NOT DO EASY line 82 AutoSequence.cpp");
 			}
 		}
-	}
+	}*/
 }
 
 void AutoSequence::releaseShaft() {
 	AddSequential(new ReleaseShaft());
-	WAIT
 }
 
 void AutoSequence::RaiseElevatorToSwitch() {
 	AddSequential(new SetShaftSetpoint(ELEVATOR_SWITCH, 3, true));
-	WAIT
 }
 
 void AutoSequence::RaiseElevatorToScale() {
 	AddSequential(new SetShaftSetpoint(ELEVATOR_SCALE, 3, true));
-	WAIT
 }
 
 void AutoSequence::DropCube() {
-	AddSequential(new CubeIntakeCommand(false));
+	AddSequential(new CubeIntakeCommand(false, 0.5));
 	WAIT_SEC(CUBE_EJECT_WAIT_TIME);
 }
 
@@ -127,8 +127,8 @@ void AutoSequence::DoSwitchNear() {
 	WAIT
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
 	WAIT
-	RaiseElevatorToSwitch();
-	WAIT
+	//RaiseElevatorToSwitch();
+	//WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
 	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));

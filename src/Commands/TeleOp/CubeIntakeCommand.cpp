@@ -12,9 +12,13 @@ using namespace std;
 
 int CubeIntakeCommand::numSpikes;
 
-CubeIntakeCommand::CubeIntakeCommand(bool intake) {
+CubeIntakeCommand::CubeIntakeCommand(bool intake, double timeout) {
+	Requires(Robot::elevator.get());
 	type = intake;
 	numSpikes = 0;
+	SetTimeout(timeout);
+	this->timeout = timeout;
+	m_timer = new Timer();
 }
 
 void CubeIntakeCommand::Initialize() {
@@ -39,11 +43,16 @@ void CubeIntakeCommand::Execute() {
 }
 
 bool CubeIntakeCommand::IsFinished() {
-	return false;
+	bool value = m_timer->Get() > timeout;
+	DriverStation::ReportError(value ? "true " : "false");
+	DriverStation::ReportError(std::to_string(m_timer->Get()));
+	DriverStation::ReportError(std::to_string(timeout));
+	return value;
 }
 
 void CubeIntakeCommand::End() {
 	Robot::cubeIntake->Stop();
+	DriverStation::ReportError("Done with cube intake");
 }
 
 void CubeIntakeCommand::Interrupted() {

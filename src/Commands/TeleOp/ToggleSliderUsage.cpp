@@ -5,39 +5,40 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "ReleaseShaft.h"
-#include "../Robot.h"
-#include "../RobotMap.h"
+#include "ToggleSliderUsage.h"
+#include "../../Robot.h"
 
-#define DELPOY_TIME 0.5
-
-ReleaseShaft::ReleaseShaft() {
-	Requires(Robot::release.get());
-	SetTimeout(DELPOY_TIME);
+ToggleSliderUsage::ToggleSliderUsage() {
 }
 
 // Called just before this Command runs the first time
-void ReleaseShaft::Initialize() {
-	RobotMap::shaftOrRampRelay->Set(Relay::Value::kForward);// FIXME put in proper direction
+void ToggleSliderUsage::Initialize() {
+	OI* oi = Robot::oi.get();
+	oi->useSlider = !oi->useSlider;
+	if(!oi->useSlider) {
+		Robot::elevator->enablePID(false);
+	} else {
+		Robot::elevator->enablePID(true);
+	}
 }
 
 // Called repeatedly when this Command is scheduled to run
-void ReleaseShaft::Execute() {
+void ToggleSliderUsage::Execute() {
 
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool ReleaseShaft::IsFinished() {
-	return false;
+bool ToggleSliderUsage::IsFinished() {
+	return true;
 }
 
 // Called once after isFinished returns true
-void ReleaseShaft::End() {
-	//RobotMap::shaftOrRampRelay->Set(Relay::Value::kOff);
+void ToggleSliderUsage::End() {
+
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void ReleaseShaft::Interrupted() {
-	End();
+void ToggleSliderUsage::Interrupted() {
+
 }

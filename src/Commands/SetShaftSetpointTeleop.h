@@ -7,20 +7,15 @@
 
 #pragma once
 
-#include <Commands/PIDSubsystem.h>
-#include "../RobotConstants.h"
-#include "WPILib.h"
-#include "ctre/Phoenix.h"
+#include <Commands/Command.h>
 
-class Shaft : public frc::PIDSubsystem {
+class SetShaftSetpointTeleop : public frc::Command {
 public:
-	Shaft();
-	double ReturnPIDInput() override;
-	void UsePIDOutput(double output) override;
-	void InitDefaultCommand() override;
-	double GetElevatorPosition();
-	void enablePID(bool enabled);
-private:
-	std::shared_ptr<WPI_TalonSRX> shaftDrive;
+	SetShaftSetpointTeleop();
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
+	void End() override;
+	void Interrupted() override;
 };
 

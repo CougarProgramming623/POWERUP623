@@ -17,7 +17,6 @@
 #define TICKS_PER_INCH 63/2
 #define TICKS_PER_INCH_STRAFE TICKS_PER_INCH
 
-
 #else //real bot
 
 #define TICKS_PER_INCH 21.08
@@ -62,13 +61,13 @@
 #define ELEVATOR_SWITCH ELEVATOR_TOP
 #define ELEVATOR_SCALE ELEVATOR_TOP
 
-#define normalize(min, max, value) (value - min) / (max - min)
+#define minFRC(a, b) a < b ? a : b
 
 #define lerp(a, b, f) a + f * (b - a)
 
-#define map(value, sourceMin, sourceMax, destMin, destMax) lerp(destMin, destMax, normalize(sourceMin, sourceMax, value))
+#define normalize(min, max, value) (value - min) / (max - min)
 
-#define minFRC(a, b) a < b ? a : b;
+#define map(value, sourceMin, sourceMax, destMin, destMax) lerp(destMin, destMax, normalize(sourceMin, sourceMax, value))
 
 #define maxFRC(a, b) a > b ? a : b;
 

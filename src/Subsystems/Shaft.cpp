@@ -22,11 +22,20 @@ double Shaft::ReturnPIDInput() {
 	return RobotMap::pot->Get();
 }
 
+void Shaft::enablePID(bool enabled) {
+	if(enabled) {
+		Enable();
+	} else {
+		Disable();
+	}
+}
+
 void Shaft::UsePIDOutput(double output) {
 	shaftDrive->Set(output);
 }
 
 void Shaft::InitDefaultCommand() {
+
 }
 
 double Shaft::GetElevatorPosition() {

@@ -1,7 +1,7 @@
 #include "Turn.h"
 
 const static double kF = 0.0f;
-const static double kToleranceDegrees = 1.0;
+const static double kToleranceDegrees = 2.0;
 
 Turn::Turn(double setpoint, double timeout) :
 		frc::Command(), frc::PIDOutput() {
@@ -56,7 +56,6 @@ void Turn::Interrupted() {
 
 void Turn::PIDWrite(double output) {
 	rotateToAngleRate = output;
-	rotateToAngleRate = minFRC(rotateToAngleRate, map(m_angle, 0.0, 90, 0.2, 1.0))
-	;
+	rotateToAngleRate = minFRC(rotateToAngleRate, map(m_angle, 0.0, 90, 0.2, 1.0));
 }
 

@@ -3,6 +3,7 @@
 #include "Commands/Drive/AngledDistanceDrive.h"
 #include "DriverStation.h"
 #include "Commands/TeleOp/CubeIntakeCommand.h"
+#include "Commands/TeleOp/SetElevatorSetpointTeleop.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
@@ -68,7 +69,8 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-
+	Robot::elevator->enablePID(false);
+	Robot::elevator.get()->SetDefaultCommand(new SetElevatorSetpointTeleop());
 	if (autonomousCommand)
 		autonomousCommand->Cancel();
 }

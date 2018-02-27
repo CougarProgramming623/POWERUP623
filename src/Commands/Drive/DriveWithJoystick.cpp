@@ -55,23 +55,19 @@ void DriveWithJoystick::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveWithJoystick::Execute() {
+	if (Robot::oi.get()->useSlider) {
+		double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
+		double elevatorLocation = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
+		Robot::elevator->SetSetpoint(elevatorLocation);
+	}
 
-	XAxis = Robot::oi->getdriverJoystick()->GetRawAxis(0);
-	YAxis = -Robot::oi->getdriverJoystick()->GetRawAxis(1);
-	RotAxis = Robot::oi->getdriverJoystick()->GetRawAxis(2);
+	XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
+	YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);
+	RotAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(2);
 
 	double push = sqrt(XAxis * XAxis + YAxis * YAxis);
-	/*if (abs(RotAxis) < 0.0001f && push > 0.1f) {
-		turnController->Enable();
-		rotateToAngleRate = 0.0;
-		Robot::driveTrain->MecanumDrive(XAxis, YAxis, rotateToAngleRate, -RobotMap::ahrs->GetYaw());
-		//DriverStation::ReportError("not turning");
-	} else {*/
-		turnController->Disable();
-		Robot::driveTrain->MecanumDrive(XAxis, YAxis, RotAxis, -RobotMap::ahrs->GetYaw());
-		//turnController->SetSetpoint(RobotMap::ahrs->GetYaw());
-		//DriverStation::ReportError("turning");
-	//}
+	turnController->Disable();
+	Robot::driveTrain->MecanumDrive(XAxis, YAxis, RotAxis, -RobotMap::ahrs->GetYaw());
 	double angle = RobotMap::ahrs->GetYaw();
 	Robot::cob->PushRotation(angle);
 	double velAngle = -atan(YAxis / XAxis) * 180 / M_PI - 90;
