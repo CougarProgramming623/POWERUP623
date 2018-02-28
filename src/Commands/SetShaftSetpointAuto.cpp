@@ -17,8 +17,5 @@ SetShaftSetpointAuto::SetShaftSetpointAuto(double setpoint, double timeout) :
 }
 
 bool SetShaftSetpointAuto::IsFinished() {
-	if (Robot::elevator->GetElevatorPosition() > ELEVATOR_DELTA) {
-		return true;
-	}
-	return (fabs(Robot::elevator->GetElevatorPosition() - m_setpoint) < .08f);
+	return (fabs(Robot::elevator->GetElevatorPosition() - m_setpoint) < .08f) || IsTimedOut();
 }

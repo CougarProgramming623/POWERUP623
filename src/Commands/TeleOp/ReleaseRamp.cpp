@@ -24,6 +24,7 @@ void ReleaseRamp::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void ReleaseRamp::Execute() {
+	/*
 	if (m_timer->Get() > RAMP_OFF_TIME) {
 		if (!startedRampUp) { //We are done pushing the sloped part off, raise the ramp
 			RobotMap::liftController->Set(-0.25);
@@ -34,17 +35,19 @@ void ReleaseRamp::Execute() {
 	} else { //We are waiting for the sloped part of the ramp to get pushed out by the horizontal gas spring
 
 	}
+	*/
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool ReleaseRamp::IsFinished() {
-	return m_timer->Get() > TOTAL_TIME;
+	//return m_timer->Get() > TOTAL_TIME;
+	return IsTimedOut();
 }
 
 // Called once after isFinished returns true
 void ReleaseRamp::End() {
-	RobotMap::liftController->StopMotor();
-	RobotMap::shaftOrRampRelay->Set(Relay::Value::kOff);
+	//RobotMap::liftController->StopMotor();
+	//RobotMap::shaftOrRampRelay->Set(Relay::Value::kOff);
 }
 
 // Called when another command which requires one or more of the same
