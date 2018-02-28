@@ -9,7 +9,7 @@
 #include "../Robot.h"
 #include "../RobotMap.h"
 
-#define DEPLOY_TIME 1
+#define DEPLOY_TIME 0.5
 
 ReleaseShaft::ReleaseShaft() {
 	Requires(Robot::release.get());

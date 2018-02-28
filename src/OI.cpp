@@ -26,11 +26,13 @@ OI::OI() {
 	buttonBoard.reset(new frc::Joystick(1));
 
 	toggleSliderControl.reset(new frc::JoystickButton(buttonBoard.get(), 3));
-	expungeButton.reset(new frc::JoystickButton(buttonBoard.get(), 5));
-	intakeButton.reset(new frc::JoystickButton(buttonBoard.get(), 6));
-	releaseShaftButton.reset(new frc::JoystickButton(buttonBoard.get(), 1));
-	releaseRampButton.reset(new frc::JoystickButton(buttonBoard.get(), 2));
-
+	expungeButton.reset(new frc::JoystickButton(buttonBoard.get(), 2));
+	intakeButton.reset(new frc::JoystickButton(buttonBoard.get(), 1));
+	releaseShaftButton.reset(new frc::JoystickButton(buttonBoard.get(), 4));
+	releaseRampButton.reset(new frc::JoystickButton(buttonBoard.get(), 8));
+	//5 is endgame override
+	//6 is climb
+	//7 is ramp lift
 
 	toggleSliderControl->WhenPressed(new ToggleSliderUsage());
 
