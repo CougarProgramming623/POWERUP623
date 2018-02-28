@@ -7,15 +7,23 @@
 
 #pragma once
 
-#include <Commands/Command.h>
+#include "Commands/Subsystem.h"
+#include "../Robot.h"
+#include "../RobotMap.h"
+#include "WPILib.h"
+#include "../CurrentSpikeIndicator.h"
 
 class SetShaftSetpointTeleop : public frc::Command {
 public:
-	SetShaftSetpointTeleop();
+	SetShaftSetpointTeleop(double);
 	void Initialize() override;
 	void Execute() override;
-	bool IsFinished() override;
+	virtual bool IsFinished() override;
 	void End() override;
 	void Interrupted() override;
+protected:
+	double m_setpoint = 0.0;
+	std::shared_ptr<CurrentSpikeIndicator> currentSpikeIndicator;
+
 };
 

@@ -9,11 +9,11 @@
 #include "../Robot.h"
 #include "../RobotMap.h"
 
-#define DELPOY_TIME 0.5
+#define DEPLOY_TIME 1
 
 ReleaseShaft::ReleaseShaft() {
 	Requires(Robot::release.get());
-	SetTimeout(DELPOY_TIME);
+	SetTimeout(DEPLOY_TIME);
 }
 
 // Called just before this Command runs the first time
@@ -28,12 +28,12 @@ void ReleaseShaft::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool ReleaseShaft::IsFinished() {
-	return false;
+	return IsTimedOut();
 }
 
 // Called once after isFinished returns true
 void ReleaseShaft::End() {
-	//RobotMap::shaftOrRampRelay->Set(Relay::Value::kOff);
+	RobotMap::shaftOrRampRelay->Set(Relay::Value::kOff);
 }
 
 // Called when another command which requires one or more of the same

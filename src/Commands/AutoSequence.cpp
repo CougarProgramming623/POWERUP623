@@ -1,4 +1,5 @@
 #include "AutoSequence.h"
+#include "SetShaftSetpointAuto.h"
 #include <iostream>
 
 #define invertIfRight(x) getStart() == SIDE_RIGHT ? -x : x
@@ -30,9 +31,9 @@ AutoSequence::AutoSequence() :
 	std::cout << "no cross map " << Robot::cob->GetAutonomousEnableCrossing() << std::endl;
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
 	//releaseShaft();
-	RaiseElevatorToSwitch();
-	DropCube();
-	/*
+	//RaiseElevatorToSwitch();
+	//DropCube();
+
 	if (isCenterStart()) {
 		DoCenter();
 	} else {		//We are on the sides
@@ -87,7 +88,7 @@ AutoSequence::AutoSequence() :
 				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR NOT DO EASY line 82 AutoSequence.cpp");
 			}
 		}
-	}*/
+	}
 }
 
 void AutoSequence::releaseShaft() {
@@ -95,11 +96,11 @@ void AutoSequence::releaseShaft() {
 }
 
 void AutoSequence::RaiseElevatorToSwitch() {
-	AddSequential(new SetShaftSetpoint(ELEVATOR_SWITCH, 3, true));
+	AddSequential(new SetShaftSetpointAuto(ELEVATOR_SWITCH, 3));
 }
 
 void AutoSequence::RaiseElevatorToScale() {
-	AddSequential(new SetShaftSetpoint(ELEVATOR_SCALE, 3, true));
+	AddSequential(new SetShaftSetpointAuto(ELEVATOR_SCALE, 3));
 }
 
 void AutoSequence::DropCube() {
@@ -238,15 +239,18 @@ void AutoSequence::DoCenter() {
 	double turnAngle = switchOnRight() ? 90 - (angleFromCenter + 20) : 90 + angleFromCenter;
 	DriverStation::ReportError("doing correct!");
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
-	AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
+	//AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
-		AddSequential(new AngledDistanceDrive(10, 0.3, turnAngle));
-		AddSequential(new VisionDrive(0.3, TIMEOUT));
+		//AddSequential(new AngledDistanceDrive(10, 0.3, turnAngle));
+		AddSequential(new VisionDrive(0.3, 2));
+		WAIT_SEC(1);
+		AddSequential(new VisionDrive(0.3, 2));
 	} else {		//Use vision
 		AddSequential(new AngledDistanceDrive(14 * FEET_TO_INCHES, 0.5, turnAngle));
 		//AddSequential(new VisionDrive(SPEED, TIMEOUT, 100, 98));
 		//Vision stuff
 	}
+	/*
 	RaiseElevatorToScale();
 	WAIT_SEC(2)
 	DropCube();
@@ -258,4 +262,5 @@ void AutoSequence::DoCenter() {
 	} else {
 		AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, SPEED, TIMEOUT, true, false));
 	}
+	*/
 }

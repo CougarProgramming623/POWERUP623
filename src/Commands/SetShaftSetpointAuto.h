@@ -7,22 +7,12 @@
 
 #pragma once
 
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
-#include "../RobotMap.h"
-#include "WPILib.h"
+#include "SetShaftSetpointTeleop.h"
 
-class SetShaftSetpoint : public frc::Command {
+class SetShaftSetpointAuto : public SetShaftSetpointTeleop {
 public:
-	SetShaftSetpoint(float, double, bool);
-	void Initialize() override;
-	void Execute() override;
+	SetShaftSetpointAuto(float, double);
 	bool IsFinished() override;
-	void End() override;
-	void Interrupted() override;
-private:
-	double m_setpoint = 0.0;
-	bool goUp;
-	bool autonomous;
+
 };
 

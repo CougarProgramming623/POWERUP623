@@ -5,17 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "SetShaftSetpointAuto.h"
+#pragma once
 
-#include "../CurrentSpikeIndicator.h"
+#include <Commands/Command.h>
 
-SetShaftSetpointAuto::SetShaftSetpointAuto(float setpoint, double timeout) : SetShaftSetpointTeleop(setpoint){
-	SetTimeout(timeout);
-	Requires(Robot::elevator.get());
-}
-
-// Make this return true when this Command no longer needs to run execute()
-bool SetShaftSetpointAuto::IsFinished() {
-	return fabs(Robot::elevator->GetElevatorPosition() - m_setpoint) < .08f;
-}
-
+class ReleaseRamp : public frc::Command {
+public:
+	ReleaseRamp();
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
+	void End() override;
+	void Interrupted() override;
+};

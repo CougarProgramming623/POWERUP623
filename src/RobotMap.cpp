@@ -73,7 +73,8 @@ void RobotMap::init() {
 
 #endif
 
-	//shaftOrRampRelay.reset(new Relay(/* FIXME put proper channel */0));
+	shaftOrRampRelay.reset(new Relay(/* FIXME put proper channel */0));
+	//shaftOrRampRelay->SetExpiration(5);
 
 	intake.reset(new WPI_TalonSRX(18));
 	shaftController.reset(new WPI_TalonSRX(16));
