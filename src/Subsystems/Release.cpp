@@ -6,10 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Release.h"
-#include "../RobotMap.h"
 
 Release::Release() : Subsystem("Release") {
-
 }
 
 void Release::InitDefaultCommand() {

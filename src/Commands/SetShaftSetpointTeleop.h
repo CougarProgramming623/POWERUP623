@@ -12,6 +12,7 @@
 #include "../RobotMap.h"
 #include "WPILib.h"
 #include "../CurrentSpikeIndicator.h"
+#include "ctre/Phoenix.h"
 
 class SetShaftSetpointTeleop : public frc::Command {
 public:
@@ -23,7 +24,6 @@ public:
 	void Interrupted() override;
 protected:
 	double m_setpoint = 0.0;
-	std::shared_ptr<CurrentSpikeIndicator> currentSpikeIndicator;
-
+	std::shared_ptr<CurrentSpikeIndicator> currentSpike;
 };
 

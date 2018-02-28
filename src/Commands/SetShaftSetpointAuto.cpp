@@ -6,16 +6,16 @@
 /*----------------------------------------------------------------------------*/
 
 #include "SetShaftSetpointAuto.h"
+#include "../Robot.h"
 
-#include "../CurrentSpikeIndicator.h"
-
-SetShaftSetpointAuto::SetShaftSetpointAuto(float setpoint, double timeout) : SetShaftSetpointTeleop(setpoint){
-	SetTimeout(timeout);
+SetShaftSetpointAuto::SetShaftSetpointAuto(double setpoint, double timeout) :
+		SetShaftSetpointTeleop(setpoint) {
+	// Use Requires() here to declare subsystem dependencies
+	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::elevator.get());
+	SetTimeout(timeout);
 }
 
-// Make this return true when this Command no longer needs to run execute()
 bool SetShaftSetpointAuto::IsFinished() {
-	return fabs(Robot::elevator->GetElevatorPosition() - m_setpoint) < .08f;
+	return (fabs(Robot::elevator->GetElevatorPosition() - m_setpoint) < .08f) || IsTimedOut();
 }
-

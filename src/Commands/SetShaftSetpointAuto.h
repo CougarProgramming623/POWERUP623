@@ -7,12 +7,15 @@
 
 #pragma once
 
+#include "Commands/Subsystem.h"
+#include "../RobotMap.h"
+#include "WPILib.h"
 #include "SetShaftSetpointTeleop.h"
 
 class SetShaftSetpointAuto : public SetShaftSetpointTeleop {
 public:
-	SetShaftSetpointAuto(float, double);
+	SetShaftSetpointAuto(double, double);
 	bool IsFinished() override;
-
+private:
+	double timeout;
 };
-
