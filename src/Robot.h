@@ -16,6 +16,7 @@
 #include "Subsystems/CubeIntake.h"
 #include "Subsystems/Shaft.h"
 #include "Subsystems/Release.h"
+#include "Subsystems/EndgameSystem.h"
 
 #include "Commands/AutonomousCommand.h"
 #include "ahrs.h"
@@ -35,6 +36,7 @@ public:
 	static std::shared_ptr<DriveTrain> driveTrain;
 	static std::shared_ptr<CubeIntake> cubeIntake;
 	static std::shared_ptr<Release> release;
+	static std::shared_ptr<EndgameSystem> endgameSystem;
 
 	void RobotInit() override;
 	void DisabledInit() override;

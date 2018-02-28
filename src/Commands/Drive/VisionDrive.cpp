@@ -67,8 +67,8 @@ void VisionDrive::Execute() {
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 1"), llvm::StringRef("Distance is :" + std::to_string(m_distanceToTarget)));
 		DriverStation::ReportError("Vision angle is :" + std::to_string(m_currentAngle));
 		DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
-		double x = cos(m_currentAngle * M_PI / 180) * m_speed;
-		double y = sin(m_currentAngle * M_PI / 180) * m_speed;
+		double x = -1* cos(m_currentAngle * M_PI / 180) * m_speed;
+		double y = -1* sin(m_currentAngle * M_PI / 180) * m_speed;
 
 
 		Robot::driveTrain->MecanumDrive(x, y, 0, RobotMap::ahrs->GetYaw());
@@ -128,9 +128,9 @@ void VisionDrive::PIDWrite(double output) {
 
 double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 
-	/*if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
-		return acos(-1 * VisionDrive::GetVisionTargetDriveDistance(y1, y2)/TAPE_WIDTH);
-	else*/
+	if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
+		return atan(-1 * fabs(y2-y1)/FOCAL_LENGTH);
+	else
 		return atan(fabs(y2-y1)/FOCAL_LENGTH);
 
 

@@ -2,7 +2,7 @@
 #include "RobotConstants.h"
 #include "Commands/Drive/AngledDistanceDrive.h"
 #include "DriverStation.h"
-#include "Commands/TeleOp/CubeIntakeCommand.h"
+#include "Commands/TeleOp/CubeIntakeCommand.h";
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
@@ -10,6 +10,7 @@ std::shared_ptr<Shaft> Robot::elevator;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
 std::shared_ptr<Release> Robot::release;
+std::shared_ptr<EndgameSystem> Robot::endgameSystem;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
@@ -17,7 +18,7 @@ void Robot::RobotInit() {
 	driveTrain.reset(new DriveTrain());
 	cubeIntake.reset(new CubeIntake());
 	release.reset(new Release());
-
+	endgameSystem.reset(new EndgameSystem());
 	elevator.reset(new Shaft());
 	//SmartDashboard::PutData(driveTrain.get());
 	//CougarOpticBoard::InitBoard();

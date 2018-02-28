@@ -20,6 +20,8 @@
 #include "Commands/SetShaftSetpointAuto.h"
 #include "Commands/ReleaseRamp.h"
 #include "Commands/ReleaseShaft.h"
+#include "Commands/TeleOp/Climb.h"
+#include "Commands/TeleOp/LiftRamp.h"
 
 OI::OI() {
 	driverJoystick.reset(new frc::Joystick(0));
@@ -42,6 +44,9 @@ OI::OI() {
 
 	releaseShaftButton->WhenPressed(new ReleaseShaft());
 	releaseRampButton->WhenPressed(new ReleaseRamp());
+
+	climb->WhileHeld(new Climb());
+	rampLift->WhenPressed(new LiftRamp());
 }
 
 std::shared_ptr<frc::Joystick> OI::GetDriverJoystick() {

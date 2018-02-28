@@ -49,6 +49,12 @@
 #define INTAKE_MAX_CURRENT 1
 #define INTAKE_MAX_NUM_SPIKES 3
 
+#define CLIMB_SPEED 1
+#define RAMP_LIFT_SPEED -0.5
+#define RAMP_LIFT_TIMEOUT 0.5
+#define ENDGAME_CLIMB true
+#define ENDGAME_RAMP false
+
 #define WAIT_SEC(x) AddSequential(new WaitCommand(x));
 #define WAIT WAIT_SEC(0.35)
 

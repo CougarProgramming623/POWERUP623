@@ -34,10 +34,8 @@ public:
 	static std::shared_ptr<WPI_TalonSRX> driveTrainrightFront;
 	static std::shared_ptr<WPI_TalonSRX> driveTrainrightBack;
 
-	static std::shared_ptr<WPI_TalonSRX> liftController;
-
 	static std::shared_ptr<WPI_TalonSRX> intake;
-
+	static std::shared_ptr<WPI_TalonSRX> endgameMotor;
 	static std::shared_ptr<WPI_TalonSRX> shaftController;
 
 	static std::shared_ptr<frc::MecanumDrive> driveTrainMecanumDrive1;

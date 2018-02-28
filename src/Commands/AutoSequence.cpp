@@ -235,15 +235,17 @@ void AutoSequence::DoBaseline() {
 }
 
 void AutoSequence::DoCenter() {
-	double angleFromCenter = 40;
+	double angleFromCenter = 50;
 	double turnAngle = switchOnRight() ? 90 - (angleFromCenter + 20) : 90 + angleFromCenter;
 	DriverStation::ReportError("doing correct!");
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	//AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
-		//AddSequential(new AngledDistanceDrive(10, 0.3, turnAngle));
+		AddSequential(new AngledDistanceDrive(1.5, 0.3, turnAngle));
 		AddSequential(new VisionDrive(0.3, 2));
-		WAIT_SEC(1);
+		WAIT_SEC(0.15);
+		AddSequential(new VisionDrive(0.3, 2));
+		WAIT_SEC(0.15);
 		AddSequential(new VisionDrive(0.3, 2));
 	} else {		//Use vision
 		AddSequential(new AngledDistanceDrive(14 * FEET_TO_INCHES, 0.5, turnAngle));
