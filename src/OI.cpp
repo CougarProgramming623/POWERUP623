@@ -14,7 +14,6 @@
 #include "SmartDashboard/SmartDashboard.h"
 #include "Commands/AutonomousCommand.h"
 #include "Commands/Drive/DriveWithJoystick.h"
-#include "Commands/SetShaftSetpoint.h"
 #include "Commands/TeleOp/CubeIntakeCommand.h"
 #include "Commands/TeleOp/ToggleSliderUsage.h"
 #include <iostream>

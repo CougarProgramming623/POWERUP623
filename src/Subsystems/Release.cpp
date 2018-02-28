@@ -6,12 +6,12 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Release.h"
-#include "../RobotMap.h"
+#include "../Commands/Teleop/RelayDoNothing.h"
 
 Release::Release() : Subsystem("Release") {
-
 }
 
 void Release::InitDefaultCommand() {
+	SetDefaultCommand(new RelayDoNothing());
 }
 

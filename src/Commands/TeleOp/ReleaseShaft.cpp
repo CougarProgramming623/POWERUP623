@@ -6,12 +6,12 @@
 /*----------------------------------------------------------------------------*/
 
 #include "ReleaseShaft.h"
-#include "../Robot.h"
-#include "../RobotMap.h"
+#include "../../Robot.h"
+#include "../../RobotMap.h"
 
 #define DELPOY_TIME 0.5
 
-ReleaseShaft::ReleaseShaft() {
+ReleaseShaft::ReleaseShaft() : frc::Command() {
 	Requires(Robot::release.get());
 	SetTimeout(DELPOY_TIME);
 }

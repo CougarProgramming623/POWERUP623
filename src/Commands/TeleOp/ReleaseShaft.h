@@ -7,7 +7,9 @@
 
 #pragma once
 
-#include <Commands/Command.h>
+#include "Commands/Subsystem.h"
+#include "../../RobotMap.h"
+#include "WPILib.h"
 
 class ReleaseShaft : public frc::Command {
 public:

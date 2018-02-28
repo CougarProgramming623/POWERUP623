@@ -1,4 +1,5 @@
 #include "AutoSequence.h"
+#include "SetShaftSetpointAuto.h"
 #include <iostream>
 
 #define invertIfRight(x) getStart() == SIDE_RIGHT ? -x : x
@@ -95,11 +96,11 @@ void AutoSequence::releaseShaft() {
 }
 
 void AutoSequence::RaiseElevatorToSwitch() {
-	AddSequential(new SetShaftSetpoint(ELEVATOR_SWITCH, 3, true));
+	AddSequential(new SetShaftSetpointAuto(ELEVATOR_SWITCH, 3));
 }
 
 void AutoSequence::RaiseElevatorToScale() {
-	AddSequential(new SetShaftSetpoint(ELEVATOR_SCALE, 3, true));
+	AddSequential(new SetShaftSetpointAuto(ELEVATOR_SCALE, 3));
 }
 
 void AutoSequence::DropCube() {
