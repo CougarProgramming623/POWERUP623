@@ -88,20 +88,23 @@ void VisionDrive::Execute() {
 bool VisionDrive::IsFinished() {
 	nt::NetworkTableEntry centerX = visionTable->GetEntry("width");
 	std::vector<double> arr = centerX.GetDoubleArray(llvm::ArrayRef<double>());
-
-	if (IsTimedOut()) {
+	if(m_distanceToTarget <= 15)
 		return true;
-	}
-	if(arr.size() >=2 )
+	/*if (IsTimedOut()) {
+		return true;
+	}*/
+	else if(arr.size() >=2 )
 	{
 		double width1 = arr[0];
 		double width2 = arr[1];
-		if((width1+width2)/2 >= 90)
+		if((width1+width2)/2 >= 90){
+			DriverStation::ReportError("ENDAUTOVISION");
 			return true;
+		}
 	}
-	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
+	/*if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
 		return true;
-	}
+	}*/
 	return false;
 
 }
