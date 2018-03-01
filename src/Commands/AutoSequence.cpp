@@ -163,9 +163,9 @@ void AutoSequence::DoSwitchFar() {
  */
 void AutoSequence::DoScaleNear() {
 	//drive to bump
-	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false));
+	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, 0.8, TIMEOUT, false));
 	//Can we raise here? Or after we detect the bump on the next line
-	AddSequential(new DistanceDrive(20 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, true));
+	AddSequential(new DistanceDrive(13 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, true));
 	WAIT
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));

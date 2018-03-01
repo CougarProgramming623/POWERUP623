@@ -32,7 +32,6 @@ void CubeIntakeCommand::Execute() {
 	} else {
 		Robot::cubeIntake->Expunge();
 	}
-
 }
 
 bool CubeIntakeCommand::IsFinished() {

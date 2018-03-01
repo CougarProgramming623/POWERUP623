@@ -63,7 +63,6 @@ void Robot::AutonomousInit() {
 	autonomousCommand.reset(new AutoSequence());
 	if (autonomousCommand)
 		autonomousCommand->Start();
-	//DriverStation::ReportError(((std::unique_ptr<RobotImpl>)autonomousCommand)->switchOnRight() ? "Right" : "Left");
 }
 
 void Robot::AutonomousPeriodic() {

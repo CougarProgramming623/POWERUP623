@@ -1,7 +1,7 @@
 #include "Turn.h"
 
 const static double kF = 0.0f;
-const static double kToleranceDegrees = 2.0;
+const static double kToleranceDegrees = 1.0;
 
 Turn::Turn(double setpoint, double timeout) :
 		frc::Command(), frc::PIDOutput() {
@@ -19,6 +19,8 @@ void Turn::Initialize() {
 	turnController->SetOutputRange(-1.0, 1.0);
 	turnController->SetAbsoluteTolerance(kToleranceDegrees);
 	turnController->SetContinuous(true);
+	DriverStation::ReportError("Next line is  b turnController->GetP():");
+	DriverStation::ReportError(std::to_string(turnController->GetP()));
 
 	turnController->SetSetpoint(m_angle);
 	turnController->Enable();
@@ -28,17 +30,16 @@ void Turn::Initialize() {
 void Turn::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
 	Robot::driveTrain->MecanumDrive(0, 0, rotateToAngleRate, RobotMap::ahrs->GetYaw());
-
 	frc::SmartDashboard::PutNumber("Current Angle", angle);
 	frc::SmartDashboard::PutNumber("Current Rotation Rate", rotateToAngleRate);
-	frc::SmartDashboard::PutNumber("P", RobotMap::turnP);
-	frc::SmartDashboard::PutNumber("I", RobotMap::turnI);
-	frc::SmartDashboard::PutNumber("D", RobotMap::turnD);
+	//frc::SmartDashboard::PutNumber("P", RobotMap::turnP);
+	//frc::SmartDashboard::PutNumber("I", RobotMap::turnI);
+	//frc::SmartDashboard::PutNumber("D", RobotMap::turnD);
 
 }
 
 bool Turn::IsFinished() {
-	return false;
+	return turnController->OnTarget();
 }
 
 void Turn::End() {
