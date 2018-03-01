@@ -55,23 +55,28 @@ int VisionDrive::getMaxTicks() {
 
 // Called repeatedly when this Command is scheduled to run
 void VisionDrive::Execute() {
-	nt::NetworkTableEntry vision = visionTable->GetEntry("centerX");
+	nt::NetworkTableEntry centerX = visionTable->GetEntry("centerX");
 
-	std::vector<double> arr = vision.GetDoubleArray(llvm::ArrayRef<double>());
+	std::vector<double> arr = centerX.GetDoubleArray(llvm::ArrayRef<double>());
 	if(arr.size() == 2)
 	{
 		m_currentAngle = GetVisionTargetDriveAngle(arr[0], arr[1]); //Put in real values later
 		m_distanceToTarget = GetVisionTargetDriveDistance(arr[0], arr[1]); //drawn from networktables
 
+
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 0"), llvm::StringRef("Vision angle is :" + std::to_string(m_currentAngle)));
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 1"), llvm::StringRef("Distance is :" + std::to_string(m_distanceToTarget)));
 		DriverStation::ReportError("Vision angle is :" + std::to_string(m_currentAngle));
 		DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
-		double x = -1* cos(m_currentAngle * M_PI / 180) * m_speed;
-		double y = -1* sin(m_currentAngle * M_PI / 180) * m_speed;
+		double x = cos(m_currentAngle) * m_speed - 0.2;
+		double y = sin(m_currentAngle) * m_speed + 0.2;
 
+		if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
+			x *= -1;
 
-		Robot::driveTrain->MecanumDrive(x, y, 0, RobotMap::ahrs->GetYaw());
+		DriverStation::ReportError("X is :" + std::to_string(x));
+		DriverStation::ReportError("Y is :" + std::to_string(y));
+		Robot::driveTrain->MecanumDrive(x, y, 0, 0);
 	}
 	else{
 		DriverStation::ReportError("Can't see targets");
@@ -81,12 +86,25 @@ void VisionDrive::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool VisionDrive::IsFinished() {
-	if (m_timer && m_timer->Get() > m_timeout) {
+	nt::NetworkTableEntry centerX = visionTable->GetEntry("width");
+	std::vector<double> arr = centerX.GetDoubleArray(llvm::ArrayRef<double>());
+	if(m_distanceToTarget <= 15)
 		return true;
-	}
-	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
+	/*if (IsTimedOut()) {
 		return true;
+	}*/
+	else if(arr.size() >=2 )
+	{
+		double width1 = arr[0];
+		double width2 = arr[1];
+		if((width1+width2)/2 >= 90){
+			DriverStation::ReportError("ENDAUTOVISION");
+			return true;
+		}
 	}
+	/*if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
+		return true;
+	}*/
 	return false;
 
 }
@@ -128,8 +146,9 @@ void VisionDrive::PIDWrite(double output) {
 
 double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 
-	if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
-		return atan(-1 * fabs(y2-y1)/FOCAL_LENGTH);
+	//if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
+	if(y1 >= 440 && y2 >= 440)
+		return -1*atan((y1-y2)/FOCAL_LENGTH);
 	else
 		return atan(fabs(y2-y1)/FOCAL_LENGTH);
 
@@ -143,7 +162,7 @@ double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 double VisionDrive::GetVisionTargetDriveDistance(double y1, double y2) {
 	double widthPxl = fabs(y2-y1);
 	double straightDistance = (TAPE_WIDTH * FOCAL_LENGTH)/widthPxl;
-	double trueDistance = straightDistance/ cos(m_currentAngle);
+	//double trueDistance = straightDistance/ cos(m_currentAngle);
 	//double value = (TAPE_HEIGHT * CAMERA_HEIGHT) / (2 * averageHeight * tan(VERTICAL_THETA * M_PI / 180));
-	return trueDistance;
+	return straightDistance;
 }
