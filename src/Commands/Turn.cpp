@@ -7,7 +7,7 @@ Turn::Turn(double setpoint, double timeout) :
 		frc::Command(), frc::PIDOutput() {
 	Requires(Robot::driveTrain.get());
 	m_angle = setpoint;
-	m_timeout = timeout;
+	SetTimeout(timeout);
 	m_timer = new Timer();
 	rotateToAngleRate = 0.0;
 	turnController = new PIDController(RobotMap::turnP, RobotMap::turnI, RobotMap::turnD, kF, RobotMap::ahrs, this);
@@ -19,8 +19,6 @@ void Turn::Initialize() {
 	turnController->SetOutputRange(-1.0, 1.0);
 	turnController->SetAbsoluteTolerance(kToleranceDegrees);
 	turnController->SetContinuous(true);
-	DriverStation::ReportError("Next line is  b turnController->GetP():");
-	DriverStation::ReportError(std::to_string(turnController->GetP()));
 
 	turnController->SetSetpoint(m_angle);
 	turnController->Enable();
@@ -39,10 +37,11 @@ void Turn::Execute() {
 }
 
 bool Turn::IsFinished() {
-	return turnController->OnTarget();
+	return turnController->OnTarget() || IsTimedOut();
 }
 
 void Turn::End() {
+	DriverStation::ReportError("Done with turn angle: " + std::to_string(m_angle));
 	m_timer->Stop();
 	double time = m_timer->Get();
 	frc::SmartDashboard::PutNumber("Time", time);
@@ -57,6 +56,6 @@ void Turn::Interrupted() {
 
 void Turn::PIDWrite(double output) {
 	rotateToAngleRate = output;
-	rotateToAngleRate = minFRC(rotateToAngleRate, map(m_angle, 0.0, 90, 0.2, 1.0));
+	//rotateToAngleRate = minFRC(rotateToAngleRate, map(m_angle, 0.0, 90, 0.2, 1.0));
 }
 

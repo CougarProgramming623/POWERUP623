@@ -30,7 +30,7 @@ AutoSequence::AutoSequence() :
 	std::cout << "instructions " << Robot::cob->GetAutonomousInstructions() << std::endl;
 	std::cout << "no cross map " << Robot::cob->GetAutonomousEnableCrossing() << std::endl;
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
-	//releaseShaft();
+	releaseShaft();
 	//RaiseElevatorToSwitch();
 	//DropCube();
 
@@ -113,6 +113,8 @@ void AutoSequence::TestBumpDetection() {
 
 void AutoSequence::TestPIDTurn() {
 	AddSequential(new Turn(90, TIMEOUT));
+	WAIT_SEC(2.0);
+	AddSequential(new Turn(-90, TIMEOUT));
 }
 
 /**
@@ -170,7 +172,7 @@ void AutoSequence::DoScaleNear() {
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
 	//turn
-	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
+	AddSequential(new Turn(invertIfRight(90), 1));
 	WAIT
 	//drive forward
 	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));

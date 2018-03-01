@@ -35,7 +35,7 @@ void CubeIntakeCommand::Execute() {
 }
 
 bool CubeIntakeCommand::IsFinished() {
-	return timeout == 0 ? false : IsTimedOut();
+	return timeout == 0.0 ? false : IsTimedOut();
 }
 
 void CubeIntakeCommand::End() {

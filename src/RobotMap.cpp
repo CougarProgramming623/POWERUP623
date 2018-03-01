@@ -131,9 +131,15 @@ void RobotMap::init() {
 	#endif
 
 #else
-	turnP = prefs->GetDouble("Turn P", 0.07f);
-	turnI = prefs->GetDouble("Turn I", 0.0f);
-	turnD = prefs->GetDouble("Turn D", 0.0315f);
+	#ifdef USE_PREFS
+			turnP = prefs->GetDouble("Turn P", 0.07f);
+			turnI = prefs->GetDouble("Turn I", 0.0f);
+			turnD = prefs->GetDouble("Turn D", 0.0315f);
+	#else
+		turnP = 0.07f;
+		turnI = 0.0f;
+		turnD = 0.0315f;
+	#endif
 #endif
 
 	//prefs->PutDouble("Turn P", turnP);
