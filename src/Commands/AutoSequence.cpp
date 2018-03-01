@@ -48,11 +48,10 @@ AutoSequence::AutoSequence() :
 				if (!Robot::cob->GetAutonomousEnableCrossing())
 					DoScaleFar();
 				else {
-					std::cout << "test spot 1" << std::endl;
 					DoBaseline();
 				}
 			} else {
-				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR DO EASY!!! line 51 AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR DO EASY!!! error:1 AutoSequence.cpp");
 				DoBaseline();
 			}
 		} else {// Cases except do easy (Only Switch, Only Scale, Baseline)
@@ -67,7 +66,7 @@ AutoSequence::AutoSequence() :
 				place = AutoPlace::BASELINE;
 			} else {
 				place = AutoPlace::BASELINE;
-				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING line 64 AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING error:2 AutoSequence.cpp");
 			}
 			if (!Robot::cob->GetAutonomousEnableCrossing() && (place == AutoPlace::SCALE_FAR || place == AutoPlace::SWITCH_FAR)) {
 				place = AutoPlace::BASELINE;
@@ -81,11 +80,10 @@ AutoSequence::AutoSequence() :
 			else if (place == AutoPlace::SCALE_FAR)
 				DoScaleFar();
 			else if (place == AutoPlace::BASELINE) {
-				std::cout << "test spot 2" << std::endl;
 				DoBaseline();
 			} else {
 				DoBaseline();
-				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR NOT DO EASY line 82 AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR NOT DO EASY error:3 AutoSequence.cpp");
 			}
 		}
 	}
