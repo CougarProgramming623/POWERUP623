@@ -72,6 +72,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+	Robot::oi->GetButtonBoard()->SetOutput(4, true);
 	Robot::elevator->enablePID(false);
 	//Robot::elevator.get()->SetDefaultCommand(new SetElevatorSetpointTeleop());
 	if (autonomousCommand)

@@ -9,7 +9,7 @@
 #include "../RobotMap.h"
 
 EndgameSystem::EndgameSystem() : Subsystem("EndgameSubsystem") {
-	climbAndRampMotor = RobotMap::endgameMotor;
+	//climbAndRampMotor = RobotMap::endgameMotor;
 }
 
 void EndgameSystem::InitDefaultCommand() {
