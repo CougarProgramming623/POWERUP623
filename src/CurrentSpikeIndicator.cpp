@@ -20,7 +20,7 @@ CurrentSpikeIndicator::CurrentSpikeIndicator(double currentThreshold, std::share
 
 //call this in the Execute() method of the command to update the current array
 void CurrentSpikeIndicator::Update() {
-	currentArray[index] = talon->GetOutputCurrent();
+	currentArray[index] = fabs(talon->GetOutputCurrent());
 	//DriverStation::ReportError("Index: " + std::to_string(index) + " Counter: " + std::to_string(counter) + " currentArray[index]: " + std::to_string(currentArray[index]));
 	index++;
 	index %= ARRAY_SIZE;

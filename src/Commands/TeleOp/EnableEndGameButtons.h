@@ -7,18 +7,19 @@
 
 #pragma once
 
-#include "Commands/Subsystem.h"
-#include "ctre/Phoenix.h"
+#include <Commands/Command.h>
+#include "../../RobotConstants.h"
+#include "WPILib.h"
 
-class EndgameSystem : public frc::Subsystem {
-private:
-	std::shared_ptr<WPI_TalonSRX> climbAndRampMotor;
-	bool isEndGame;
-
+class EnableEndGameButtons : public frc::Command {
 public:
-	EndgameSystem();
-	void InitDefaultCommand() override;
-	void setIsEndGame(bool);
-	bool getIsEndGame();
+	EnableEndGameButtons();
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
+	void End() override;
+	void Interrupted() override;
+private:
+	Timer *m_timer;
 };
 

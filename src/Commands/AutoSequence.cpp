@@ -1,5 +1,5 @@
 #include "AutoSequence.h"
-#include "SetShaftSetpointAuto.h"
+#include "Autonomous/SetShaftSetpointAuto.h"
 #include <iostream>
 
 #define invertIfRight(x) getStart() == SIDE_RIGHT ? -x : x
@@ -30,29 +30,41 @@ AutoSequence::AutoSequence() :
 	std::cout << "instructions " << Robot::cob->GetAutonomousInstructions() << std::endl;
 	std::cout << "no cross map " << Robot::cob->GetAutonomousEnableCrossing() << std::endl;
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
-	//releaseShaft();
+	releaseShaft();
+	//WAIT_SEC(1)
 	//RaiseElevatorToSwitch();
+	WAIT_SEC(1)
 	//DropCube();
 
 	if (isCenterStart()) {
+		DriverStation::ReportError("Doing Center");
 		DoCenter();
 	} else {		//We are on the sides
 		if (Robot::cob->GetAutonomousInstructions() == OPTION_DO_EASY) {
-			if (switchOnOurSide() && scaleOnOurSide())
+			if (switchOnOurSide() && scaleOnOurSide()) {
+				DriverStation::ReportError("Doing switch near");
 				DoSwitchNear();
-			else if (switchOnOurSide() && !scaleOnOurSide())
+			}
+			else if (switchOnOurSide() && !scaleOnOurSide()) {
+				DriverStation::ReportError("Doing switch near");
 				DoSwitchNear();
-			else if (!switchOnOurSide() && scaleOnOurSide())
+			}
+			else if (!switchOnOurSide() && scaleOnOurSide()) {
+				DriverStation::ReportError("Doing scale near");
 				DoScaleNear();
+			}
 			else if (!switchOnOurSide() && !scaleOnOurSide()) {
-				if (!Robot::cob->GetAutonomousEnableCrossing())
+				if (!Robot::cob->GetAutonomousEnableCrossing()) {
+					DriverStation::ReportError("Doing baseline");
 					DoScaleFar();
+				}
 				else {
-					std::cout << "test spot 1" << std::endl;
+					DriverStation::ReportError("Doing baseline");
 					DoBaseline();
 				}
 			} else {
-				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR DO EASY!!! line 51 AutoSequence.cpp");
+				DriverStation::ReportError("UNKNOWN PLACE CASE");
+				DriverStation::ReportError("Doing baseline");
 				DoBaseline();
 			}
 		} else {// Cases except do easy (Only Switch, Only Scale, Baseline)
@@ -60,32 +72,41 @@ AutoSequence::AutoSequence() :
 			int autoInstructions = Robot::cob->GetAutonomousInstructions();
 
 			if (autoInstructions == OPTION_DO_SWITCH) {
-				place = switchOnOurSide() ? AutoPlace::SWITCH_NEAR : AutoPlace::SWITCH_FAR;
+				place = switchOnOurSide() ? AutoPlace::SWITCH_NEAR : AutoPlace::BASELINE;
 			} else if (autoInstructions == OPTION_DO_SCALE) {
-				place = scaleOnOurSide() ? AutoPlace::SCALE_NEAR : AutoPlace::SCALE_FAR;
+				place = scaleOnOurSide() ? AutoPlace::SCALE_NEAR : AutoPlace::BASELINE;
 			} else if (autoInstructions == OPTION_DO_BASELINE) {
 				place = AutoPlace::BASELINE;
 			} else {
 				place = AutoPlace::BASELINE;
-				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING line 64 AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD CASE DOESNT EXIST FOR NON EASY AUTO OPTIONS CHECK WITH PROGRAMMING error:2 AutoSequence.cpp");
 			}
 			if (!Robot::cob->GetAutonomousEnableCrossing() && (place == AutoPlace::SCALE_FAR || place == AutoPlace::SWITCH_FAR)) {
 				place = AutoPlace::BASELINE;
 			}
-			if (place == AutoPlace::SWITCH_NEAR)
+			if (place == AutoPlace::SWITCH_NEAR) {
+				DriverStation::ReportError("Doing switch near");
 				DoSwitchNear();
-			else if (place == AutoPlace::SWITCH_FAR)
-				DoScaleFar();
-			else if (place == AutoPlace::SCALE_NEAR)
+			}
+			else if (place == AutoPlace::SWITCH_FAR) {
+				DriverStation::ReportError("Doing baseline");
+				DoBaseline();
+			}
+			else if (place == AutoPlace::SCALE_NEAR) {
+				DriverStation::ReportError("Doing scale near");
 				DoScaleNear();
-			else if (place == AutoPlace::SCALE_FAR)
-				DoScaleFar();
+			}
+			else if (place == AutoPlace::SCALE_FAR) {
+				DriverStation::ReportError("Doing baseline");
+				DoBaseline();
+			}
 			else if (place == AutoPlace::BASELINE) {
-				std::cout << "test spot 2" << std::endl;
+				DriverStation::ReportError("Doing baseline");
 				DoBaseline();
 			} else {
+				DriverStation::ReportError("Doing baseline");
 				DoBaseline();
-				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR NOT DO EASY line 82 AutoSequence.cpp");
+				DriverStation::ReportError("BADBADBAD UNKNOWN PLACE CASE FOR NOT DO EASY error:3 AutoSequence.cpp");
 			}
 		}
 	}
@@ -109,12 +130,16 @@ void AutoSequence::DropCube() {
 }
 
 void AutoSequence::TestBumpDetection() {
+	DriverStation::ReportError("Testing Bump Detection...");
 	AddSequential(new DistanceDrive(20, FAST_SPEED, TIMEOUT, false, true));
 	WAIT
 }
 
 void AutoSequence::TestPIDTurn() {
+	DriverStation::ReportError("Testing PID Turning...");
 	AddSequential(new Turn(90, TIMEOUT));
+	WAIT_SEC(2.0);
+	AddSequential(new Turn(-90, TIMEOUT));
 }
 
 /**
@@ -122,13 +147,14 @@ void AutoSequence::TestPIDTurn() {
  * This function is only to be used when we are starting on the outside.
  */
 void AutoSequence::DoSwitchNear() {
+	DriverStation::ReportError("Doing Switch Near...");
 	//Go forward to the switch, then turn toward the inside of the field, then move in, drop cube, move back,
 	//strafe toward the center, rotate and setup for teleop
 	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + WIDTH_OF_SWITCH / 2 - ROBOT_LENGTH / 2, SPEED, TIMEOUT, false, false));
 	WAIT
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
 	WAIT
-	//RaiseElevatorToSwitch();
+	RaiseElevatorToSwitch();
 	//WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
@@ -148,15 +174,17 @@ void AutoSequence::DoSwitchNear() {
  * This function is only to be used when we are starting on the outside.
  */
 void AutoSequence::DoSwitchFar() {
-	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + (3 * FEET_TO_INCHES) - HALF_ROBOT_WIDTH, FAST_SPEED, TIMEOUT));
-	WAIT
-	AddSequential(new DistanceDrive(invertIfRight(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH), FAST_SPEED, TIMEOUT, true));
-	WAIT
-	RaiseElevatorToSwitch();
-	WAIT
-	AddSequential(new Turn(180, TIMEOUT));
-	WAIT
-	DropCube();
+	DriverStation::ReportError("Doing Switch Far (Baseline)");
+	DoBaseline();
+	//AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + (3 * FEET_TO_INCHES) - HALF_ROBOT_WIDTH, FAST_SPEED, TIMEOUT));
+	//WAIT
+	//AddSequential(new DistanceDrive(invertIfRight(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH), FAST_SPEED, TIMEOUT, true));
+	//WAIT
+	//RaiseElevatorToSwitch();
+	//WAIT
+	//AddSequential(new Turn(180, TIMEOUT));
+	//WAIT
+	//DropCube();
 }
 
 /**
@@ -164,15 +192,16 @@ void AutoSequence::DoSwitchFar() {
  * This function is only to be used when we are starting on the outside.
  */
 void AutoSequence::DoScaleNear() {
+	DriverStation::ReportError("Doing Scale Near...");
 	//drive to bump
-	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false));
+	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, 0.8, TIMEOUT, false));
 	//Can we raise here? Or after we detect the bump on the next line
-	AddSequential(new DistanceDrive(20 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, true));
+	AddSequential(new DistanceDrive(9 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, true));
 	WAIT
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
 	//turn
-	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
+	AddSequential(new Turn(invertIfRight(90), 1));
 	WAIT
 	//drive forward
 	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
@@ -204,6 +233,8 @@ void AutoSequence::DoScaleNear() {
  * This function is only to be used when we are starting on the outside.
  */
 void AutoSequence::DoScaleFar() {
+	/*
+	DriverStation::ReportError("Doing Scale Far...");
 	AddSequential(new DistanceDrive(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH, FAST_SPEED, TIMEOUT));
 	WAIT
 	AddSequential(new DistanceDrive(invertIfRight(14 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
@@ -212,13 +243,16 @@ void AutoSequence::DoScaleFar() {
 	WAIT
 	RaiseElevatorToScale();
 	WAIT
-	DropCube();
+	DropCube(); //to be implemented later
+	*/
+	DoBaseline();
 }
 
 /**
  * This function drives the robot across the autoline, and sets it up for picking up cubes if we are in the center
  */
 void AutoSequence::DoBaseline() {
+	DriverStation::ReportError("Doing Baseline...");
 	if (isCenterStart()) {
 		AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, SPEED, TIMEOUT, true));	//Go right 2 feet
 		WAIT
@@ -235,29 +269,31 @@ void AutoSequence::DoBaseline() {
 }
 
 void AutoSequence::DoCenter() {
+	DriverStation::ReportError("Doing Center...");
 	double angleFromCenter = 60;
 	double turnAngle = switchOnRight() ? 90 - (angleFromCenter + 10) : 90 + angleFromCenter;
-	DriverStation::ReportError("doing correct!");
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	//AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
 		AddSequential(new AngledDistanceDrive(3, 0.5, turnAngle));
 		WAIT_SEC(0.10);
+
+		RaiseElevatorToSwitch();
+
 		AddSequential(new VisionDrive(0.4, 2.5));
 		//WAIT_SEC(0.15);
 		AddSequential(new VisionDrive(0.4, 2.5));
 		//WAIT_SEC(0.15);
 		AddSequential(new VisionDrive(0.4, 2.5));
 		AddSequential(new VisionDrive(0.4, 2.5));
+		WAIT
+		DropCube();
 	} else {		//Use vision
 		AddSequential(new AngledDistanceDrive(14 * FEET_TO_INCHES, 0.5, turnAngle));
 		//AddSequential(new VisionDrive(SPEED, TIMEOUT, 100, 98));
 		//Vision stuff
 	}
-	/*
-	RaiseElevatorToScale();
-	WAIT_SEC(2)
-	DropCube();
+
 	//Go back but more sharply so that we arrive not at the wall, but in front of the cubes
 	AddSequential(new DistanceDrive(-4 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	WAIT
@@ -266,5 +302,4 @@ void AutoSequence::DoCenter() {
 	} else {
 		AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, SPEED, TIMEOUT, true, false));
 	}
-	*/
 }

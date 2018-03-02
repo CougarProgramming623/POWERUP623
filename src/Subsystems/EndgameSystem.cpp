@@ -7,14 +7,27 @@
 
 #include "EndgameSystem.h"
 #include "../RobotMap.h"
+#include "../Robot.h"
+#include "../Commands/TeleOp/EnableEndgameButtons.h"
 
 EndgameSystem::EndgameSystem() : Subsystem("EndgameSubsystem") {
 	climbAndRampMotor = RobotMap::endgameMotor;
+	isEndGame = false;
 }
 
 void EndgameSystem::InitDefaultCommand() {
-
+	SetDefaultCommand(new EnableEndGameButtons());
 }
+
+void EndgameSystem::setIsEndGame(bool b) {
+	isEndGame = b;
+}
+
+bool EndgameSystem::getIsEndGame() {
+	DriverStation::ReportError("Snuffleupagus!!!!!!!!!!!!!!");
+	return isEndGame;
+}
+
 
 // Put methods for controlling this subsystem
 // here. Call these from Commands.

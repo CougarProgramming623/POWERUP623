@@ -64,6 +64,7 @@ void DriveWithJoystick::Execute() {
 	XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
 	YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);
 	RotAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(2);
+	DriverStation::ReportError("Snuffleupagus!!!!!!!!!!!!!!");
 
 	double push = sqrt(XAxis * XAxis + YAxis * YAxis);
 	turnController->Disable();
@@ -79,15 +80,6 @@ void DriveWithJoystick::Execute() {
 		maxSpeed = push;
 	Robot::cob->PushVelocityMagnitude(push / maxSpeed);
 	SmartDashboard::PutNumber("Encoder", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0));
-	if(frc::DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME) {
-		Robot::oi->GetButtonBoard()->SetOutput(1, true);
-		Robot::oi->GetButtonBoard()->SetOutput(2, true);
-		Robot::oi->GetButtonBoard()->SetOutput(3, true);
-	} else {
-		Robot::oi->GetButtonBoard()->SetOutput(1, false);
-		Robot::oi->GetButtonBoard()->SetOutput(2, false);
-		Robot::oi->GetButtonBoard()->SetOutput(3, false);
-	}
 }
 
 // Make this return true when this Command no longer needs to run execute()

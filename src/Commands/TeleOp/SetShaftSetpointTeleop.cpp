@@ -6,8 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "SetShaftSetpointTeleop.h"
-#include "../CurrentSpikeIndicator.h"
-#include "../Robot.h"
+#include "../../CurrentSpikeIndicator.h"
+#include "../../Robot.h"
 
 SetShaftSetpointTeleop::SetShaftSetpointTeleop(double setpoint) {
 	// Use Requires() here to declare subsystem dependencies

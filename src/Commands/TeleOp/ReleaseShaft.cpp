@@ -6,8 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "ReleaseShaft.h"
-#include "../Robot.h"
-#include "../RobotMap.h"
+#include "../../Robot.h"
+#include "../../RobotMap.h"
 
 #define DEPLOY_TIME 0.5
 

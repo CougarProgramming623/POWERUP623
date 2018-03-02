@@ -17,9 +17,10 @@
 #include "Commands/TeleOp/CubeIntakeCommand.h"
 #include "Commands/TeleOp/ToggleSliderUsage.h"
 #include <iostream>
-#include "Commands/SetShaftSetpointAuto.h"
-#include "Commands/ReleaseRamp.h"
-#include "Commands/ReleaseShaft.h"
+#include "Commands/Autonomous/SetShaftSetpointAuto.h"
+#include "Commands/TeleOp/ReleaseRamp.h"
+#include "Commands/TeleOp/ReleaseShaft.h"
+#include "Commands/TeleOp/EnableEndGameButtons.h"
 #include "Commands/TeleOp/Climb.h"
 #include "Commands/TeleOp/LiftRamp.h"
 
@@ -27,9 +28,9 @@ OI::OI() {
 	driverJoystick.reset(new frc::Joystick(0));
 	buttonBoard.reset(new frc::Joystick(1));
 
-	toggleSliderControl.reset(new frc::JoystickButton(buttonBoard.get(), 3));
-	expungeButton.reset(new frc::JoystickButton(buttonBoard.get(), 2));
 	intakeButton.reset(new frc::JoystickButton(buttonBoard.get(), 1));
+	expungeButton.reset(new frc::JoystickButton(buttonBoard.get(), 2));
+	toggleSliderControl.reset(new frc::JoystickButton(buttonBoard.get(), 3));
 	releaseShaftButton.reset(new frc::JoystickButton(buttonBoard.get(), 4));
 	releaseRampButton.reset(new frc::JoystickButton(buttonBoard.get(), 8));
 
@@ -43,10 +44,10 @@ OI::OI() {
 	intakeButton->WhileHeld(new CubeIntakeCommand(true, 0));
 
 	releaseShaftButton->WhenPressed(new ReleaseShaft());
-	releaseRampButton->WhenPressed(new ReleaseRamp());
 
 	climb->WhileHeld(new Climb());
 	rampLift->WhenPressed(new LiftRamp());
+
 }
 
 std::shared_ptr<frc::Joystick> OI::GetDriverJoystick() {
@@ -56,4 +57,18 @@ std::shared_ptr<frc::Joystick> OI::GetDriverJoystick() {
 std::shared_ptr<frc::Joystick> OI::GetButtonBoard() {
 	return buttonBoard;
 }
+
+std::shared_ptr<frc::JoystickButton> OI::GetReleaseRampButton() {
+	return releaseRampButton;
+}
+
+std::shared_ptr<frc::JoystickButton> OI::GetLiftRampButton() {
+	return rampLift;
+}
+
+std::shared_ptr<frc::JoystickButton> OI::GetClimbButton() {
+	return climb;
+}
+
+
 

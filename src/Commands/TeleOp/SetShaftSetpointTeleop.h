@@ -8,10 +8,10 @@
 #pragma once
 
 #include "Commands/Subsystem.h"
-#include "../Robot.h"
-#include "../RobotMap.h"
+#include "../../Robot.h"
+#include "../../RobotMap.h"
 #include "WPILib.h"
-#include "../CurrentSpikeIndicator.h"
+#include "../../CurrentSpikeIndicator.h"
 #include "ctre/Phoenix.h"
 
 class SetShaftSetpointTeleop : public frc::Command {

@@ -15,7 +15,6 @@ class CubeIntakeCommand : public frc::Command {
 private:
 	bool type;
 	static int numSpikes;
-	Timer* m_timer;
 	double timeout;
 public:
 	CubeIntakeCommand(bool intake, double timeout);

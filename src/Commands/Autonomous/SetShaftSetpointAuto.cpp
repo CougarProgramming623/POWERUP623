@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "SetShaftSetpointAuto.h"
-#include "../Robot.h"
+#include "../../Robot.h"
 
 SetShaftSetpointAuto::SetShaftSetpointAuto(double setpoint, double timeout) :
 		SetShaftSetpointTeleop(setpoint) {

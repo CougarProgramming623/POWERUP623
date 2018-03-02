@@ -6,8 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "ReleaseRamp.h"
-#include "../Robot.h"
-#include "../RobotMap.h"
+#include "../../Robot.h"
+#include "../../RobotMap.h"
 
 #define DEPLOY_TIME 0.5
 
@@ -18,7 +18,8 @@ ReleaseRamp::ReleaseRamp() {
 
 // Called just before this Command runs the first time
 void ReleaseRamp::Initialize() {
-	RobotMap::shaftOrRampRelay->Set(Relay::Value::kReverse);// FIXME put in proper direction
+	if (Robot::endgameSystem->getIsEndGame())
+		RobotMap::shaftOrRampRelay->Set(Relay::Value::kReverse);// FIXME put in proper direction
 }
 
 // Called repeatedly when this Command is scheduled to run

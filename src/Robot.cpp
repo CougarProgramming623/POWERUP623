@@ -4,6 +4,7 @@
 #include "DriverStation.h"
 #include "Commands/TeleOp/CubeIntakeCommand.h"
 
+
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
 std::shared_ptr<Shaft> Robot::elevator;
@@ -26,7 +27,7 @@ void Robot::RobotInit() {
 	//frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
 	//reset light
-	oi->GetButtonBoard()->SetOutput(4, false);
+	oi->GetButtonBoard()->SetOutput(4, true);
 
 	Robot::cob->InitBoard();
 	Robot::cob->PushArmHeight(0);
@@ -55,6 +56,7 @@ void Robot::DisabledInit() {
 }
 
 void Robot::DisabledPeriodic() {
+
 	frc::Scheduler::GetInstance()->Run();
 }
 
@@ -62,10 +64,10 @@ void Robot::AutonomousInit() {
 	//Create auto sequence here so that we have access to game time only information.
 	//Otherwise we would be trying to read FMS at robot init which happens before game time.
 	RobotMap::ahrs->ZeroYaw();
+
 	autonomousCommand.reset(new AutoSequence());
 	if (autonomousCommand)
 		autonomousCommand->Start();
-	//DriverStation::ReportError(((std::unique_ptr<RobotImpl>)autonomousCommand)->switchOnRight() ? "Right" : "Left");
 }
 
 void Robot::AutonomousPeriodic() {
@@ -75,16 +77,28 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-	Robot::oi->GetButtonBoard()->SetOutput(3, true);
+	Robot::oi->GetButtonBoard()->SetOutput(4, true);
 	Robot::elevator->enablePID(false);
 	//Robot::elevator.get()->SetDefaultCommand(new SetElevatorSetpointTeleop());
 	if (autonomousCommand)
 		autonomousCommand->Cancel();
+	CougarOpticBoard::PushArmRotation(0.0); //temporary fix
 }
 
 void Robot::TeleopPeriodic() {
 	//push time to cob
 	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());
+	if (frc::DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME || Robot::oi->GetButtonBoard()->GetRawButton(5)) {
+		oi->GetButtonBoard()->SetOutput(1, true);
+		oi->GetButtonBoard()->SetOutput(2, true);
+		oi->GetButtonBoard()->SetOutput(3, true);
+		endgameSystem->setIsEndGame(true);
+	} else {
+		oi->GetButtonBoard()->SetOutput(1, false);
+		oi->GetButtonBoard()->SetOutput(2, false);
+		oi->GetButtonBoard()->SetOutput(3, false);
+		endgameSystem->setIsEndGame(false);
+	}
 	frc::Scheduler::GetInstance()->Run();
 }
 

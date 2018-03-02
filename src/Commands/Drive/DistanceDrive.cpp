@@ -83,7 +83,7 @@ bool DistanceDrive::checkForBump() {
 // Calling this function will set power to the motors, and cause the robot to turn back to the initial angle if the turn manager
 // says that we need to turn to correct the robot's heading.
 void DistanceDrive::Execute() {
-	std::cout << "Distance: " << getPosition() - initEncPosition << std::endl;
+	//std::cout << "Distance: " << getPosition() - initEncPosition << std::endl;
 	SmartDashboard::PutNumber("Encoder Ticks: ", getPosition() - initEncPosition);
 
 	double coefficient = 1.0;
@@ -107,11 +107,14 @@ void DistanceDrive::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool DistanceDrive::IsFinished() {
-	DriverStation::ReportError(std::to_string(getPosition() - initEncPosition));
+	//DriverStation::ReportError(std::to_string(getPosition() - initEncPosition));
+	//COMMENTED OUT BUMP DETECTION FOR BATTLEFIELD
+	/*
 	if (m_doBumpDetection && checkForBump()) {
 		DriverStation::ReportError("Detected bump. Stopping DDC.");
 		return true;
 	}
+	*/
 	if (m_timer && m_timer->Get() > m_timeout) {
 		return false;
 	}

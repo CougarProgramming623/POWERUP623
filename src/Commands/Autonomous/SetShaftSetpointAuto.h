@@ -8,9 +8,9 @@
 #pragma once
 
 #include "Commands/Subsystem.h"
-#include "../RobotMap.h"
+#include "../../RobotMap.h"
 #include "WPILib.h"
-#include "SetShaftSetpointTeleop.h"
+#include "../TeleOp/SetShaftSetpointTeleop.h"
 
 class SetShaftSetpointAuto : public SetShaftSetpointTeleop {
 public:

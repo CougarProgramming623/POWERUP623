@@ -20,7 +20,7 @@ void LiftRamp::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void LiftRamp::Execute() {
-	RobotMap::endgameMotor->Set(RAMP_LIFT_SPEED);
+	//RobotMap::endgameMotor->Set(RAMP_LIFT_SPEED);
 }
 
 // Make this return true when this Command no longer needs to run execute()

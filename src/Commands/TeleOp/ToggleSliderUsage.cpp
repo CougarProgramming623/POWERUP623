@@ -18,9 +18,11 @@ void ToggleSliderUsage::Initialize() {
 	if(!oi->useSlider) {
 		oi->GetButtonBoard()->SetOutput(4, true);
 		Robot::elevator->enablePID(false);
+		Robot::oi->GetButtonBoard()->SetOutput(4, true);
 	} else {
 		oi->GetButtonBoard()->SetOutput(4, false);
 		Robot::elevator->enablePID(true);
+		Robot::oi->GetButtonBoard()->SetOutput(4, false);
 	}
 }
 

@@ -12,8 +12,8 @@
 #include "Commands/CommandGroup.h"
 #include "Commands/Command.h"
 
-#include "ReleaseShaft.h"
-#include "SetShaftSetpointTeleop.h"
+#include "TeleOp/ReleaseShaft.h"
+#include "TeleOp/SetShaftSetpointTeleop.h"
 #include "TeleOp/CubeIntakeCommand.h"
 #include "Drive/DistanceDrive.h"
 #include "Turn.h"
