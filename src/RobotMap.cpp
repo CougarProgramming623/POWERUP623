@@ -75,8 +75,8 @@ void RobotMap::init() {
 
 	shaftOrRampRelay.reset(new Relay(0));
 	intake.reset(new WPI_TalonSRX(18));
-	shaftController.reset(new WPI_TalonSRX(100)); //FIXME this should be 16
-	endgameMotor.reset(new WPI_TalonSRX(16)); //FIXME this is actually the shaft motor
+	shaftController.reset(new WPI_TalonSRX(16));
+	endgameMotor.reset(new WPI_TalonSRX(100)); //FIXME correct talon #
 
 	pot.reset(new AnalogPotentiometer(analogInput, 1.0, 0.0));
 
@@ -115,9 +115,12 @@ void RobotMap::init() {
 
 	prefs = Preferences::GetInstance();
 #ifdef TEST_BOT
-	turnP = prefs->GetDouble("Turn P", 0.04f);
-	turnI = prefs->GetDouble("Turn I", 0.01f);
-	turnD = prefs->GetDouble("Turn D", 0.02f);
+	turnP = prefs->GetDouble("Turn P", 0.1f); //.04
+	turnI = prefs->GetDouble("Turn I", 0.0f);//.01
+	turnD = prefs->GetDouble("Turn D", 0.0f);//.02
+	DriverStation::ReportError("Reset P: " + std::to_string(turnP));
+	DriverStation::ReportError("Reset I: " + std::to_string(turnI));
+	DriverStation::ReportError("Reset D: " + std::to_string(turnD));
 #else
 	turnP = prefs->GetDouble("Turn P", 0.07f);
 	turnI = prefs->GetDouble("Turn I", 0.0f);

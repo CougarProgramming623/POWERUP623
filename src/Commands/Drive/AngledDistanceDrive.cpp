@@ -50,7 +50,7 @@ int AngledDistanceDrive::getPosition() {
 void AngledDistanceDrive::Execute() {
 	double x = cos(m_angle * M_PI / 180) * m_speed;
 	double y = sin(m_angle * M_PI / 180) * m_speed;
-	Robot::driveTrain->MecanumDrive(x, y, rotateToAngleRate, 0);
+	Robot::driveTrain->MecanumDrive(x, y, 0, 0);
 }
 
 // Make this return true when this Command no longer needs to run execute()

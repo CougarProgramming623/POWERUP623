@@ -56,6 +56,6 @@ void Turn::Interrupted() {
 
 void Turn::PIDWrite(double output) {
 	rotateToAngleRate = output;
-	rotateToAngleRate = minFRC(rotateToAngleRate, map(m_angle, 0.0, 90, 0.2, 1.0));
+	//rotateToAngleRate = minFRC(rotateToAngleRate, map(m_angle, 0.0, 90, 0.2, 1.0));
 }
 

@@ -2,7 +2,7 @@
 #include "RobotConstants.h"
 #include "Commands/Drive/AngledDistanceDrive.h"
 #include "DriverStation.h"
-#include "Commands/TeleOp/CubeIntakeCommand.h";
+#include "Commands/TeleOp/CubeIntakeCommand.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
@@ -25,6 +25,9 @@ void Robot::RobotInit() {
 	oi.reset(new OI());
 	//frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
+	//reset light
+	oi->GetButtonBoard()->SetOutput(4, false);
+
 	Robot::cob->InitBoard();
 	Robot::cob->PushArmHeight(0);
 	RobotMap::ahrs->ZeroYaw();
@@ -35,6 +38,9 @@ void Robot::RobotInit() {
 	//nt::NetworkTable::SetClientMode();
 	//nt::NetworkTable::SetIPAddress("10.6.23.2");
 	//nt::NetworkTable::Initialize();
+	std::stringstream str;
+	str << " Potientiometer " << RobotMap::pot->Get();
+	DriverStation::ReportError(str.str());
 }
 
 void Robot::RobotPeriodic() {
@@ -43,10 +49,6 @@ void Robot::RobotPeriodic() {
 	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
 
 	Robot::cob->PushArmHeight((elevator->GetElevatorPosition() - ELEVATOR_BOTTOM) / ELEVATOR_DELTA);
-	//std::stringstream str;
-	//str << " Elevator Position " << Robot::elevator->GetPosition();
-	//str << " Potientiometer " << RobotMap::pot->Get();
-	//DriverStation::ReportError(str.str());
 }
 
 void Robot::DisabledInit() {
@@ -73,6 +75,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+	Robot::oi->GetButtonBoard()->SetOutput(3, true);
 	Robot::elevator->enablePID(false);
 	//Robot::elevator.get()->SetDefaultCommand(new SetElevatorSetpointTeleop());
 	if (autonomousCommand)

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <Commands/Command.h>
+#include "WPILib.h"
 
 class ToggleSliderUsage : public frc::Command {
 public:
