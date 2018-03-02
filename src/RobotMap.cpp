@@ -73,12 +73,12 @@ void RobotMap::init() {
 
 	driveTrainrightBack.reset(new WPI_TalonSRX(7));
 	//driveTrainrightBack->SetInverted(true);
+	shaftController.reset(new WPI_TalonSRX(16)); //FIXME this should be 16
+	intake.reset(new WPI_TalonSRX(18));
 
 #endif
 
 	shaftOrRampRelay.reset(new Relay(0));
-	shaftController.reset(new WPI_TalonSRX(16)); //FIXME this should be 16
-	intake.reset(new WPI_TalonSRX(18));
 	endgameMotor.reset(new WPI_TalonSRX(19)); //FIXME this is actually the shaft motor
 
 	pot.reset(new AnalogPotentiometer(analogInput, 1.0, 0.0));

@@ -24,7 +24,7 @@ AutoSequence::AutoSequence() :
 
 	if (Robot::cob->GetAutonomousNoAuto()) {
 		DriverStation::ReportError("Testing tick count... ");
-		TestPIDTurn(); //remove this before the match
+		//TestPIDTurn(); //remove this before the match
 		return;
 	}
 	std::cout << "instructions " << Robot::cob->GetAutonomousInstructions() << std::endl;
@@ -152,7 +152,7 @@ void AutoSequence::DoSwitchNear() {
 	WAIT
 	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
 	WAIT
-	//RaiseElevatorToSwitch();
+	RaiseElevatorToSwitch();
 	//WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
