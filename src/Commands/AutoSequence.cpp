@@ -24,7 +24,7 @@ AutoSequence::AutoSequence() :
 
 	if (Robot::cob->GetAutonomousNoAuto()) {
 		DriverStation::ReportError("Testing tick count... ");
-		TestPIDTurn(); //remove this before the match
+		//TestPIDTurn(); //remove this before the match
 		return;
 	}
 	std::cout << "instructions " << Robot::cob->GetAutonomousInstructions() << std::endl;
@@ -117,11 +117,11 @@ void AutoSequence::releaseShaft() {
 }
 
 void AutoSequence::RaiseElevatorToSwitch() {
-	AddSequential(new SetShaftSetpointAuto(ELEVATOR_SWITCH, 3));
+	AddParallel(new SetShaftSetpointAuto(ELEVATOR_SWITCH, 3));
 }
 
 void AutoSequence::RaiseElevatorToScale() {
-	AddSequential(new SetShaftSetpointAuto(ELEVATOR_SCALE, 3));
+	AddParallel(new SetShaftSetpointAuto(ELEVATOR_SCALE, 3));
 }
 
 void AutoSequence::DropCube() {
@@ -151,19 +151,20 @@ void AutoSequence::DoSwitchNear() {
 	//Go forward to the switch, then turn toward the inside of the field, then move in, drop cube, move back,
 	//strafe toward the center, rotate and setup for teleop
 	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + WIDTH_OF_SWITCH / 2 - ROBOT_LENGTH / 2, SPEED, TIMEOUT, false, false));
-	WAIT
-	AddSequential(new Turn(invertIfRight(90), TIMEOUT));
-	WAIT
 	RaiseElevatorToSwitch();
+	WAIT
+	AddSequential(new Turn(invertIfRight(90), TURN_TIMEOUT));
+	WAIT
 	//WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
+	WAIT
 	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	WAIT
 	if (Robot::cob->GetAutonomousEnableCrossing()) {
 		AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 		WAIT
-		AddSequential(new Turn(invertIfRight(180), TIMEOUT));
+		AddSequential(new Turn(invertIfRight(180), TURN_TIMEOUT));
 		WAIT
 		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
 	}
@@ -196,6 +197,7 @@ void AutoSequence::DoScaleNear() {
 	//drive to bump
 	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, 0.8, TIMEOUT, false));
 	//Can we raise here? Or after we detect the bump on the next line
+	RaiseElevatorToScale();
 	AddSequential(new DistanceDrive(9 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, true));
 	WAIT
 	//strafe
@@ -206,7 +208,6 @@ void AutoSequence::DoScaleNear() {
 	//drive forward
 	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
 	WAIT
-	RaiseElevatorToScale();
 	//dropping cube
 	DropCube();
 	//move back
@@ -253,6 +254,7 @@ void AutoSequence::DoScaleFar() {
  */
 void AutoSequence::DoBaseline() {
 	DriverStation::ReportError("Doing Baseline...");
+	releaseShaft();
 	if (isCenterStart()) {
 		AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, SPEED, TIMEOUT, true));	//Go right 2 feet
 		WAIT

@@ -91,7 +91,7 @@ void RobotMap::init() {
 #ifdef TEST_BOT
 	RobotMap::driveTrainleftFront->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 5);
 #else
-	RobotMap::driveTrainrightBack->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 5);
+	//RobotMap::driveTrainrightBack->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 5);
 	RobotMap::driveTrainleftBack->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 1, 5);
 #endif
 	driveTrainMecanumDrive1.reset(new frc::MecanumDrive(*driveTrainleftFront, *driveTrainleftBack, *driveTrainrightFront, *driveTrainrightBack));

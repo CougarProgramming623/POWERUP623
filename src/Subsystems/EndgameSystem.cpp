@@ -24,7 +24,6 @@ void EndgameSystem::setIsEndGame(bool b) {
 }
 
 bool EndgameSystem::getIsEndGame() {
-	DriverStation::ReportError("Snuffleupagus!!!!!!!!!!!!!!");
 	return isEndGame;
 }
 

@@ -11,12 +11,10 @@
 
 EnableEndGameButtons::EnableEndGameButtons() {
 	Requires(Robot::endgameSystem.get());
-	m_timer = new Timer();
 }
 
 // Called just before this Command runs the first time
 void EnableEndGameButtons::Initialize() {
-	m_timer->Start();
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -26,26 +24,9 @@ void EnableEndGameButtons::Execute() {
 									   DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME));
 
 	if(Robot::endgameSystem->getIsEndGame()) {
-		if((int)m_timer->Get() % 3 == 1) {
 			Robot::oi->GetButtonBoard()->SetOutput(1, true);
-			Robot::oi->GetButtonBoard()->SetOutput(2, false);
-			Robot::oi->GetButtonBoard()->SetOutput(3, false);
-		}
-		else if((int)m_timer->Get() % 3 == 2) {
 			Robot::oi->GetButtonBoard()->SetOutput(2, true);
-			Robot::oi->GetButtonBoard()->SetOutput(1, false);
-			Robot::oi->GetButtonBoard()->SetOutput(3, false);
-		}
-		else if((int)m_timer->Get() % 3 == 0) {
 			Robot::oi->GetButtonBoard()->SetOutput(3, true);
-			Robot::oi->GetButtonBoard()->SetOutput(1, false);
-			Robot::oi->GetButtonBoard()->SetOutput(2, false);
-		}
-		else {
-			Robot::oi->GetButtonBoard()->SetOutput(1, false);
-			Robot::oi->GetButtonBoard()->SetOutput(2, false);
-			Robot::oi->GetButtonBoard()->SetOutput(3, false);
-		}
 	}
 }
 

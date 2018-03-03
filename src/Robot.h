@@ -46,4 +46,6 @@ public:
 	void TeleopInit() override;
 	void TeleopPeriodic() override;
 	void RobotPeriodic() override;
+private:
+	Timer *m_timer;
 };

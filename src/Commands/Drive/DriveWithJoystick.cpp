@@ -64,7 +64,6 @@ void DriveWithJoystick::Execute() {
 	XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
 	YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);
 	RotAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(2);
-	DriverStation::ReportError("Snuffleupagus!!!!!!!!!!!!!!");
 
 	double push = sqrt(XAxis * XAxis + YAxis * YAxis);
 	turnController->Disable();

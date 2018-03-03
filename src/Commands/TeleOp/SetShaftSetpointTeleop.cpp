@@ -20,15 +20,16 @@ SetShaftSetpointTeleop::SetShaftSetpointTeleop(double setpoint) {
 void SetShaftSetpointTeleop::Initialize() {
 	Robot::elevator->SetSetpoint(m_setpoint);
 	Robot::elevator->Enable();
-	currentSpike.reset(new CurrentSpikeIndicator(0, RobotMap::shaftController));
+//s	currentSpike.reset(new CurrentSpikeIndicator(20, RobotMap::shaftController));
 }
 
 // Called repeatedly when this Command is scheduled to run
 void SetShaftSetpointTeleop::Execute() {
-	currentSpike->Update();
-	bool hitSpike = currentSpike->GetSpike();
-	if(hitSpike)
-		Robot::elevator->enablePID(false);
+	//currentSpike->Update();
+	//bool hitSpike = currentSpike->GetSpike();
+	//if(hitSpike) {
+		//Robot::elevator->enablePID(false);
+	//}
 }
 
 // Make this return true when this Command no longer needs to run execute()

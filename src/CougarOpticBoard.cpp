@@ -188,7 +188,6 @@ void CougarOpticBoard::TriggerArmRotation(bool up) {
 */
 
 void CougarOpticBoard::PushArmRotation(double rotation) {
-	DriverStation::ReportError("THE ROBOT'S ONE TRUE NAME IS SNUFFLEUPAGUS");
 }
 
 /**

@@ -37,8 +37,8 @@ void Turn::Execute() {
 }
 
 bool Turn::IsFinished() {
-	//return turnController->OnTarget() || IsTimedOut();
-	return false;
+	return turnController->OnTarget() || IsTimedOut();
+	//return false;
 }
 
 void Turn::End() {
@@ -49,7 +49,6 @@ void Turn::End() {
 	m_timer->Reset();
 	Robot::driveTrain->Stop();
 	DriverStation::ReportError("Turn Done");
-	DriverStation::ReportError("Snuffleupagus!!!!!!!!!!!!!!");
 }
 
 void Turn::Interrupted() {

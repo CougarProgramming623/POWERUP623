@@ -40,7 +40,7 @@ void Robot::RobotInit() {
 	//nt::NetworkTable::SetIPAddress("10.6.23.2");
 	//nt::NetworkTable::Initialize();
 	std::stringstream str;
-	str << " Potientiometer " << RobotMap::pot->Get();
+	str << " Potentiometer " << RobotMap::pot->Get();
 	DriverStation::ReportError(str.str());
 }
 
@@ -50,13 +50,29 @@ void Robot::RobotPeriodic() {
 	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
 
 	Robot::cob->PushArmHeight((elevator->GetElevatorPosition() - ELEVATOR_BOTTOM) / ELEVATOR_DELTA);
+
 }
 
 void Robot::DisabledInit() {
 }
 
 void Robot::DisabledPeriodic() {
+	m_timer = new Timer();
+	m_timer->Start();
 
+	if((int)m_timer->Get() % 3 == 0) {
+		oi->GetButtonBoard()->SetOutput(3, true);
+		oi->GetButtonBoard()->SetOutput(1, false);
+		oi->GetButtonBoard()->SetOutput(2, false);
+	} else if((int)m_timer->Get() % 3 == 1) {
+		oi->GetButtonBoard()->SetOutput(2, true);
+		oi->GetButtonBoard()->SetOutput(1, false);
+		oi->GetButtonBoard()->SetOutput(3, false);
+	} else if((int)m_timer->Get() % 3 == 2) {
+		oi->GetButtonBoard()->SetOutput(1, true);
+		oi->GetButtonBoard()->SetOutput(2, false);
+		oi->GetButtonBoard()->SetOutput(3, false);
+	}
 	frc::Scheduler::GetInstance()->Run();
 }
 
