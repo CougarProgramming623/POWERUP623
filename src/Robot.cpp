@@ -15,6 +15,7 @@ std::shared_ptr<EndgameSystem> Robot::endgameSystem;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
+	//snuffleupagus will always be the true name of our robot
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
 	cubeIntake.reset(new CubeIntake());
@@ -102,6 +103,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+	DriverStation::ReportError(std::to_string(RobotMap::pot->Get()));
 	//push time to cob
 	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());
 	if (frc::DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME || Robot::oi->GetButtonBoard()->GetRawButton(5)) {

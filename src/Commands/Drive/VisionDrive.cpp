@@ -27,6 +27,7 @@ VisionDrive::VisionDrive(double speed, int timeout)
 	m_timeout = timeout;
 	m_currentAngle = 0.0;
 	rotateToAngleRate = 0.0;
+	cantSeeTarget = false;
 	initEncPosition = RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0);
 	m_timer = new Timer();
 	turnController = new PIDController(kP, kI, kD, kF, RobotMap::ahrs, this);
@@ -80,6 +81,7 @@ void VisionDrive::Execute() {
 	}
 	else{
 		DriverStation::ReportError("Can't see targets");
+		cantSeeTarget = true;
 	}
 
 }
@@ -88,8 +90,10 @@ void VisionDrive::Execute() {
 bool VisionDrive::IsFinished() {
 	nt::NetworkTableEntry centerX = visionTable->GetEntry("width");
 	std::vector<double> arr = centerX.GetDoubleArray(llvm::ArrayRef<double>());
-	if(m_distanceToTarget <= 15)
+	if(m_distanceToTarget <= 13){
+		DriverStation::ReportError("ENDAUTOVISION-DISTANCE");
 		return true;
+	}
 	/*if (IsTimedOut()) {
 		return true;
 	}*/
@@ -98,9 +102,13 @@ bool VisionDrive::IsFinished() {
 		double width1 = arr[0];
 		double width2 = arr[1];
 		if((width1+width2)/2 >= 90){
-			DriverStation::ReportError("ENDAUTOVISION");
+			DriverStation::ReportError("ENDAUTOVISION-WIDTH");
 			return true;
 		}
+	}
+	else if(cantSeeTarget){
+		DriverStation::ReportError("ENDAUTOVISION-CANTSEE");
+		return true;
 	}
 	/*if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
 		return true;

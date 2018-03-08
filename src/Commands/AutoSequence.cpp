@@ -1,5 +1,6 @@
 #include "AutoSequence.h"
 #include "Autonomous/SetShaftSetpointAuto.h"
+#include "Math.h"
 #include <iostream>
 
 #define invertIfRight(x) getStart() == SIDE_RIGHT ? -x : x
@@ -150,11 +151,12 @@ void AutoSequence::DoSwitchNear() {
 	DriverStation::ReportError("Doing Switch Near...");
 	//Go forward to the switch, then turn toward the inside of the field, then move in, drop cube, move back,
 	//strafe toward the center, rotate and setup for teleop
-	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH + WIDTH_OF_SWITCH / 2 - ROBOT_LENGTH / 2, SPEED, TIMEOUT, false, false));
+	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - (HALF_ROBOT_LENGTH) - 12 - 6, SPEED, TIMEOUT, false, false)); //SUBTRACTED ONE FOOT
 	RaiseElevatorToSwitch();
-	WAIT
+	WAIT_SEC(1)
 	AddSequential(new Turn(invertIfRight(90), TURN_TIMEOUT));
-	WAIT
+	WAIT_SEC(1)
+
 	//WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
@@ -198,7 +200,7 @@ void AutoSequence::DoScaleNear() {
 	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, 0.8, TIMEOUT, false));
 	//Can we raise here? Or after we detect the bump on the next line
 	RaiseElevatorToScale();
-	AddSequential(new DistanceDrive(9 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, true));
+	AddSequential(new DistanceDrive(8 * FEET_TO_INCHES - HALF_ROBOT_LENGTH, SPEED, TIMEOUT, false, true));
 	WAIT
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
@@ -272,26 +274,28 @@ void AutoSequence::DoBaseline() {
 
 void AutoSequence::DoCenter() {
 	DriverStation::ReportError("Doing Center...");
-	double angleFromCenter = 60;
-	double turnAngle = switchOnRight() ? 90 - (angleFromCenter + 10) : 90 + angleFromCenter;
+	double turnAngle = switchOnRight() ? DRIVE_ANGLE_RIGHT : 180 - DRIVE_ANGLE_LEFT;
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	//AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
-		AddSequential(new AngledDistanceDrive(3, 0.5, turnAngle));
+		AddSequential(new AngledDistanceDrive(1, 0.5, turnAngle));
 		WAIT_SEC(0.10);
 
+		AddSequential(new VisionDrive(0.5, 2.5));
+		AddSequential(new VisionDrive(0.5, 2.5));
+		//WAIT_SEC(0.15);
+		AddSequential(new VisionDrive(0.5, 2.5));
+		//WAIT_SEC(0.15);
+		AddSequential(new VisionDrive(0.4, 2.5));
+		AddSequential(new VisionDrive(0.4, 2.5));
 		RaiseElevatorToSwitch();
-
-		AddSequential(new VisionDrive(0.4, 2.5));
-		//WAIT_SEC(0.15);
-		AddSequential(new VisionDrive(0.4, 2.5));
-		//WAIT_SEC(0.15);
-		AddSequential(new VisionDrive(0.4, 2.5));
-		AddSequential(new VisionDrive(0.4, 2.5));
-		WAIT
+		WAIT_SEC(3)
 		DropCube();
 	} else {		//Use vision
-		AddSequential(new AngledDistanceDrive(14 * FEET_TO_INCHES, 0.5, turnAngle));
+		AddSequential(new AngledDistanceDrive(4, 0.5, turnAngle));
+		RaiseElevatorToSwitch();
+		WAIT_SEC(1);
+		DropCube();
 		//AddSequential(new VisionDrive(SPEED, TIMEOUT, 100, 98));
 		//Vision stuff
 	}

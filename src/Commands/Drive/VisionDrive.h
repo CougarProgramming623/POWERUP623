@@ -38,5 +38,6 @@ private:
 	PIDController *turnController;
 	double rotateToAngleRate;
 	int initEncPosition;
+	bool cantSeeTarget;
 
 };
