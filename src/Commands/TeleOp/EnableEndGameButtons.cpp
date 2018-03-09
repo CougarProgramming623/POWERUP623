@@ -23,11 +23,6 @@ void EnableEndGameButtons::Execute() {
 									  (Robot::oi->GetButtonBoard()->GetRawButton(5) ||
 									   DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME));
 
-	if(Robot::endgameSystem->getIsEndGame()) {
-			Robot::oi->GetButtonBoard()->SetOutput(1, true);
-			Robot::oi->GetButtonBoard()->SetOutput(2, true);
-			Robot::oi->GetButtonBoard()->SetOutput(3, true);
-	}
 }
 
 // Make this return true when this Command no longer needs to run execute()

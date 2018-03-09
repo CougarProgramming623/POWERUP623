@@ -38,7 +38,7 @@ void AngledDistanceDrive::Initialize() {
 	turnController->SetAbsoluteTolerance(kToleranceDegrees);
 	turnController->SetContinuous(true);
 
-	turnController->SetSetpoint(0.0f);
+	turnController->SetSetpoint(RobotMap::ahrs->GetAngle());
 	turnController->Enable();
 }
 

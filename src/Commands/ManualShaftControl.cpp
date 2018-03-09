@@ -5,45 +5,35 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "SetShaftSetpointTeleop.h"
-#include "../ElevatorDoNothing.h"
-#include "../../CurrentSpikeIndicator.h"
-#include "../../Robot.h"
+#include "ManualShaftControl.h"
+#include "../Robot.h"
 
-SetShaftSetpointTeleop::SetShaftSetpointTeleop(double setpoint) {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
+ManualShaftControl::ManualShaftControl() {
 	Requires(Robot::elevator.get());
-	m_setpoint = setpoint;
 }
 
 // Called just before this Command runs the first time
-void SetShaftSetpointTeleop::Initialize() {
+void ManualShaftControl::Initialize() {
 
-	currentSpike.reset(new CurrentSpikeIndicator(30, RobotMap::shaftController));
 }
 
 // Called repeatedly when this Command is scheduled to run
-void SetShaftSetpointTeleop::Execute() {
-	currentSpike->Update();
-	bool hitSpike = currentSpike->GetSpike();
-	if (hitSpike) {
-		Robot::elevator->SetCurrentCommand(new ElevatorDoNothing());
-	}
+void ManualShaftControl::Execute() {
+	RobotMap::shaftController->Set(Robot::oi.get()->GetButtonBoard()->GetRawAxis(0));
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool SetShaftSetpointTeleop::IsFinished() {
-return false;
+bool ManualShaftControl::IsFinished() {
+	return false;
 }
 
 // Called once after isFinished returns true
-void SetShaftSetpointTeleop::End() {
-RobotMap::shaftController->StopMotor();
+void ManualShaftControl::End() {
+	RobotMap::shaftController->StopMotor();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void SetShaftSetpointTeleop::Interrupted() {
-End();
+void ManualShaftControl::Interrupted() {
+	End();
 }

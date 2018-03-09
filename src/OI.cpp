@@ -16,6 +16,7 @@
 #include "Commands/Drive/DriveWithJoystick.h"
 #include "Commands/TeleOp/CubeIntakeCommand.h"
 #include "Commands/TeleOp/ToggleSliderUsage.h"
+#include "Commands/TogglePot.h"
 #include <iostream>
 #include "Commands/Autonomous/SetShaftSetpointAuto.h"
 #include "Commands/TeleOp/ReleaseRamp.h"
@@ -32,13 +33,15 @@ OI::OI() {
 	expungeButton.reset(new frc::JoystickButton(buttonBoard.get(), 2));
 	toggleSliderControl.reset(new frc::JoystickButton(buttonBoard.get(), 3));
 	releaseShaftButton.reset(new frc::JoystickButton(buttonBoard.get(), 4));
-	releaseRampButton.reset(new frc::JoystickButton(buttonBoard.get(), 8));
+	releaseRampButton.reset(new frc::JoystickButton(buttonBoard.get(), 9)); //FIXME maybe i dunno
+	togglePot.reset(new frc::JoystickButton(buttonBoard.get(), 8));
 
 	endgameOverride.reset(new frc::JoystickButton(buttonBoard.get(), 5));
 	climb.reset(new frc::JoystickButton(buttonBoard.get(), 6));
 	rampLift.reset(new frc::JoystickButton(buttonBoard.get(), 7));
 
 	toggleSliderControl->WhenPressed(new ToggleSliderUsage());
+	togglePot->WhenPressed(new TogglePot());
 
 	expungeButton->WhileHeld(new CubeIntakeCommand(false, 0));
 	intakeButton->WhileHeld(new CubeIntakeCommand(true, 0));

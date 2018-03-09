@@ -11,23 +11,17 @@
 #include <SmartDashboard/SmartDashboard.h>
 #include "../Robot.h"
 #include "../RobotMap.h"
+#include "../Commands/ElevatorDoNothing.h"
 
 Shaft::Shaft() : PIDSubsystem("Shaft", 9.0, 0.0, 0.0) {
 	shaftDrive = RobotMap::shaftController;
 	SetInputRange(ELEVATOR_BOTTOM, ELEVATOR_TOP);
 	SetOutputRange(-1.0, 1.0);
+	SetDefaultCommand(new ElevatorDoNothing());
 }
 
 double Shaft::ReturnPIDInput() {
 	return RobotMap::pot->Get();
-}
-
-void Shaft::enablePID(bool enabled) {
-	if(enabled) {
-		Enable();
-	} else {
-		Disable();
-	}
 }
 
 void Shaft::UsePIDOutput(double output) {

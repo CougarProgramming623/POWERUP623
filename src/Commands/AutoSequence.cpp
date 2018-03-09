@@ -34,7 +34,6 @@ AutoSequence::AutoSequence() :
 	releaseShaft();
 	//WAIT_SEC(1)
 	//RaiseElevatorToSwitch();
-	WAIT_SEC(1)
 	//DropCube();
 
 	if (isCenterStart()) {
@@ -153,19 +152,15 @@ void AutoSequence::DoSwitchNear() {
 	//strafe toward the center, rotate and setup for teleop
 	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - (HALF_ROBOT_LENGTH) - 12 - 6, SPEED, TIMEOUT, false, false)); //SUBTRACTED ONE FOOT
 	RaiseElevatorToSwitch();
-	WAIT_SEC(1)
 	AddSequential(new Turn(invertIfRight(90), TURN_TIMEOUT));
-	WAIT_SEC(1)
+	WAIT
 
 	//WAIT
 	AddSequential(new DistanceDrive(1.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	DropCube();
-	WAIT
 	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
-	WAIT
 	if (Robot::cob->GetAutonomousEnableCrossing()) {
 		AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
-		WAIT
 		AddSequential(new Turn(invertIfRight(180), TURN_TIMEOUT));
 		WAIT
 		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
@@ -201,7 +196,6 @@ void AutoSequence::DoScaleNear() {
 	//Can we raise here? Or after we detect the bump on the next line
 	RaiseElevatorToScale();
 	AddSequential(new DistanceDrive(8 * FEET_TO_INCHES - HALF_ROBOT_LENGTH, SPEED, TIMEOUT, false, true));
-	WAIT
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
 	//turn
@@ -209,18 +203,18 @@ void AutoSequence::DoScaleNear() {
 	WAIT
 	//drive forward
 	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
-	WAIT
 	//dropping cube
+	//WAIT
 	DropCube();
 	//move back
 	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
-	WAIT
+	//WAIT
 	//turn
 	AddSequential(new Turn(invertIfRight(180), TIMEOUT));
 	WAIT
 	//drive back
 	AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false));
-	WAIT
+	//WAIT
 	if (Robot::cob->GetAutonomousEnableCrossing()) {
 		//AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, false));
 		//WAIT
@@ -259,11 +253,11 @@ void AutoSequence::DoBaseline() {
 	releaseShaft();
 	if (isCenterStart()) {
 		AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, SPEED, TIMEOUT, true));	//Go right 2 feet
-		WAIT
+		//WAIT
 		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));	//drive forward to break the auto line
-		WAIT
+		//WAIT
 		AddSequential(new DistanceDrive(-6 * FEET_TO_INCHES, SPEED, TIMEOUT));	//drive back towards the start but stop 4 feet out from the wall
-		WAIT
+		//WAIT
 		AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, SPEED, TIMEOUT, true));	//Go right 2 feet
 		//We should be in front of the cubes
 	} else {	//If we are on the outside
@@ -278,9 +272,8 @@ void AutoSequence::DoCenter() {
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	//AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
-		AddSequential(new AngledDistanceDrive(1, 0.5, turnAngle));
-		WAIT_SEC(0.10);
-
+		//AddSequential(new AngledDistanceDrive(1, 0.5, turnAngle));
+		DriverStation::ReportError("Starting Vision Drive");
 		AddSequential(new VisionDrive(0.5, 2.5));
 		AddSequential(new VisionDrive(0.5, 2.5));
 		//WAIT_SEC(0.15);
@@ -288,9 +281,9 @@ void AutoSequence::DoCenter() {
 		//WAIT_SEC(0.15);
 		AddSequential(new VisionDrive(0.4, 2.5));
 		AddSequential(new VisionDrive(0.4, 2.5));
-		RaiseElevatorToSwitch();
-		WAIT_SEC(3)
-		DropCube();
+		//RaiseElevatorToSwitch();
+		//WAIT_SEC(1.5)
+		//DropCube();
 	} else {		//Use vision
 		AddSequential(new AngledDistanceDrive(4, 0.5, turnAngle));
 		RaiseElevatorToSwitch();

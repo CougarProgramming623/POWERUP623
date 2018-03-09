@@ -44,6 +44,12 @@ void VisionDrive::Initialize() {
 	m_timer = new Timer();
 	m_timer->Start();
 
+	turnController->SetInputRange(-180.0f, 180.0f);
+	turnController->SetOutputRange(-1.0, 1.0);
+	turnController->SetAbsoluteTolerance(kToleranceDegrees);
+	turnController->SetContinuous(true);
+	turnController->SetSetpoint(RobotMap::ahrs->GetAngle());
+	turnController->Enable();
 }
 
 int VisionDrive::getPosition() {
@@ -64,16 +70,15 @@ void VisionDrive::Execute() {
 		m_currentAngle = GetVisionTargetDriveAngle(arr[0], arr[1]); //Put in real values later
 		m_distanceToTarget = GetVisionTargetDriveDistance(arr[0], arr[1]); //drawn from networktables
 
-
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 0"), llvm::StringRef("Vision angle is :" + std::to_string(m_currentAngle)));
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 1"), llvm::StringRef("Distance is :" + std::to_string(m_distanceToTarget)));
 		DriverStation::ReportError("Vision angle is :" + std::to_string(m_currentAngle));
-		DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
-		double x = cos(m_currentAngle) * m_speed - 0.2;
-		double y = sin(m_currentAngle) * m_speed + 0.2;
+		//DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
+		double x = cos(m_currentAngle) * m_speed;
+		double y = sin(m_currentAngle) * m_speed;
 
-		if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
-			x *= -1;
+		//if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
+		//	x *= -1;
 
 		DriverStation::ReportError("X is :" + std::to_string(x));
 		DriverStation::ReportError("Y is :" + std::to_string(y));
@@ -90,14 +95,15 @@ void VisionDrive::Execute() {
 bool VisionDrive::IsFinished() {
 	nt::NetworkTableEntry centerX = visionTable->GetEntry("width");
 	std::vector<double> arr = centerX.GetDoubleArray(llvm::ArrayRef<double>());
-	if(m_distanceToTarget <= 13){
+	/*if(m_distanceToTarget <= 13){
 		DriverStation::ReportError("ENDAUTOVISION-DISTANCE");
 		return true;
-	}
+	}*/
+	//m_distanceToTarget isn't accurate
 	/*if (IsTimedOut()) {
 		return true;
 	}*/
-	else if(arr.size() >=2 )
+	if(arr.size() >=2 )
 	{
 		double width1 = arr[0];
 		double width2 = arr[1];
@@ -155,10 +161,12 @@ void VisionDrive::PIDWrite(double output) {
 double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 
 	//if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
-	if(y1 >= 440 && y2 >= 440)
-		return -1*atan((y1-y2)/FOCAL_LENGTH);
+	double lengthPixels = 480 - (y1+y2)/2;
+
+	if(y1 >= 420 && y2 >= 420)
+		return atan(lengthPixels/FOCAL_LENGTH);
 	else
-		return atan(fabs(y2-y1)/FOCAL_LENGTH);
+		return 2*PI+atan(lengthPixels/FOCAL_LENGTH);
 
 
 	/*double averageX = (x1 + x2) / 2.0;

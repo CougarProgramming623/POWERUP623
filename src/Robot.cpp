@@ -4,7 +4,6 @@
 #include "DriverStation.h"
 #include "Commands/TeleOp/CubeIntakeCommand.h"
 
-
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
 std::shared_ptr<Shaft> Robot::elevator;
@@ -55,29 +54,39 @@ void Robot::RobotPeriodic() {
 }
 
 void Robot::DisabledInit() {
+	m_timer = new Timer();
+	m_timer->Start();
 }
 
 void Robot::DisabledPeriodic() {
-	m_timer = new Timer();
-	m_timer->Start();
+/*
+	double time = pow(1.5, m_timer->Get());
 
-	if((int)m_timer->Get() % 3 == 0) {
+	if((int)time % 3 == 0) {
 		oi->GetButtonBoard()->SetOutput(3, true);
 		oi->GetButtonBoard()->SetOutput(1, false);
 		oi->GetButtonBoard()->SetOutput(2, false);
-	} else if((int)m_timer->Get() % 3 == 1) {
+	} else if((int)time % 3 == 1) {
 		oi->GetButtonBoard()->SetOutput(2, true);
 		oi->GetButtonBoard()->SetOutput(1, false);
 		oi->GetButtonBoard()->SetOutput(3, false);
-	} else if((int)m_timer->Get() % 3 == 2) {
+	} else if((int)time % 3 == 2) {
 		oi->GetButtonBoard()->SetOutput(1, true);
 		oi->GetButtonBoard()->SetOutput(2, false);
 		oi->GetButtonBoard()->SetOutput(3, false);
-	}
+	}*/
+
 	frc::Scheduler::GetInstance()->Run();
 }
 
+void Robot::InitLights() {
+	oi->GetButtonBoard()->SetOutput(1, false);
+	oi->GetButtonBoard()->SetOutput(2, false);
+	oi->GetButtonBoard()->SetOutput(3, false);
+}
+
 void Robot::AutonomousInit() {
+	InitLights();
 	//Create auto sequence here so that we have access to game time only information.
 	//Otherwise we would be trying to read FMS at robot init which happens before game time.
 	RobotMap::ahrs->ZeroYaw();
@@ -94,8 +103,8 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+	InitLights();
 	Robot::oi->GetButtonBoard()->SetOutput(4, true);
-	Robot::elevator->enablePID(false);
 	//Robot::elevator.get()->SetDefaultCommand(new SetElevatorSetpointTeleop());
 	if (autonomousCommand)
 		autonomousCommand->Cancel();
@@ -103,18 +112,15 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-	DriverStation::ReportError(std::to_string(RobotMap::pot->Get()));
+	//DriverStation::ReportError(std::to_string(RobotMap::pot->Get()));
 	//push time to cob
 	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());
 	if (frc::DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME || Robot::oi->GetButtonBoard()->GetRawButton(5)) {
 		oi->GetButtonBoard()->SetOutput(1, true);
-		oi->GetButtonBoard()->SetOutput(2, true);
-		oi->GetButtonBoard()->SetOutput(3, true);
 		endgameSystem->setIsEndGame(true);
 	} else {
 		oi->GetButtonBoard()->SetOutput(1, false);
-		oi->GetButtonBoard()->SetOutput(2, false);
-		oi->GetButtonBoard()->SetOutput(3, false);
+
 		endgameSystem->setIsEndGame(false);
 	}
 	frc::Scheduler::GetInstance()->Run();
