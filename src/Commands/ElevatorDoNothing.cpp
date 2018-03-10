@@ -9,13 +9,13 @@
 
 #include "../Robot.h"
 
-ElevatorDoNothing::ElevatorDoNothing() {
+ElevatorDoNothing::ElevatorDoNothing() : frc::Command("Do Nothing") {
 	Requires(Robot::elevator.get());
 }
 
 // Called just before this Command runs the first time
 void ElevatorDoNothing::Initialize() {
-
+	DriverStation::ReportError("Starting doig nothing");
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -30,7 +30,7 @@ bool ElevatorDoNothing::IsFinished() {
 
 // Called once after isFinished returns true
 void ElevatorDoNothing::End() {
-
+	DriverStation::ReportError("Done with do nothing");
 }
 
 // Called when another command which requires one or more of the same

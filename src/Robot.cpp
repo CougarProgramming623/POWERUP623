@@ -14,7 +14,6 @@ std::shared_ptr<EndgameSystem> Robot::endgameSystem;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
-	//snuffleupagus will always be the true name of our robot
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
 	cubeIntake.reset(new CubeIntake());

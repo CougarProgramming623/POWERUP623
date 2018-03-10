@@ -17,19 +17,7 @@ ToggleSliderUsage::ToggleSliderUsage() {
 void ToggleSliderUsage::Initialize() {
 	OI* oi = Robot::oi.get();
 	oi->useSlider = !oi->useSlider;
-	if(!oi->useSlider) {
-		Robot::elevator->SetCurrentCommand(new ElevatorDoNothing());
-		oi->GetButtonBoard()->SetOutput(4, true);
-	} else {
-		oi->GetButtonBoard()->SetOutput(4, false);
-		if (oi->usePot) {
-			Robot::elevator->SetCurrentCommand(new SetShaftSetpointTeleop(RobotMap::pot->Get()));
-			DriverStation::ReportError("Using POT");
-		} else {
-			Robot::elevator->SetCurrentCommand(new ManualShaftControl());
-			DriverStation::ReportError("Not Using POT");
-		}
-	}
+	oi->ResetShaft();
 }
 
 // Called repeatedly when this Command is scheduled to run

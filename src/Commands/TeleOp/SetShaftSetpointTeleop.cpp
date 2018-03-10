@@ -10,9 +10,7 @@
 #include "../../CurrentSpikeIndicator.h"
 #include "../../Robot.h"
 
-SetShaftSetpointTeleop::SetShaftSetpointTeleop(double setpoint) {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
+SetShaftSetpointTeleop::SetShaftSetpointTeleop(double setpoint) : frc::Command("SetShaftSetpointTeleop") {
 	Requires(Robot::elevator.get());
 	m_setpoint = setpoint;
 }
@@ -21,6 +19,8 @@ SetShaftSetpointTeleop::SetShaftSetpointTeleop(double setpoint) {
 void SetShaftSetpointTeleop::Initialize() {
 
 	currentSpike.reset(new CurrentSpikeIndicator(30, RobotMap::shaftController));
+	DriverStation::ReportError("Starting set setpoint");
+	Robot::elevator->SetSetpoint(m_setpoint);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -30,20 +30,25 @@ void SetShaftSetpointTeleop::Execute() {
 	if (hitSpike) {
 		Robot::elevator->SetCurrentCommand(new ElevatorDoNothing());
 	}
+	double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
+	double m_setpoint = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
+	Robot::elevator->SetSetpoint(m_setpoint);
+	DriverStation::ReportError(std::to_string(m_setpoint));
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool SetShaftSetpointTeleop::IsFinished() {
-return false;
+	return false;
 }
 
 // Called once after isFinished returns true
 void SetShaftSetpointTeleop::End() {
-RobotMap::shaftController->StopMotor();
+	RobotMap::shaftController->StopMotor();
+	DriverStation::ReportError("Set shaft point done.");
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void SetShaftSetpointTeleop::Interrupted() {
-End();
+	End();
 }

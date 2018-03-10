@@ -55,13 +55,9 @@ void DriveWithJoystick::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveWithJoystick::Execute() {
-	if (Robot::oi.get()->useSlider) {
-		double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
-		double elevatorLocation = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
-		//slider *= slider * slider;
-		//RobotMap::shaftController->Set(slider);
-		Robot::elevator->SetSetpoint(elevatorLocation);
-	}
+
+
+
 
 	XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
 	YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);

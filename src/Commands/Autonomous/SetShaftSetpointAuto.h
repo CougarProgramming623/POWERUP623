@@ -16,6 +16,4 @@ class SetShaftSetpointAuto : public SetShaftSetpointTeleop {
 public:
 	SetShaftSetpointAuto(double, double);
 	bool IsFinished() override;
-private:
-	double timeout;
 };

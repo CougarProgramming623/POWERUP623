@@ -24,6 +24,9 @@
 #include "Commands/TeleOp/EnableEndGameButtons.h"
 #include "Commands/TeleOp/Climb.h"
 #include "Commands/TeleOp/LiftRamp.h"
+#include "Commands/ElevatorDoNothing.h"
+#include "Commands/TeleOp/SetShaftSetpointTeleop.h"
+#include "Commands/ManualShaftControl.h"
 
 OI::OI() {
 	driverJoystick.reset(new frc::Joystick(0));
@@ -51,6 +54,24 @@ OI::OI() {
 	climb->WhileHeld(new Climb());
 	rampLift->WhenPressed(new LiftRamp());
 
+}
+
+void OI::ResetShaft() {
+	if(!useSlider) {
+		Robot::elevator->SetDefaultCommand(new ElevatorDoNothing());
+		DriverStation::ReportError("Doig Nothing");
+		GetButtonBoard()->SetOutput(4, true);
+	} else {
+		GetButtonBoard()->SetOutput(4, false);
+		if (usePot) {
+			Robot::elevator->SetDefaultCommand(new SetShaftSetpointTeleop(RobotMap::pot->Get()));
+			DriverStation::ReportError("Using POT");
+		} else {
+			Robot::elevator->SetDefaultCommand(new ManualShaftControl());
+			DriverStation::ReportError("Using Manual Control");
+		}
+	}
+	frc::Scheduler::GetInstance()->Run();
 }
 
 std::shared_ptr<frc::Joystick> OI::GetDriverJoystick() {

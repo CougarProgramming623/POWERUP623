@@ -8,18 +8,20 @@
 #include "ManualShaftControl.h"
 #include "../Robot.h"
 
-ManualShaftControl::ManualShaftControl() {
+ManualShaftControl::ManualShaftControl() : frc::Command("ManualShaftControl") {
 	Requires(Robot::elevator.get());
 }
 
 // Called just before this Command runs the first time
 void ManualShaftControl::Initialize() {
-
+	DriverStation::ReportError("Starting maunal shaft control");
 }
 
 // Called repeatedly when this Command is scheduled to run
 void ManualShaftControl::Execute() {
-	RobotMap::shaftController->Set(Robot::oi.get()->GetButtonBoard()->GetRawAxis(0));
+	double value = Robot::oi.get()->GetButtonBoard()->GetRawAxis(0);
+	RobotMap::shaftController->Set(value);
+	DriverStation::ReportError(std::to_string(value));
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -30,6 +32,7 @@ bool ManualShaftControl::IsFinished() {
 // Called once after isFinished returns true
 void ManualShaftControl::End() {
 	RobotMap::shaftController->StopMotor();
+	DriverStation::ReportError("Manual shaft end being called");
 }
 
 // Called when another command which requires one or more of the same
