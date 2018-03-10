@@ -269,11 +269,20 @@ void AutoSequence::DoBaseline() {
 void AutoSequence::DoCenter() {
 	DriverStation::ReportError("Doing Center...");
 	double turnAngle = switchOnRight() ? DRIVE_ANGLE_RIGHT : 180 - DRIVE_ANGLE_LEFT;
+	DriverStation::ReportError(std::to_string(turnAngle));
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	//AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
 		//AddSequential(new AngledDistanceDrive(1, 0.5, turnAngle));
-		DriverStation::ReportError("Starting Vision Drive");
+		AddSequential(new DistanceDrive(5 * FEET_TO_INCHES, SPEED, TIMEOUT));
+		double distance = (switchOnRight())? ((HALF_SWITCH_LENGTH - 25) - (HALF_ROBOT_WIDTH - 12)) : -((HALF_SWITCH_LENGTH - 25) - (HALF_ROBOT_WIDTH + 12));
+		WAIT
+		DriverStation::ReportError("Distance : " + std::to_string(distance));
+		AddSequential(new DistanceDrive(-4 * FEET_TO_INCHES * STRAFE_SCALAR, SPEED, TIMEOUT, true));
+		WAIT
+		AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, SPEED, TIMEOUT));
+		//DriverStation::ReportError("Starting Vision Drive");
+		/*
 		AddSequential(new VisionDrive(0.5, 2.5));
 		AddSequential(new VisionDrive(0.5, 2.5));
 		//WAIT_SEC(0.15);
@@ -281,9 +290,10 @@ void AutoSequence::DoCenter() {
 		//WAIT_SEC(0.15);
 		AddSequential(new VisionDrive(0.4, 2.5));
 		AddSequential(new VisionDrive(0.4, 2.5));
-		//RaiseElevatorToSwitch();
-		//WAIT_SEC(1.5)
-		//DropCube();
+		*/
+		RaiseElevatorToSwitch();
+		WAIT_SEC(1)
+		DropCube();
 	} else {		//Use vision
 		AddSequential(new AngledDistanceDrive(4, 0.5, turnAngle));
 		RaiseElevatorToSwitch();

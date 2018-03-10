@@ -12,6 +12,7 @@
 #include "../Robot.h"
 #include "../RobotMap.h"
 #include "../Commands/ElevatorDoNothing.h"
+#include "../Commands/ElevatorTeleop.h"
 
 Shaft::Shaft() : PIDSubsystem("Shaft", 9.0, 0.0, 0.0) {
 	shaftDrive = RobotMap::shaftController;
@@ -28,7 +29,7 @@ void Shaft::UsePIDOutput(double output) {
 }
 
 void Shaft::InitDefaultCommand() {
-	SetDefaultCommand(new ElevatorDoNothing());
+	SetDefaultCommand(new ElevatorTeleop());
 }
 
 double Shaft::GetElevatorPosition() {

@@ -52,6 +52,10 @@ void DriveTrain::MecanumDrive(float x, float y, float rot, double angle) {
 	mecanumDrive1->DriveCartesian(x, y, rot, angle);
 }
 
+void DriveTrain::PolarDrive(double magnitude, double angle, double rotation) {
+	mecanumDrive1->DrivePolar(magnitude, angle, rotation);
+}
+
 
 
 void DriveTrain::Stop() {

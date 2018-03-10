@@ -16,8 +16,6 @@ const static double kToleranceDegrees = 0.1f;
 
 AngledDistanceDrive::AngledDistanceDrive(double time, double speed, double angle) :
 		frc::Command() {
-	// Use Requires() here to declare subsystem dependenciesactualSpeed
-	// eg. Requires(Robot::chassis.get());
 	m_speed = speed;
 	m_time = time;
 	m_angle = angle;
@@ -29,7 +27,7 @@ AngledDistanceDrive::AngledDistanceDrive(double time, double speed, double angle
 
 // Called just before this Command runs the first time
 void AngledDistanceDrive::Initialize() {
-	SetTimeout(m_time + 0.5);
+	SetTimeout(m_time);
 	m_timer = new Timer();
 	m_timer->Start();
 
@@ -48,18 +46,22 @@ int AngledDistanceDrive::getPosition() {
 
 // Called repeatedly when this Command is scheduled to run
 void AngledDistanceDrive::Execute() {
-	double x = cos(m_angle * M_PI / 180) * m_speed;
-	double y = sin(m_angle * M_PI / 180) * m_speed;
-	Robot::driveTrain->MecanumDrive(x, y, 0, 0);
+	double x = cos((m_angle + 45) * (M_PI / 180)) * m_speed;
+	double y = sin((m_angle + 45) * (M_PI / 180)) * m_speed;
+
+	//RobotMap::driveTrainleftFront->Set(y);
+	//RobotMap::driveTrainrightBack->Set(y);
+
+	//RobotMap::driveTrainleftBack->Set(x);
+	//RobotMap::driveTrainrightFront->Set(x);
+	Robot::driveTrain->PolarDrive(m_speed, m_angle, 0);
+	DriverStation::ReportError("Doing Angled Distance:  (" + std::to_string(m_speed) + " , " + std::to_string(m_angle) + ")");
+	//DriverStation::ReportError(std::to_string(rotateToAngleRate));
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool AngledDistanceDrive::IsFinished() {
-	if (m_timer && m_timer->Get() > m_time) {
-		return true;
-	}
-	return false;
-
+	return IsTimedOut();
 }
 
 // Called once after isFinished returns true
@@ -81,7 +83,7 @@ void AngledDistanceDrive::End() {
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void AngledDistanceDrive::Interrupted() {
-
+	DriverStation::ReportError("ADD Interrupted");
 }
 
 void AngledDistanceDrive::PIDWrite(double output) {

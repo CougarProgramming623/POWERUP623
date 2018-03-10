@@ -17,7 +17,7 @@ ToggleSliderUsage::ToggleSliderUsage() {
 void ToggleSliderUsage::Initialize() {
 	OI* oi = Robot::oi.get();
 	oi->useSlider = !oi->useSlider;
-	oi->ResetShaft();
+	oi->ResetElevatorLogic();
 }
 
 // Called repeatedly when this Command is scheduled to run

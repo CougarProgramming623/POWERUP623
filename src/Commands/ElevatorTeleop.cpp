@@ -5,31 +5,34 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "SetShaftSetpointTeleop.h"
-#include "../ElevatorDoNothing.h"
-#include "../../CurrentSpikeIndicator.h"
-#include "../../Robot.h"
+#include "ElevatorTeleop.h"
+#include "../Robot.h"
 
-SetShaftSetpointTeleop::SetShaftSetpointTeleop(double setpoint) : frc::Command("SetShaftSetpointTeleop") {
+ElevatorTeleop::ElevatorTeleop() {
+	currentSpike.reset(new CurrentSpikeIndicator(30, RobotMap::shaftController));
 	Requires(Robot::elevator.get());
-	m_setpoint = setpoint;
 }
 
 // Called just before this Command runs the first time
-void SetShaftSetpointTeleop::Initialize() {
+void ElevatorTeleop::Initialize() {
 
-	currentSpike.reset(new CurrentSpikeIndicator(30, RobotMap::shaftController));
-	DriverStation::ReportError("Starting set setpoint");
-	Robot::elevator->SetSetpoint(m_setpoint);
-	Robot::elevator->Enable();
 }
 
 // Called repeatedly when this Command is scheduled to run
-void SetShaftSetpointTeleop::Execute() {
+void ElevatorTeleop::Execute() {
 	currentSpike->Update();
 	bool hitSpike = currentSpike->GetSpike();
-	if (hitSpike) {
-		Robot::elevator->SetCurrentCommand(new ElevatorDoNothing());
+	OI* oi = Robot::oi.get();
+	if(oi->useSlider) {//Read from the joystick
+		double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
+		if(oi->usePot) {//Use pid
+			double m_setpoint = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
+			Robot::elevator->SetSetpoint(m_setpoint);
+		} else {//Use maunal control
+			RobotMap::shaftController->Set(slider);
+		}
+	} else {//Do nothing
+		DriverStation::ReportError("Doing nothing");
 	}
 	double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
 	double m_setpoint = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
@@ -38,18 +41,17 @@ void SetShaftSetpointTeleop::Execute() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool SetShaftSetpointTeleop::IsFinished() {
+bool ElevatorTeleop::IsFinished() {
 	return false;
 }
 
 // Called once after isFinished returns true
-void SetShaftSetpointTeleop::End() {
-	RobotMap::shaftController->StopMotor();
-	DriverStation::ReportError("Set shaft point done.");
+void ElevatorTeleop::End() {
+	DriverStation::ReportError("Ending ElevatorTeleop");
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void SetShaftSetpointTeleop::Interrupted() {
+void ElevatorTeleop::Interrupted() {
 	End();
 }

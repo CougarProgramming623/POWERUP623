@@ -3,6 +3,8 @@
 #include "Commands/Drive/AngledDistanceDrive.h"
 #include "DriverStation.h"
 #include "Commands/TeleOp/CubeIntakeCommand.h"
+#include "Commands/ElevatorDoNothing.h"
+#include "Commands/ElevatorTeleop.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
@@ -20,6 +22,7 @@ void Robot::RobotInit() {
 	release.reset(new Release());
 	endgameSystem.reset(new EndgameSystem());
 	elevator.reset(new Shaft());
+	elevator->SetDefaultCommand(new ElevatorTeleop());
 	//SmartDashboard::PutData(driveTrain.get());
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
@@ -58,8 +61,9 @@ void Robot::DisabledInit() {
 }
 
 void Robot::DisabledPeriodic() {
-/*
-	double time = pow(1.5, m_timer->Get());
+	//std::cout << "Elevator Position: " << Robot::elevator->GetElevatorPosition() << std::endl;
+
+	double time = m_timer->Get() * 3;
 
 	if((int)time % 3 == 0) {
 		oi->GetButtonBoard()->SetOutput(3, true);
@@ -73,7 +77,7 @@ void Robot::DisabledPeriodic() {
 		oi->GetButtonBoard()->SetOutput(1, true);
 		oi->GetButtonBoard()->SetOutput(2, false);
 		oi->GetButtonBoard()->SetOutput(3, false);
-	}*/
+	}
 
 	frc::Scheduler::GetInstance()->Run();
 }

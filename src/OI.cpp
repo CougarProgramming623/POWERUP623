@@ -56,22 +56,24 @@ OI::OI() {
 
 }
 
-void OI::ResetShaft() {
+void OI::ResetElevatorLogic() {
 	if(!useSlider) {
-		Robot::elevator->SetDefaultCommand(new ElevatorDoNothing());
 		DriverStation::ReportError("Doig Nothing");
 		GetButtonBoard()->SetOutput(4, true);
+		Robot::elevator->Disable();
+		DriverStation::ReportError("Disabling PID");
 	} else {
 		GetButtonBoard()->SetOutput(4, false);
 		if (usePot) {
-			Robot::elevator->SetDefaultCommand(new SetShaftSetpointTeleop(RobotMap::pot->Get()));
 			DriverStation::ReportError("Using POT");
+			Robot::elevator->Enable();
+			DriverStation::ReportError("Enabling PID");
 		} else {
-			Robot::elevator->SetDefaultCommand(new ManualShaftControl());
 			DriverStation::ReportError("Using Manual Control");
+			Robot::elevator->Disable();
+			DriverStation::ReportError("Disabling PID");
 		}
 	}
-	frc::Scheduler::GetInstance()->Run();
 }
 
 std::shared_ptr<frc::Joystick> OI::GetDriverJoystick() {

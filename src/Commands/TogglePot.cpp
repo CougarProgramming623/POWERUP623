@@ -18,7 +18,7 @@ TogglePot::TogglePot() {
 void TogglePot::Initialize() {
 	OI* oi = Robot::oi.get();
 	oi->usePot = !oi->usePot;
-	oi->ResetShaft();
+	oi->ResetElevatorLogic();
 }
 
 // Called repeatedly when this Command is scheduled to run
