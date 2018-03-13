@@ -66,16 +66,8 @@ void DriveWithJoystick::Execute() {
 	double push = sqrt(XAxis * XAxis + YAxis * YAxis);
 	turnController->Disable();
 	Robot::driveTrain->MecanumDrive(XAxis, YAxis, RotAxis, -RobotMap::ahrs->GetYaw());
-	double angle = RobotMap::ahrs->GetYaw();
-	Robot::cob->PushRotation(angle);
-	double velAngle = -atan(YAxis / XAxis) * 180 / M_PI - 90;
-	if (XAxis > 0)
-		velAngle += 180;
-	Robot::cob->PushVelocityDirection(velAngle);
 	//set the maximum speed if necessary
-	if (push > maxSpeed)
-		maxSpeed = push;
-	Robot::cob->PushVelocityMagnitude(push / maxSpeed);
+
 	SmartDashboard::PutNumber("Encoder", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0));
 }
 

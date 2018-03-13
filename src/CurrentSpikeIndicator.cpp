@@ -39,9 +39,9 @@ bool CurrentSpikeIndicator::GetSpike() {
 			average += current;
 		}
 		average /= ARRAY_SIZE;
-		DriverStation::ReportError("Average Current on " + talon->GetName() + ": " + std::to_string(average));
-		if(average>=threshold)
-			DriverStation::ReportError("ENDED: " + std::to_string(average));
+		//DriverStation::ReportError("Average Current on " + talon->GetName() + ": " + std::to_string(average));
+		//if(average>=threshold)
+			//DriverStation::ReportError("ENDED: " + std::to_string(average));
 		return average >= threshold;
 	}
 	//DriverStation::ReportError("Not Enough Data");

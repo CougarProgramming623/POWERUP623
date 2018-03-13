@@ -30,6 +30,7 @@ nt::NetworkTableEntry CougarOpticBoard::entryFMSField;
 nt::NetworkTableEntry CougarOpticBoard::entryIsAutonomous;
 nt::NetworkTableEntry CougarOpticBoard::entryIsTeleop;
 nt::NetworkTableEntry CougarOpticBoard::entryIsEnabled;
+nt::NetworkTableEntry CougarOpticBoard::entryLidar;
 
 
 /**
@@ -62,6 +63,7 @@ CougarOpticBoard::CougarOpticBoard() {
 	CougarOpticBoard::entryIsAutonomous = table->GetEntry("gamedata/is-autonomous");
 	CougarOpticBoard::entryIsTeleop = table->GetEntry("gamedata/is-teleop");
 	CougarOpticBoard::entryIsEnabled = table->GetEntry("gamedata/is-enabled");
+	CougarOpticBoard::entryLidar = table->GetEntry("lidar");
 }
 
 void CougarOpticBoard::InitBoard() {
@@ -86,6 +88,7 @@ void CougarOpticBoard::InitBoard() {
 	CougarOpticBoard::entryIsAutonomous = table->GetEntry("gamedata/is-autonomous");
 	CougarOpticBoard::entryIsTeleop = table->GetEntry("gamedata/is-teleop");
 	CougarOpticBoard::entryIsEnabled = table->GetEntry("gamedata/is-enabled");
+	CougarOpticBoard::entryLidar = table->GetEntry("lidar");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~ SET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -304,4 +307,8 @@ void CougarOpticBoard::PushTeleop(bool isTeleop) {
 
 void CougarOpticBoard::PushEnabled(bool isEnabled) {
 	entryIsEnabled.SetBoolean(isEnabled);
+}
+
+void CougarOpticBoard::PushLidar(int lidar) {
+	entryLidar.SetString(std::to_string(lidar));
 }

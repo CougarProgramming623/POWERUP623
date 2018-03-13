@@ -22,7 +22,7 @@ static double lastPitch = 0;
  * This command will also stop when it detects a bump if the last parameter is true
  */
 
-DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection) :
+DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection, double lidar) :
 		frc::Command("DistanceDrive"), frc::PIDOutput() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
@@ -32,6 +32,7 @@ DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool st
 	m_timeout = timeout;
 	m_strafe = strafe;
 	m_timer = new Timer();
+	m_lidar = lidar;
 	m_doBumpDetection = bumpDetection;
 	rotateToAngleRate = 0.0;
 	turnController = new PIDController(kP, kI, kD, kF, RobotMap::ahrs, this);
@@ -85,7 +86,7 @@ bool DistanceDrive::checkForBump() {
 void DistanceDrive::Execute() {
 	//std::cout << "Distance: " << getPosition() - initEncPosition << std::endl;
 	SmartDashboard::PutNumber("Encoder Ticks: ", getPosition() - initEncPosition);
-
+	DriverStation::ReportError("Encoder Ticks: " + std::to_string(getPosition() - initEncPosition));
 	double coefficient = 1.0;
 
 	if (m_distance < 0)
@@ -99,9 +100,9 @@ void DistanceDrive::Execute() {
 	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
 	if (m_strafe)
 	{
-		Robot::driveTrain->MecanumDrive(actualSpeed, 0, 0, 0);
+		Robot::driveTrain->MecanumDrive(actualSpeed, 0, rotateToAngleRate, 0);
 	} else {
-		Robot::driveTrain->MecanumDrive(0, actualSpeed, 0, 0);
+		Robot::driveTrain->MecanumDrive(0, actualSpeed, rotateToAngleRate, 0);
 	}
 }
 
@@ -115,6 +116,10 @@ bool DistanceDrive::IsFinished() {
 		return true;
 	}
 	*/
+	if (m_lidar >= 0 && RobotMap::lidar->GetDistance() >= m_lidar) {
+		DriverStation::ReportError("LIDAR limit reached.");
+		return true;
+	}
 	if (m_timer && m_timer->Get() > m_timeout) {
 		return false;
 	}

@@ -42,6 +42,7 @@ public:
 	static void PushTeleop(bool isTeleop);
 	static void PushAutonomous(bool isAutonomous);
 	static void PushEnabled(bool isEnabled);
+	static void PushLidar(int lidar);
 	//getters
 	static int GetAutonomousStartPos();
 	static bool GetAutonomousNoAuto();
@@ -73,6 +74,7 @@ public:
 	static nt::NetworkTableEntry entryIsAutonomous;
 	static nt::NetworkTableEntry entryIsTeleop;
 	static nt::NetworkTableEntry entryIsEnabled;
+	static nt::NetworkTableEntry entryLidar;
 
 };
 

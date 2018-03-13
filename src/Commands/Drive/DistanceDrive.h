@@ -14,7 +14,7 @@
 
 class DistanceDrive : public frc::Command , public frc::PIDOutput {
 public:
-	DistanceDrive(double, double, int, bool = false, bool = false);
+	DistanceDrive(double, double, int, bool = false, bool = false, double = -1.);
 	void Initialize();
 	void Execute();
 	bool IsFinished();
@@ -34,6 +34,7 @@ private:
 	int initEncPosition = 0, m_ticks;
 	bool m_strafe;
 	double rotateToAngleRate;
+	double m_lidar;
 
 	//bump detection
 	bool m_doBumpDetection = false;

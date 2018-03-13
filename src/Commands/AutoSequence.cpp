@@ -191,23 +191,22 @@ void AutoSequence::DoSwitchFar() {
  */
 void AutoSequence::DoScaleNear() {
 	DriverStation::ReportError("Doing Scale Near...");
-	//drive to bump
-	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, 0.8, TIMEOUT, false));
+	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, 0.8, TIMEOUT, false, false, 18 * FEET_TO_INCHES));
 	//Can we raise here? Or after we detect the bump on the next line
 	RaiseElevatorToScale();
-	AddSequential(new DistanceDrive(8 * FEET_TO_INCHES - HALF_ROBOT_LENGTH, SPEED, TIMEOUT, false, true));
+	AddSequential(new DistanceDrive(8 * FEET_TO_INCHES - HALF_ROBOT_LENGTH, SPEED, TIMEOUT, false, true, 27 * FEET_TO_INCHES - HALF_ROBOT_LENGTH));
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
 	//turn
 	AddSequential(new Turn(invertIfRight(90), 1));
 	WAIT
 	//drive forward
-	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
+	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false, 1 * FEET_TO_INCHES));
 	//dropping cube
 	//WAIT
 	DropCube();
 	//move back
-	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
+	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false, -0.5 * FEET_TO_INCHES));
 	//WAIT
 	//turn
 	AddSequential(new Turn(invertIfRight(180), TIMEOUT));
@@ -268,32 +267,37 @@ void AutoSequence::DoBaseline() {
 
 void AutoSequence::DoCenter() {
 	DriverStation::ReportError("Doing Center...");
-	double turnAngle = switchOnRight() ? DRIVE_ANGLE_RIGHT : 180 - DRIVE_ANGLE_LEFT;
+	double turnAngle = switchOnRight() ? DRIVE_ANGLE_RIGHT + 15 : -(DRIVE_ANGLE_LEFT + 15);
+	double driveTime = switchOnRight() ? 2.0: 3.5;
 	DriverStation::ReportError(std::to_string(turnAngle));
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());		//In this case, because we are in the center, the auto instructions contain the timeout
 	//AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
 	if (true) {	//Use ticks
-		//AddSequential(new AngledDistanceDrive(1, 0.5, turnAngle));
-		AddSequential(new DistanceDrive(5 * FEET_TO_INCHES, SPEED, TIMEOUT));
-		double distance = (switchOnRight())? ((HALF_SWITCH_LENGTH - 25) - (HALF_ROBOT_WIDTH - 12)) : -((HALF_SWITCH_LENGTH - 25) - (HALF_ROBOT_WIDTH + 12));
+		AddSequential(new AngledDistanceDrive(driveTime, 0.5, turnAngle));
+		//AddSequential(new DistanceDrive(5 * FEET_TO_INCHES, SPEED, TIMEOUT));
+		/*double distance = (switchOnRight())? ((HALF_SWITCH_LENGTH - 25) - (HALF_ROBOT_WIDTH - 12)) : -((HALF_SWITCH_LENGTH - 25) - (HALF_ROBOT_WIDTH + 12));
 		WAIT
 		DriverStation::ReportError("Distance : " + std::to_string(distance));
-		AddSequential(new DistanceDrive(-4 * FEET_TO_INCHES * STRAFE_SCALAR, SPEED, TIMEOUT, true));
+		AddSequential(new VisionDrive(0.3, TIMEOUT));
+		//AddSequential(new DistanceDrive(distance * FEET_TO_INCHES * STRAFE_SCALAR, SPEED, TIMEOUT, true));
 		WAIT
-		AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, SPEED, TIMEOUT));
+		AddSequential(new DistanceDrive(5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 		//DriverStation::ReportError("Starting Vision Drive");
-		/*
-		AddSequential(new VisionDrive(0.5, 2.5));
-		AddSequential(new VisionDrive(0.5, 2.5));
-		//WAIT_SEC(0.15);
-		AddSequential(new VisionDrive(0.5, 2.5));
-		//WAIT_SEC(0.15);
-		AddSequential(new VisionDrive(0.4, 2.5));
-		AddSequential(new VisionDrive(0.4, 2.5));
 		*/
-		RaiseElevatorToSwitch();
-		WAIT_SEC(1)
-		DropCube();
+		WAIT
+		AddSequential(new VisionDrive(0.3, 2.5));
+		AddSequential(new VisionDrive(0.3, 2.5));
+		WAIT_SEC(0.15);
+		AddSequential(new VisionDrive(0.3, 2.5));
+		WAIT_SEC(0.15);
+		AddSequential(new VisionDrive(0.3, 2.5));
+		AddSequential(new VisionDrive(0.3, 2.5));
+		AddSequential(new VisionDrive(0.3, 2.5));
+		AddSequential(new VisionDrive(0.3, 2.5));
+
+		//RaiseElevatorToSwitch();
+		//WAIT_SEC(1)
+		//DropCube();
 	} else {		//Use vision
 		AddSequential(new AngledDistanceDrive(4, 0.5, turnAngle));
 		RaiseElevatorToSwitch();
@@ -303,6 +307,7 @@ void AutoSequence::DoCenter() {
 		//Vision stuff
 	}
 
+	/*
 	//Go back but more sharply so that we arrive not at the wall, but in front of the cubes
 	AddSequential(new DistanceDrive(-4 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	WAIT
@@ -311,4 +316,5 @@ void AutoSequence::DoCenter() {
 	} else {
 		AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, SPEED, TIMEOUT, true, false));
 	}
+	*/
 }

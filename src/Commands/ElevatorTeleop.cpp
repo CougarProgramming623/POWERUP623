@@ -32,12 +32,12 @@ void ElevatorTeleop::Execute() {
 			RobotMap::shaftController->Set(slider);
 		}
 	} else {//Do nothing
-		DriverStation::ReportError("Doing nothing");
+		//DriverStation::ReportError("Doing nothing");
 	}
 	double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
 	double m_setpoint = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
 	Robot::elevator->SetSetpoint(m_setpoint);
-	DriverStation::ReportError(std::to_string(m_setpoint));
+	//DriverStation::ReportError(std::to_string(m_setpoint));
 }
 
 // Make this return true when this Command no longer needs to run execute()

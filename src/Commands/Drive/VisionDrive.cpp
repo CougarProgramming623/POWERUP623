@@ -73,16 +73,23 @@ void VisionDrive::Execute() {
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 0"), llvm::StringRef("Vision angle is :" + std::to_string(m_currentAngle)));
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 1"), llvm::StringRef("Distance is :" + std::to_string(m_distanceToTarget)));
 		DriverStation::ReportError("Vision angle is :" + std::to_string(m_currentAngle));
-		//DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
-		double x = cos(m_currentAngle) * m_speed;
-		double y = sin(m_currentAngle) * m_speed;
+		DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
+		double x = sin(m_currentAngle) * m_speed;
+		double y = cos(m_currentAngle) * m_speed;
 
-		//if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
-		//	x *= -1;
-
+		y*=-1;
 		DriverStation::ReportError("X is :" + std::to_string(x));
 		DriverStation::ReportError("Y is :" + std::to_string(y));
-		Robot::driveTrain->MecanumDrive(x, y, 0, 0);
+		//Used for Strafe Vision
+		Robot::driveTrain->PolarDrive(m_speed, PI/2 - m_currentAngle, 0);
+		DriverStation::ReportError("Driving...");
+		//Robot::driveTrain->MecanumDrive(x, 0, 0, 0);
+	}
+	else if(arr.size() > 0 && arr.size() < 2){
+		if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") == 0)
+			Robot::driveTrain->MecanumDrive(-m_speed * 0.3, 0,0,0);
+		else
+			Robot::driveTrain->MecanumDrive(m_speed*0.3, 0,0,0);
 	}
 	else{
 		DriverStation::ReportError("Can't see targets");
@@ -95,11 +102,11 @@ void VisionDrive::Execute() {
 bool VisionDrive::IsFinished() {
 	nt::NetworkTableEntry centerX = visionTable->GetEntry("width");
 	std::vector<double> arr = centerX.GetDoubleArray(llvm::ArrayRef<double>());
-	/*if(m_distanceToTarget <= 13){
+	//Used for Strafe Vision
+	if(m_distanceToTarget <= 10){
 		DriverStation::ReportError("ENDAUTOVISION-DISTANCE");
 		return true;
-	}*/
-	//m_distanceToTarget isn't accurate
+	}
 	/*if (IsTimedOut()) {
 		return true;
 	}*/
@@ -107,10 +114,14 @@ bool VisionDrive::IsFinished() {
 	{
 		double width1 = arr[0];
 		double width2 = arr[1];
-		if((width1+width2)/2 >= 90){
+		if((width1+width2)/2 >= 95){
 			DriverStation::ReportError("ENDAUTOVISION-WIDTH");
 			return true;
 		}
+		//if((width1 <= 500 && width1 >= 460) && (width2 <= 500 && width2 >= 460)){
+		//	DriverStation::ReportError("ENDAUTOVISION-WIDTH");
+		//	return true;
+		//}
 	}
 	else if(cantSeeTarget){
 		DriverStation::ReportError("ENDAUTOVISION-CANTSEE");
@@ -154,31 +165,30 @@ void VisionDrive::PIDWrite(double output) {
 #define VERTICAL_THETA 1558.32
 #define CAMERA_HEIGHT 544
 
-#define FOCAL_LENGTH 814.88
+#define FOCAL_LENGTH 803.85
 #define TAPE_WIDTH 6
 #define TAPE_HEIGHT 15.75
 
 double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 
-	//if(DriverStation::GetInstance().GetGameSpecificMessage().find("L") ==0)
-	double lengthPixels = 480 - (y1+y2)/2;
+	double lengthPixels = (y1+y2)/2 - 480;
 
-	if(y1 >= 420 && y2 >= 420)
+	if(y1 >= 480 && y2 >= 480)
+		//return 0;
+		//Used for Strafe Vision
 		return atan(lengthPixels/FOCAL_LENGTH);
 	else
-		return 2*PI+atan(lengthPixels/FOCAL_LENGTH);
+		//return PI;
+		//Used for Strafe Vision
+		return atan(lengthPixels/FOCAL_LENGTH)+PI;
 
 
-	/*double averageX = (x1 + x2) / 2.0;
-	double distanceFromTapeCenterToImageCenter = HALF_CAMERA_WIDTH - averageX;
-	double phi = atan(distanceFromTapeCenterToImageCenter / HORIZONTAL_THETA) * 180 / M_PI;
-	return 90.0 - phi;*/
 }
 
 double VisionDrive::GetVisionTargetDriveDistance(double y1, double y2) {
 	double widthPxl = fabs(y2-y1);
 	double straightDistance = (TAPE_WIDTH * FOCAL_LENGTH)/widthPxl;
-	//double trueDistance = straightDistance/ cos(m_currentAngle);
+	double trueDistance = straightDistance/ cos(m_currentAngle);
 	//double value = (TAPE_HEIGHT * CAMERA_HEIGHT) / (2 * averageHeight * tan(VERTICAL_THETA * M_PI / 180));
-	return straightDistance;
+	return fabs(trueDistance);
 }

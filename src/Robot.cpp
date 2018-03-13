@@ -43,16 +43,25 @@ void Robot::RobotInit() {
 	//nt::NetworkTable::Initialize();
 	std::stringstream str;
 	str << " Potentiometer " << RobotMap::pot->Get();
-	DriverStation::ReportError(str.str());
+	//DriverStation::ReportError(str.str());
 }
 
 void Robot::RobotPeriodic() {
 	Robot::cob->PushEnabled(DriverStation::GetInstance().IsEnabled());
 	Robot::cob->PushAutonomous(DriverStation::GetInstance().IsAutonomous());
 	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
-
+	/*Robot::cob->PushLidar(RobotMap::lidar->GetDistance());
 	Robot::cob->PushArmHeight((elevator->GetElevatorPosition() - ELEVATOR_BOTTOM) / ELEVATOR_DELTA);
-
+	double XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
+	double YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);
+	double velAngle = -atan(YAxis / XAxis) * 180 / M_PI - 90;
+		if (XAxis > 0)
+			velAngle += 180;
+	Robot::cob->PushVelocityDirection(velAngle);
+	double angle = RobotMap::ahrs->GetYaw();
+	Robot::cob->PushRotation(angle);
+	Robot::cob->PushVelocityMagnitude(sqrt(XAxis * XAxis + YAxis * YAxis));
+	*/
 }
 
 void Robot::DisabledInit() {
@@ -62,7 +71,7 @@ void Robot::DisabledInit() {
 
 void Robot::DisabledPeriodic() {
 	//std::cout << "Elevator Position: " << Robot::elevator->GetElevatorPosition() << std::endl;
-
+/*
 	double time = m_timer->Get() * 3;
 
 	if((int)time % 3 == 0) {
@@ -80,6 +89,7 @@ void Robot::DisabledPeriodic() {
 	}
 
 	frc::Scheduler::GetInstance()->Run();
+*/
 }
 
 void Robot::InitLights() {
@@ -107,6 +117,8 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
 	InitLights();
+	DriverStation::ReportError("Test");
+
 	Robot::oi->GetButtonBoard()->SetOutput(4, true);
 	//Robot::elevator.get()->SetDefaultCommand(new SetElevatorSetpointTeleop());
 	if (autonomousCommand)
