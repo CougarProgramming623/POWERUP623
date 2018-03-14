@@ -201,12 +201,12 @@ void AutoSequence::DoScaleNear() {
 	AddSequential(new Turn(invertIfRight(90), 1));
 	WAIT
 	//drive forward
-	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false, 1 * FEET_TO_INCHES));
+	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
 	//dropping cube
 	//WAIT
 	DropCube();
 	//move back
-	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false, -0.5 * FEET_TO_INCHES));
+	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
 	//WAIT
 	//turn
 	AddSequential(new Turn(invertIfRight(180), TIMEOUT));

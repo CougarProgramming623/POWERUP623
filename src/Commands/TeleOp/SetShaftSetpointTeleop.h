@@ -18,7 +18,7 @@ class SetShaftSetpointTeleop : public frc::Command {
 public:
 	SetShaftSetpointTeleop(double);
 	void Initialize() override;
-	void Execute() override;
+	virtual void Execute() override;
 	virtual bool IsFinished() override;
 	void End() override;
 	void Interrupted() override;

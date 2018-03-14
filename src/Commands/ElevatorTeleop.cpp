@@ -23,9 +23,9 @@ void ElevatorTeleop::Execute() {
 	currentSpike->Update();
 	bool hitSpike = currentSpike->GetSpike();
 	OI* oi = Robot::oi.get();
-	if(oi->useSlider) {//Read from the joystick
+	if(oi->sliderEnabled) {//Read from the joystick
 		double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
-		if(oi->usePot) {//Use pid
+		if(oi->usePID) {//Use pid
 			double m_setpoint = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
 			Robot::elevator->SetSetpoint(m_setpoint);
 		} else {//Use maunal control

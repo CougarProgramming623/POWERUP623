@@ -85,8 +85,8 @@ bool DistanceDrive::checkForBump() {
 // says that we need to turn to correct the robot's heading.
 void DistanceDrive::Execute() {
 	//std::cout << "Distance: " << getPosition() - initEncPosition << std::endl;
-	SmartDashboard::PutNumber("Encoder Ticks: ", getPosition() - initEncPosition);
-	DriverStation::ReportError("Encoder Ticks: " + std::to_string(getPosition() - initEncPosition));
+	//SmartDashboard::PutNumber("Encoder Ticks: ", getPosition() - initEncPosition);
+	//DriverStation::ReportError("Encoder Ticks: " + std::to_string(getPosition() - initEncPosition));
 	double coefficient = 1.0;
 
 	if (m_distance < 0)
@@ -114,18 +114,17 @@ bool DistanceDrive::IsFinished() {
 	if (m_doBumpDetection && checkForBump()) {
 		DriverStation::ReportError("Detected bump. Stopping DDC.");
 		return true;
+	}*/
+	if (m_timer && m_timer->Get() > m_timeout) {
+		return false;
 	}
-	*/
 	if (m_lidar >= 0 && RobotMap::lidar->GetDistance() >= m_lidar) {
 		DriverStation::ReportError("LIDAR limit reached.");
 		return true;
 	}
-	if (m_timer && m_timer->Get() > m_timeout) {
-		return false;
-	}
 	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
 		DriverStation::ReportError("Distance Drove.");
-		std::cout << "Distance Driven " << std::endl;
+		std::cout << "Distance Driven: " << ((getPosition() - initEncPosition) * TICKS_PER_INCH)<< std::endl;
 		return true;
 	}
 	return false;

@@ -65,8 +65,11 @@ void Robot::RobotPeriodic() {
 }
 
 void Robot::DisabledInit() {
-	m_timer = new Timer();
-	m_timer->Start();
+	//m_timer = new Timer();
+	//m_timer->Start();
+	Robot::oi->sliderEnabled = false;
+	Robot::oi->usePID = true;
+	oi->ResetElevatorLogic();
 }
 
 void Robot::DisabledPeriodic() {
@@ -116,10 +119,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-	InitLights();
-	DriverStation::ReportError("Test");
-
-	Robot::oi->GetButtonBoard()->SetOutput(4, true);
+	oi->ResetElevatorLogic();
 	//Robot::elevator.get()->SetDefaultCommand(new SetElevatorSetpointTeleop());
 	if (autonomousCommand)
 		autonomousCommand->Cancel();
@@ -127,6 +127,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+	Robot::cob->PushLidar(RobotMap::lidar->GetDistance());
 	//DriverStation::ReportError(std::to_string(RobotMap::pot->Get()));
 	//push time to cob
 	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());

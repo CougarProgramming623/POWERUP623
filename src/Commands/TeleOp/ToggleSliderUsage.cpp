@@ -16,7 +16,7 @@ ToggleSliderUsage::ToggleSliderUsage() {
 // Called just before this Command runs the first time
 void ToggleSliderUsage::Initialize() {
 	OI* oi = Robot::oi.get();
-	oi->useSlider = !oi->useSlider;
+	oi->sliderEnabled = !oi->sliderEnabled;
 	oi->ResetElevatorLogic();
 }
 

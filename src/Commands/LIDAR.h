@@ -17,8 +17,10 @@ private:
 
 public:
 	LIDAR();
-	int GetDistance();
+	double GetDistance();
 	void Update();
+private:
+	double stored;
 };
 
 #endif /* LIDAR_H_ */

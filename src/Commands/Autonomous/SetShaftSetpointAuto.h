@@ -16,4 +16,5 @@ class SetShaftSetpointAuto : public SetShaftSetpointTeleop {
 public:
 	SetShaftSetpointAuto(double, double);
 	bool IsFinished() override;
+	virtual void Execute() override;
 };

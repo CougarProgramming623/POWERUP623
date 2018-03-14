@@ -17,7 +17,7 @@ TogglePot::TogglePot() {
 // Called just before this Command runs the first time
 void TogglePot::Initialize() {
 	OI* oi = Robot::oi.get();
-	oi->usePot = !oi->usePot;
+	oi->usePID = !oi->usePID;
 	oi->ResetElevatorLogic();
 }
 

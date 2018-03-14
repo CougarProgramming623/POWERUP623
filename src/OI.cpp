@@ -57,18 +57,20 @@ OI::OI() {
 }
 
 void OI::ResetElevatorLogic() {
-	if(!useSlider) {
+	if(!sliderEnabled) {
 		DriverStation::ReportError("Doig Nothing");
 		GetButtonBoard()->SetOutput(4, true);
 		Robot::elevator->Disable();
 		DriverStation::ReportError("Disabling PID");
 	} else {
 		GetButtonBoard()->SetOutput(4, false);
-		if (usePot) {
+		if (usePID) {
+			GetButtonBoard()->SetOutput(3, false);
 			DriverStation::ReportError("Using POT");
 			Robot::elevator->Enable();
 			DriverStation::ReportError("Enabling PID");
 		} else {
+			GetButtonBoard()->SetOutput(3, true);
 			DriverStation::ReportError("Using Manual Control");
 			Robot::elevator->Disable();
 			DriverStation::ReportError("Disabling PID");
