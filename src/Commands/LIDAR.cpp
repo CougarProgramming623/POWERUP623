@@ -40,7 +40,7 @@ double LIDAR::GetDistance() {
 	distance <<= 8;
 	distance += array[index + 2];
 	double var1 = distance * CM_TO_INCHES;
-	//DriverStation::ReportError("LIDAR Distance: " + std::to_string(var1) + " Quality: " + std::to_string(quality));
+	DriverStation::ReportError("LIDAR Distance: " + std::to_string(var1) + " Quality: " + std::to_string(quality));
 	//SmartDashboard::PutNumber("Distance", var1);
 	return var1;
 }

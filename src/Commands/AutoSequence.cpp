@@ -186,24 +186,29 @@ void AutoSequence::DoSwitchFar() {
  */
 void AutoSequence::DoScaleNear() {
 	DriverStation::ReportError("Doing Scale Near...");
-	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, 0.8, TIMEOUT, false, false, 18 * FEET_TO_INCHES));
+	AddSequential(new DistanceDrive(18 * FEET_TO_INCHES, 0.7, TIMEOUT, false, false, 18 * FEET_TO_INCHES));
+	RaiseElevatorToSwitch();
 	//Can we raise here? Or after we detect the bump on the next line
-	RaiseElevatorToScale();
 	AddSequential(
 			new DistanceDrive(8 * FEET_TO_INCHES - HALF_ROBOT_LENGTH, SPEED, TIMEOUT, false, true,
 					27 * FEET_TO_INCHES - HALF_ROBOT_LENGTH));
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
-	//turn
-	AddSequential(new Turn(invertIfRight(90), 1));
 	WAIT
+	//turn
+	RaiseElevatorToScale();
+	AddSequential(new Turn(invertIfRight(90), 1));
 	//drive forward
 	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
 	//dropping cube
-	//WAIT
+	WAIT_SEC(1.0)
 	DropCube();
-	//move back
 	AddSequential(new DistanceDrive(-0.5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
+	WAIT
+	RaiseElevatorToSwitch();
+	WAIT
+	/*
+	//move back
 	//WAIT
 	//turn
 	AddSequential(new Turn(invertIfRight(180), TIMEOUT));
@@ -218,6 +223,7 @@ void AutoSequence::DoScaleNear() {
 		//WAIT
 		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), FAST_SPEED, TIMEOUT, true));
 	}
+	*/
 
 }
 
