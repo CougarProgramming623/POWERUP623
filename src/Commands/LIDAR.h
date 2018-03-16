@@ -18,6 +18,7 @@ private:
 public:
 	LIDAR();
 	double GetDistance();
+	void ResetPort();
 	void Update();
 private:
 	double stored;

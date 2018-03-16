@@ -11,13 +11,21 @@
 #include "WPILib.h"
 
 LIDAR::LIDAR() {
-	sp.reset(new frc::SerialPort(115200, frc::SerialPort::Port::kMXP, 8, SerialPort::Parity::kParity_None, SerialPort::StopBits::kStopBits_One));
+	sp.reset(
+			new frc::SerialPort(115200, frc::SerialPort::Port::kMXP, 8, SerialPort::Parity::kParity_None,
+					SerialPort::StopBits::kStopBits_One));
+}
+
+void LIDAR::ResetPort() {
+	sp->Reset();
 }
 
 double LIDAR::GetDistance() {
-	if (sp->GetBytesReceived() < 18)
+	if (sp->GetBytesReceived() < 18) {
+		DriverStation::ReportError("Not enough bytes!!!!!!!!!!!!!!!!!!!!");
 		return -1;
-	char array [9 * LIDAR_ARR_SIZE];
+	}
+	char array[9 * LIDAR_ARR_SIZE];
 	int amount = sp->Read(array, 9 * LIDAR_ARR_SIZE);
 	int index = -1;
 	for (int i = amount - 8; i >= 0; i--)

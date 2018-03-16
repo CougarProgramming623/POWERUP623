@@ -46,6 +46,7 @@ public:
 	void TeleopInit() override;
 	void TeleopPeriodic() override;
 	void RobotPeriodic() override;
+	void TestPeriodic() override;
 	void InitLights();
 private:
 	Timer *m_timer;

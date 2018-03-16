@@ -35,7 +35,6 @@ void Robot::RobotInit() {
 	Robot::cob->PushArmHeight(0);
 	RobotMap::ahrs->ZeroYaw();
 
-
 	//autonomousCommand.reset(new AngledDistanceDrive(10 * FEET_TO_INCHES, 0.5, 5, 55.0));
 
 	//nt::NetworkTable::SetClientMode();
@@ -51,17 +50,17 @@ void Robot::RobotPeriodic() {
 	Robot::cob->PushAutonomous(DriverStation::GetInstance().IsAutonomous());
 	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
 	/*Robot::cob->PushLidar(RobotMap::lidar->GetDistance());
-	Robot::cob->PushArmHeight((elevator->GetElevatorPosition() - ELEVATOR_BOTTOM) / ELEVATOR_DELTA);
-	double XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
-	double YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);
-	double velAngle = -atan(YAxis / XAxis) * 180 / M_PI - 90;
-		if (XAxis > 0)
-			velAngle += 180;
-	Robot::cob->PushVelocityDirection(velAngle);
-	double angle = RobotMap::ahrs->GetYaw();
-	Robot::cob->PushRotation(angle);
-	Robot::cob->PushVelocityMagnitude(sqrt(XAxis * XAxis + YAxis * YAxis));
-	*/
+	 Robot::cob->PushArmHeight((elevator->GetElevatorPosition() - ELEVATOR_BOTTOM) / ELEVATOR_DELTA);
+	 double XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
+	 double YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);
+	 double velAngle = -atan(YAxis / XAxis) * 180 / M_PI - 90;
+	 if (XAxis > 0)
+	 velAngle += 180;
+	 Robot::cob->PushVelocityDirection(velAngle);
+	 double angle = RobotMap::ahrs->GetYaw();
+	 Robot::cob->PushRotation(angle);
+	 Robot::cob->PushVelocityMagnitude(sqrt(XAxis * XAxis + YAxis * YAxis));
+	 */
 }
 
 void Robot::DisabledInit() {
@@ -74,25 +73,25 @@ void Robot::DisabledInit() {
 
 void Robot::DisabledPeriodic() {
 	//std::cout << "Elevator Position: " << Robot::elevator->GetElevatorPosition() << std::endl;
-/*
-	double time = m_timer->Get() * 3;
+	/*
+	 double time = m_timer->Get() * 3;
 
-	if((int)time % 3 == 0) {
-		oi->GetButtonBoard()->SetOutput(3, true);
-		oi->GetButtonBoard()->SetOutput(1, false);
-		oi->GetButtonBoard()->SetOutput(2, false);
-	} else if((int)time % 3 == 1) {
-		oi->GetButtonBoard()->SetOutput(2, true);
-		oi->GetButtonBoard()->SetOutput(1, false);
-		oi->GetButtonBoard()->SetOutput(3, false);
-	} else if((int)time % 3 == 2) {
-		oi->GetButtonBoard()->SetOutput(1, true);
-		oi->GetButtonBoard()->SetOutput(2, false);
-		oi->GetButtonBoard()->SetOutput(3, false);
-	}
+	 if((int)time % 3 == 0) {
+	 oi->GetButtonBoard()->SetOutput(3, true);
+	 oi->GetButtonBoard()->SetOutput(1, false);
+	 oi->GetButtonBoard()->SetOutput(2, false);
+	 } else if((int)time % 3 == 1) {
+	 oi->GetButtonBoard()->SetOutput(2, true);
+	 oi->GetButtonBoard()->SetOutput(1, false);
+	 oi->GetButtonBoard()->SetOutput(3, false);
+	 } else if((int)time % 3 == 2) {
+	 oi->GetButtonBoard()->SetOutput(1, true);
+	 oi->GetButtonBoard()->SetOutput(2, false);
+	 oi->GetButtonBoard()->SetOutput(3, false);
+	 }
 
-	frc::Scheduler::GetInstance()->Run();
-*/
+	 frc::Scheduler::GetInstance()->Run();
+	 */
 }
 
 void Robot::InitLights() {
@@ -108,6 +107,7 @@ void Robot::AutonomousInit() {
 	RobotMap::ahrs->ZeroYaw();
 
 	autonomousCommand.reset(new AutoSequence());
+	RobotMap::lidar->ResetPort();
 	if (autonomousCommand)
 		autonomousCommand->Start();
 }
@@ -127,7 +127,6 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-	Robot::cob->PushLidar(RobotMap::lidar->GetDistance());
 	//DriverStation::ReportError(std::to_string(RobotMap::pot->Get()));
 	//push time to cob
 	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());
@@ -140,6 +139,10 @@ void Robot::TeleopPeriodic() {
 		endgameSystem->setIsEndGame(false);
 	}
 	frc::Scheduler::GetInstance()->Run();
+}
+
+void Robot::TestPeriodic() {
+	DriverStation::ReportError("LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()));
 }
 
 START_ROBOT_CLASS(Robot);
