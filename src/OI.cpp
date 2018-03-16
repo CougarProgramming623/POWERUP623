@@ -58,7 +58,7 @@ OI::OI() {
 
 void OI::ResetElevatorLogic() {
 	if(!sliderEnabled) {
-		DriverStation::ReportError("Doig Nothing");
+		DriverStation::ReportError("Doing Nothing");
 		GetButtonBoard()->SetOutput(4, true);
 		Robot::elevator->Disable();
 		DriverStation::ReportError("Disabling PID");

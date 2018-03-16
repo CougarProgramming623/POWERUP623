@@ -43,7 +43,7 @@ void Robot::RobotInit() {
 	//nt::NetworkTable::Initialize();
 	std::stringstream str;
 	str << " Potentiometer " << RobotMap::pot->Get();
-	//DriverStation::ReportError(str.str());
+	DriverStation::ReportError(str.str());
 }
 
 void Robot::RobotPeriodic() {
