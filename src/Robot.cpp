@@ -142,7 +142,9 @@ void Robot::TeleopPeriodic() {
 }
 
 void Robot::TestPeriodic() {
-	DriverStation::ReportError("LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()));
+	DriverStation::ReportError("LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()) +
+								"/ Pot Reading: " + std::to_string(RobotMap::pot->Get()) +
+								" / Setpoint:" + std::to_string(Robot::elevator->GetPosition()));
 }
 
 START_ROBOT_CLASS(Robot);
