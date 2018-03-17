@@ -22,7 +22,7 @@ void LIDAR::ResetPort() {
 
 double LIDAR::GetDistance() {
 	if (sp->GetBytesReceived() < 18) {
-		DriverStation::ReportError("Not enough bytes!!!!!!!!!!!!!!!!!!!!");
+		//DriverStation::ReportError("Not enough bytes!!!!!!!!!!!!!!!!!!!!");
 		return -1;
 	}
 	char array[9 * LIDAR_ARR_SIZE];
