@@ -192,7 +192,7 @@ void AutoSequence::DoScaleNear() {
 	RaiseElevatorToSwitch();
 	//Can we raise here? Or after we detect the bump on the next line
 	AddSequential(
-			new DistanceDrive(100*FEET_TO_INCHES/*For forward drive in init*/, SPEED * 0.5, TIMEOUT, false, true,
+			new DistanceDrive(10 * FEET_TO_INCHES/*For forward drive in init*/, SPEED * 0.5, TIMEOUT, false, true,
 					27 * FEET_TO_INCHES - HALF_ROBOT_LENGTH));
 	//strafe
 	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED * 0.5, TIMEOUT, true, false));
@@ -290,6 +290,8 @@ void AutoSequence::DoCenter() {
 		 //DriverStation::ReportError("Starting Vision Drive");
 		 */
 		WAIT
+		AddSequential(new Turn(0.0, 1.0));
+		WAIT
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
 		WAIT_SEC(0.15);
@@ -299,7 +301,8 @@ void AutoSequence::DoCenter() {
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
-
+		WAIT
+		AddSequential(new DistanceDrive(2.0 * FEET_TO_INCHES, SPEED, 2.0));
 		RaiseElevatorToSwitch();
 		WAIT_SEC(1)
 		DropCube();

@@ -27,7 +27,11 @@ void CubeIntake::Intake() {
 }
 
 void CubeIntake::Expunge() {
-	cubeIntake->Set(-EXPUNGE_SPEED);
+	cubeIntake->Set(-TELEOP_EXPUNGE_SPEED);
+	/*
+		double speed = DriverStation::GetInstance().IsAutonomous() ? AUTO_EXPUNGE_SPEED : TELEOP_EXPUNGE_SPEED;
+		cubeIntake->Set(speed);
+	*/
 }
 
 void CubeIntake::Stop() {
