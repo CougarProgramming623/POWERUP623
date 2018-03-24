@@ -27,6 +27,7 @@ std::shared_ptr<WPI_TalonSRX> RobotMap::intake;
 std::shared_ptr<WPI_TalonSRX> RobotMap::intake2;
 std::shared_ptr<WPI_TalonSRX> RobotMap::endgameMotor;
 std::shared_ptr<WPI_TalonSRX> RobotMap::shaftController;
+std::shared_ptr<WPI_VictorSPX> RobotMap::testBotIntake2;
 std::shared_ptr<frc::MecanumDrive> RobotMap::driveTrainMecanumDrive1;
 std::shared_ptr<AnalogPotentiometer> RobotMap::pot;
 std::shared_ptr<AnalogInput> RobotMap::analogInput;
@@ -65,6 +66,10 @@ void RobotMap::init() {
 
 	intake.reset(new WPI_TalonSRX(18));
 
+	testBotIntake2.reset(new WPI_VictorSPX(1));
+	testBotIntake2->SetInverted(true);
+	testBotIntake2->Set(ControlMode::Follower, 18);
+
 	shaftController.reset(new WPI_TalonSRX(16)); //FIXME this should be 16
 
 
@@ -83,16 +88,18 @@ void RobotMap::init() {
 	driveTrainrightBack.reset(new WPI_TalonSRX(7));
 	//driveTrainrightBack->SetInverted(true);
 	shaftController.reset(new WPI_TalonSRX(16)); //FIXME this should be 16
+
 	intake.reset(new WPI_TalonSRX(18));
 
+	intake2.reset(new WPI_TalonSRX(14));
+
+	intake2->SetInverted(true);
+
+	intake2->Set(ControlMode::Follower, 18);
 #endif
 
 	shaftOrRampRelay.reset(new Relay(0));
 	endgameMotor.reset(new WPI_TalonSRX(17)); //FIXME this is actually the shaft motor
-	intake2.reset(new WPI_TalonSRX(14));
-	intake2->SetInverted(true);
-	intake2->Set(ControlMode::Follower, 18);
-
 	pot.reset(new AnalogPotentiometer(analogInput, 1.0, 0.0));
 
 #ifdef TEST_BOT

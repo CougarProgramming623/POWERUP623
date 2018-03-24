@@ -31,7 +31,7 @@ AutoSequence::AutoSequence() :
 	std::cout << "instructions " << Robot::cob->GetAutonomousInstructions() << std::endl;
 	std::cout << "no cross map " << Robot::cob->GetAutonomousEnableCrossing() << std::endl;
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
-	AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, 0.5, 2.0));
+	AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, 0.5, 1.5));
 	releaseShaft();
 	WAIT
 	//WAIT_SEC(1)
@@ -302,8 +302,8 @@ void AutoSequence::DoCenter() {
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
 		WAIT
-		AddSequential(new DistanceDrive(2.0 * FEET_TO_INCHES, SPEED, 2.0));
-		RaiseElevatorToSwitch();
+		//AddSequential(new DistanceDrive(2.0 * FEET_TO_INCHES, SPEED, 2.0));
+		//RaiseElevatorToSwitch();
 		WAIT_SEC(1)
 		DropCube();
 	} else {		//Use vision

@@ -68,20 +68,22 @@ void VisionDrive::Execute() {
 		m_currentAngle = GetVisionTargetDriveAngle(arr[0], arr[1]); //Put in real values later
 		m_distanceToTarget = GetVisionTargetDriveDistance(arr[0], arr[1]); //drawn from networktables
 
+		DriverStation::ReportError("First CenterX is :" +std::to_string(arr[0])+ " Second CenterX is :"+std::to_string(arr[1]));
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 0"), llvm::StringRef("Vision angle is :" + std::to_string(m_currentAngle)));
 		//SmartDashboard::PutString(llvm::StringRef("DB/String 1"), llvm::StringRef("Distance is :" + std::to_string(m_distanceToTarget)));
 		DriverStation::ReportError("Vision angle is :" + std::to_string(m_currentAngle));
 		DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
+
 		double x = sin(m_currentAngle) * m_speed;
 		double y = cos(m_currentAngle) * m_speed;
 
-		y *= -1;
 		DriverStation::ReportError("X is :" + std::to_string(x));
 		DriverStation::ReportError("Y is :" + std::to_string(y));
 		//Used for Strafe Vision
-		Robot::driveTrain->PolarDrive(m_speed, PI / 2 - m_currentAngle, 0);
+		//Robot::driveTrain->PolarDrive(m_speed, PI / 2 - m_currentAngle, 0);
 		DriverStation::ReportError("Driving...");
-		//Robot::driveTrain->MecanumDrive(x, 0, 0, 0);
+		Robot::driveTrain->MecanumDrive(x, fabs(y), 0, 0);
+		DriverStation::ReportError("Driving...");
 	} /*else if (arr.size() > 0 && arr.size() < 2) {
 		if (DriverStation::GetInstance().GetGameSpecificMessage().find("L") == 0) {
 			Robot::driveTrain->MecanumDrive(-m_speed * 0.3, 0, 0, 0);
@@ -101,28 +103,30 @@ void VisionDrive::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool VisionDrive::IsFinished() {
-	nt::NetworkTableEntry centerX = visionTable->GetEntry("width");
-	std::vector<double> arr = centerX.GetDoubleArray(llvm::ArrayRef<double>());
+	nt::NetworkTableEntry entry = visionTable->GetEntry("height");
+	std::vector<double> arr = entry.GetDoubleArray(llvm::ArrayRef<double>());
 	//Used for Strafe Vision
+	if (cantSeeTarget) {
+		DriverStation::ReportError("ENDAUTOVISION-CANTSEE");
+		return true;
+	}
+
 	if (m_distanceToTarget != -1 && m_distanceToTarget <= 10) {
 		DriverStation::ReportError("ENDAUTOVISION-DISTANCE");
 		return true;
 	} else if (IsTimedOut()) {
 		return true;
 	} else if (arr.size() >= 2) {
-		double width1 = arr[0];
-		double width2 = arr[1];
-		if ((width1 + width2) / 2 >= 95) {
-			DriverStation::ReportError("ENDAUTOVISION-WIDTH");
+		double height1 = arr[0];
+		double height2 = arr[1];
+		if ((height1 + height2) / 2 >= 510) {
+			DriverStation::ReportError("ENDAUTOVISION-HEIGHT");
 			return true;
 		}
 		//if((width1 <= 500 && width1 >= 460) && (width2 <= 500 && width2 >= 460)){
 		//	DriverStation::ReportError("ENDAUTOVISION-WIDTH");
 		//	return true;
 		//}
-	} else if (cantSeeTarget) {
-		DriverStation::ReportError("ENDAUTOVISION-CANTSEE");
-		return true;
 	}
 	/*if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
 	 return true;
@@ -177,7 +181,7 @@ double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 	else
 		//return PI;
 		//Used for Strafe Vision
-		return atan(lengthPixels / FOCAL_LENGTH) + PI;
+		return -atan(lengthPixels / FOCAL_LENGTH);
 
 }
 

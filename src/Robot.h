@@ -22,6 +22,7 @@
 #include "ahrs.h"
 #include "CougarOpticBoard.h"
 
+#include "string"
 #include "OI.h"
 #include "RobotImpl.h"
 
@@ -48,6 +49,8 @@ public:
 	void RobotPeriodic() override;
 	void TestPeriodic() override;
 	void InitLights();
+	void PrintEntry(nt::NetworkTableEntry& entry);
 private:
 	Timer *m_timer;
+	int counter = 0;
 };

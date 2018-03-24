@@ -16,6 +16,7 @@ class CubeIntake: public frc::Subsystem {
 private:
 	std::shared_ptr<WPI_TalonSRX> cubeIntake;
 	std::shared_ptr<WPI_TalonSRX> cubeIntake2;
+	std::shared_ptr<WPI_VictorSPX> testBotIntake2;
 public:
 	CubeIntake();
 	void InitDefaultCommand() override;

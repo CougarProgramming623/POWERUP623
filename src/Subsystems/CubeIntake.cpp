@@ -11,7 +11,11 @@
 
 CubeIntake::CubeIntake() : frc::Subsystem("CubeIntake") {
 	cubeIntake = RobotMap::intake;
+#ifdef TEST_BOT
+	testBotIntake2 = RobotMap::testBotIntake2;
+#else
 	cubeIntake2 = RobotMap::intake2;
+#endif
 }
 
 void CubeIntake::InitDefaultCommand() {

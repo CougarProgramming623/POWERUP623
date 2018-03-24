@@ -116,7 +116,7 @@ bool DistanceDrive::IsFinished() {
 		return true;
 	}*/
 	if (m_timer && m_timer->Get() > m_timeout) {
-		return false;
+		return true;
 	}
 	if (m_lidar >= 0 && RobotMap::lidar->GetDistance() >= m_lidar) {
 		DriverStation::ReportError("LIDAR limit reached.");

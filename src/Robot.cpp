@@ -5,6 +5,7 @@
 #include "Commands/TeleOp/CubeIntakeCommand.h"
 #include "Commands/ElevatorDoNothing.h"
 #include "Commands/ElevatorTeleop.h"
+#include "networktables/NetworkTableType.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
@@ -43,6 +44,7 @@ void Robot::RobotInit() {
 	std::stringstream str;
 	str << " Potentiometer " << RobotMap::pot->Get();
 	DriverStation::ReportError(str.str());
+	m_timer = new Timer();
 }
 
 void Robot::RobotPeriodic() {
@@ -73,9 +75,8 @@ void Robot::DisabledInit() {
 
 void Robot::DisabledPeriodic() {
 	//std::cout << "Elevator Position: " << Robot::elevator->GetElevatorPosition() << std::endl;
-	/*
-	 double time = m_timer->Get() * 3;
 
+	/*
 	 if((int)time % 3 == 0) {
 	 oi->GetButtonBoard()->SetOutput(3, true);
 	 oi->GetButtonBoard()->SetOutput(1, false);
@@ -89,15 +90,59 @@ void Robot::DisabledPeriodic() {
 	 oi->GetButtonBoard()->SetOutput(2, false);
 	 oi->GetButtonBoard()->SetOutput(3, false);
 	 }
-
-	 frc::Scheduler::GetInstance()->Run();
 	 */
+
+	if (counter > (1000 / 20)) {
+		PrintEntry(cob->entryAutonomousStartPos);
+		PrintEntry(cob->entryAutonomousNoAuto);
+		PrintEntry(cob->entryAutonomousEnableCrossing);
+		PrintEntry(cob->entryAutonomousInstructions);
+		counter = 0;
+	}
+	counter++;
+	frc::Scheduler::GetInstance()->Run();
 }
 
 void Robot::InitLights() {
 	oi->GetButtonBoard()->SetOutput(1, false);
 	oi->GetButtonBoard()->SetOutput(2, false);
 	oi->GetButtonBoard()->SetOutput(3, false);
+}
+
+void Robot::PrintEntry(nt::NetworkTableEntry& entry) {
+	std::stringstream str;
+	std::string name = entry.GetName();
+
+	unsigned int slash = name.find_last_of('/');	//Only show the part after the last /
+	if (slash == std::string::npos)
+		slash = 0;
+	else
+		slash++;	//skip th the next index so we dont include the / that was found
+	int length = name.length() - slash;
+	str << name.substr(slash, length) << " = ";
+
+	if (name.find("instructions") != std::string::npos) {
+		str << "[Instructions]" << (int)entry.GetDouble(-623);
+	} else {
+
+		switch (entry.GetType()) {
+		case nt::NetworkTableType::kBoolean:
+			str << "[bool] " << (entry.GetBoolean(false) ? "true" : "false");
+			break;
+		case nt::NetworkTableType::kDouble:
+			str << "[double] " << entry.GetDouble(-623);
+			break;
+		case nt::NetworkTableType::kUnassigned:
+			str << "unassigned";
+			break;
+		case nt::NetworkTableType::kString:
+			str << "[string] " << entry.GetString("Default String");
+			break;
+		default:
+			str << "UNHANDLED CASE IN PrintEntry " << (int) (entry.GetType());
+		}
+	}
+	DriverStation::ReportError(str.str());
 }
 
 void Robot::AutonomousInit() {
@@ -142,9 +187,9 @@ void Robot::TeleopPeriodic() {
 }
 
 void Robot::TestPeriodic() {
-	DriverStation::ReportError("LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()) +
-								"/ Pot Reading: " + std::to_string(RobotMap::pot->Get()) +
-								" / Setpoint:" + std::to_string(Robot::elevator->GetPosition()));
+	DriverStation::ReportError(
+			"LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()) + "/ Pot Reading: " + std::to_string(RobotMap::pot->Get())
+					+ " / Setpoint:" + std::to_string(Robot::elevator->GetPosition()));
 }
 
 START_ROBOT_CLASS(Robot);
