@@ -291,9 +291,9 @@ void AutoSequence::DoCenter() {
 		 AddSequential(new DistanceDrive(5 * FEET_TO_INCHES, SPEED, TIMEOUT));
 		 //DriverStation::ReportError("Starting Vision Drive");
 		 */
-		WAIT
+		//WAIT
 		AddSequential(new Turn(0.0, 1.0));
-		WAIT
+		//WAIT
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
 		WAIT_SEC(0.15);
@@ -303,10 +303,9 @@ void AutoSequence::DoCenter() {
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
-		WAIT
 		//AddSequential(new DistanceDrive(2.0 * FEET_TO_INCHES, SPEED, 2.0));
 		//RaiseElevatorToSwitch();
-		WAIT_SEC(1)
+
 		DropCube();
 	} else {		//Use vision
 		AddSequential(new AngledDistanceDrive(4, 0.5, turnAngle));

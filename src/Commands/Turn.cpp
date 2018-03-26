@@ -1,7 +1,7 @@
 #include "Turn.h"
 
 const static double kF = 0.0f;
-const static double kToleranceDegrees = 1.0;
+const static double kToleranceDegrees = 5.0;
 
 Turn::Turn(double setpoint, double timeout) :
 		frc::Command(), frc::PIDOutput() {
@@ -33,6 +33,7 @@ void Turn::Execute() {
 	//frc::SmartDashboard::PutNumber("P", RobotMap::turnP);
 	//frc::SmartDashboard::PutNumber("I", RobotMap::turnI);
 	//frc::SmartDashboard::PutNumber("D", RobotMap::turnD);
+	DriverStation::ReportError("Turning!!!");
 
 }
 

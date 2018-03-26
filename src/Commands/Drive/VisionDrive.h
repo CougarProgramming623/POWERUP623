@@ -26,6 +26,7 @@ public:
 	int getPosition();
 
 private:
+	double GetVisionPowerX();
 	double GetVisionTargetDriveAngle(double x1, double x2);
 	double GetVisionTargetDriveDistance(double y1, double y2);
 

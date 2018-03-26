@@ -72,7 +72,7 @@ void VisionDrive::Execute() {
 		DriverStation::ReportError("Vision angle is :" + std::to_string(m_currentAngle));
 		DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
 
-		double x = sin(m_currentAngle) * m_speed;
+		double x = GetVisionPowerX();
 		double y = cos(m_currentAngle) * m_speed;
 
 		DriverStation::ReportError("X is :" + std::to_string(x));
@@ -171,11 +171,16 @@ double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 
 	double lengthPixels = (y1 + y2) / 2 - 480;
 
-	if (y1 >= 480 && y2 >= 480)
-		return atan(lengthPixels / FOCAL_LENGTH);
-	else
-		return -atan(lengthPixels / FOCAL_LENGTH);
+	return atan(lengthPixels / FOCAL_LENGTH);
 
+
+}
+
+double VisionDrive::GetVisionPowerX(){
+	if(m_currentAngle < 0 )
+		return -sin(m_currentAngle) * m_speed * 3;
+	else
+		return 	sin(m_currentAngle) * m_speed * 3;
 }
 
 double VisionDrive::GetVisionTargetDriveDistance(double y1, double y2) {

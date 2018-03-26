@@ -91,7 +91,7 @@ void Robot::DisabledPeriodic() {
 	 oi->GetButtonBoard()->SetOutput(3, false);
 	 }
 	 */
-
+#ifndef TEST_BOT
 	if (counter > (1000 / 20)) {
 		PrintEntry(cob->entryAutonomousStartPos);
 		PrintEntry(cob->entryAutonomousNoAuto);
@@ -100,6 +100,7 @@ void Robot::DisabledPeriodic() {
 		counter = 0;
 	}
 	counter++;
+#endif
 	frc::Scheduler::GetInstance()->Run();
 }
 
