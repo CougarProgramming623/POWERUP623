@@ -65,12 +65,10 @@ void VisionDrive::Execute() {
 
 	std::vector<double> arr = centerX.GetDoubleArray(llvm::ArrayRef<double>());
 	if (arr.size() == 2) {
-		m_currentAngle = GetVisionTargetDriveAngle(arr[0], arr[1]); //Put in real values later
+		m_currentAngle = GetVisionTargetDriveAngle(arr[0], arr[1]);
 		m_distanceToTarget = GetVisionTargetDriveDistance(arr[0], arr[1]); //drawn from networktables
 
 		DriverStation::ReportError("First CenterX is :" +std::to_string(arr[0])+ " Second CenterX is :"+std::to_string(arr[1]));
-		//SmartDashboard::PutString(llvm::StringRef("DB/String 0"), llvm::StringRef("Vision angle is :" + std::to_string(m_currentAngle)));
-		//SmartDashboard::PutString(llvm::StringRef("DB/String 1"), llvm::StringRef("Distance is :" + std::to_string(m_distanceToTarget)));
 		DriverStation::ReportError("Vision angle is :" + std::to_string(m_currentAngle));
 		DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
 
@@ -79,22 +77,26 @@ void VisionDrive::Execute() {
 
 		DriverStation::ReportError("X is :" + std::to_string(x));
 		DriverStation::ReportError("Y is :" + std::to_string(y));
-		//Used for Strafe Vision
+
 		//Robot::driveTrain->PolarDrive(m_speed, PI / 2 - m_currentAngle, 0);
 		DriverStation::ReportError("Driving...");
 		Robot::driveTrain->MecanumDrive(x, fabs(y), 0, 0);
 		DriverStation::ReportError("Driving...");
-	} /*else if (arr.size() > 0 && arr.size() < 2) {
-		if (DriverStation::GetInstance().GetGameSpecificMessage().find("L") == 0) {
-			Robot::driveTrain->MecanumDrive(-m_speed * 0.3, 0, 0, 0);
-			DriverStation::ReportError("Driving Left Vision");
-		}
+	}
+	/*
+	 * This allows the robot to continue moving in the correct direction in order to gain view of the target
+	else if (arr.size() > 0 && arr.size() < 2) {
+			if (DriverStation::GetInstance().GetGameSpecificMessage().find("L") == 0) {
+				Robot::driveTrain->MecanumDrive(-m_speed * 0.3, 0, 0, 0);
+				DriverStation::ReportError("Driving Left Vision");
+			}
 
-		else {
-			Robot::driveTrain->MecanumDrive(m_speed * 0.3, 0, 0, 0);
-			DriverStation::ReportError("Driving Right Vision");
-		}*/
-	 else {
+			else {
+				Robot::driveTrain->MecanumDrive(m_speed * 0.3, 0, 0, 0);
+				DriverStation::ReportError("Driving Right Vision");
+			}
+	}*/
+	else {
 		DriverStation::ReportError("Can't see targets");
 		cantSeeTarget = true;
 	}
@@ -105,7 +107,7 @@ void VisionDrive::Execute() {
 bool VisionDrive::IsFinished() {
 	nt::NetworkTableEntry entry = visionTable->GetEntry("height");
 	std::vector<double> arr = entry.GetDoubleArray(llvm::ArrayRef<double>());
-	//Used for Strafe Vision
+
 	if (cantSeeTarget) {
 		DriverStation::ReportError("ENDAUTOVISION-CANTSEE");
 		return true;
@@ -117,20 +119,15 @@ bool VisionDrive::IsFinished() {
 	} else if (IsTimedOut()) {
 		return true;
 	} else if (arr.size() >= 2) {
-		double height1 = arr[0];
-		double height2 = arr[1];
-		if ((height1 + height2) / 2 >= 510) {
+
+		double height1 = arr[arr.size()-1];//The last two contours, if there are more than 2, are the tape contours
+		double height2 = arr[arr.size()-2];
+		if ((height1 + height2) / 2 >= 550) {
 			DriverStation::ReportError("ENDAUTOVISION-HEIGHT");
 			return true;
 		}
-		//if((width1 <= 500 && width1 >= 460) && (width2 <= 500 && width2 >= 460)){
-		//	DriverStation::ReportError("ENDAUTOVISION-WIDTH");
-		//	return true;
-		//}
 	}
-	/*if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
-	 return true;
-	 }*/
+
 	return false;
 
 }
@@ -175,12 +172,8 @@ double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 	double lengthPixels = (y1 + y2) / 2 - 480;
 
 	if (y1 >= 480 && y2 >= 480)
-		//return 0;
-		//Used for Strafe Vision
 		return atan(lengthPixels / FOCAL_LENGTH);
 	else
-		//return PI;
-		//Used for Strafe Vision
 		return -atan(lengthPixels / FOCAL_LENGTH);
 
 }

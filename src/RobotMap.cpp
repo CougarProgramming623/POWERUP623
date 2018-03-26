@@ -68,7 +68,7 @@ void RobotMap::init() {
 
 	testBotIntake2.reset(new WPI_VictorSPX(1));
 	testBotIntake2->SetInverted(true);
-	testBotIntake2->Set(ControlMode::Follower, 18);
+	testBotIntake2->Follow(*intake.get());
 
 	shaftController.reset(new WPI_TalonSRX(16)); //FIXME this should be 16
 

@@ -145,7 +145,9 @@ void AutoSequence::DoSwitchNear() {
 	DriverStation::ReportError("Doing Switch Near...");
 	//Go forward to the switch, then turn toward the inside of the field, then move in, drop cube, move back,\a
 	//strafe toward the center, rotate and setup for teleop
-	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - HALF_ROBOT_LENGTH - 12 - 6 - 24 - 24/*For forward drive in init*/, SPEED, TIMEOUT, false, false)); //SUBTRACTED ONE FOOT
+	AddSequential(
+			new DistanceDrive(DISTANCE_TO_SWITCH - HALF_ROBOT_LENGTH - 12 - 6 - 24 - 24/*For forward drive in init*/, SPEED,
+					TIMEOUT, false, false)); //SUBTRACTED ONE FOOT
 	WAIT
 	RaiseElevatorToSwitch();
 	WAIT
@@ -210,22 +212,22 @@ void AutoSequence::DoScaleNear() {
 	RaiseElevatorToSwitch();
 	WAIT
 	/*
-	//move back
-	//WAIT
-	//turn
-	AddSequential(new Turn(invertIfRight(180), TIMEOUT));
-	WAIT
-	//drive back
-	AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false));
-	//WAIT
-	if (Robot::cob->GetAutonomousEnableCrossing()) {
-		//AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, false));
-		//WAIT
-		//AddSequential(new Turn(invertIfRight(180), TIMEOUT, SPEED));
-		//WAIT
-		AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), FAST_SPEED, TIMEOUT, true));
-	}
-	*/
+	 //move back
+	 //WAIT
+	 //turn
+	 AddSequential(new Turn(invertIfRight(180), TIMEOUT));
+	 WAIT
+	 //drive back
+	 AddSequential(new DistanceDrive(6 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT, false, false));
+	 //WAIT
+	 if (Robot::cob->GetAutonomousEnableCrossing()) {
+	 //AddSequential(new DistanceDrive(invertIfRight(-6 * FEET_TO_INCHES), SPEED, TIMEOUT, false));
+	 //WAIT
+	 //AddSequential(new Turn(invertIfRight(180), TIMEOUT, SPEED));
+	 //WAIT
+	 AddSequential(new DistanceDrive(invertIfRight(-4 * FEET_TO_INCHES), FAST_SPEED, TIMEOUT, true));
+	 }
+	 */
 
 }
 
@@ -273,7 +275,7 @@ void AutoSequence::DoBaseline() {
 void AutoSequence::DoCenter() {
 	DriverStation::ReportError("Doing Center...");
 	double turnAngle = switchOnRight() ? DRIVE_ANGLE_RIGHT + 10 : -(DRIVE_ANGLE_LEFT + 15);
-	double driveTime = switchOnRight() ? 2.0 : 2.5;
+	double driveTime = switchOnRight() ? 2.3 : 2.5;
 	DriverStation::ReportError(std::to_string(turnAngle));
 	WAIT_SEC(Robot::cob->GetAutonomousInstructions());//In this case, because we are in the center, the auto instructions contain the timeout
 	//AddSequential(new AngledDistanceDrive(4, SPEED, turnAngle));
