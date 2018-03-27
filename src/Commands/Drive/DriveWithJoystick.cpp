@@ -55,10 +55,10 @@ void DriveWithJoystick::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveWithJoystick::Execute() {
-
-
-
-
+	DriverStation::ReportError("Encoder " + std::to_string(RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0)));
+	DriverStation::ReportError("Encoder2 " + std::to_string(RobotMap::driveTrainrightFront->GetSelectedSensorPosition(0)));
+	DriverStation::ReportError("Encoder3 " + std::to_string(RobotMap::driveTrainleftBack->GetSelectedSensorPosition(0)));
+	DriverStation::ReportError("Encoder4 " + std::to_string(RobotMap::driveTrainrightBack->GetSelectedSensorPosition(0)));
 	XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
 	YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);
 	RotAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(2);

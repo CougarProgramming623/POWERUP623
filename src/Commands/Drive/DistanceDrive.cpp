@@ -13,9 +13,7 @@ const static double kToleranceDegrees = 2.0f;
 #define PI 3.141592
 #define ROTATE_FIX_SPEED 0.05
 
-
 static double lastPitch = 0;
-
 
 /**
  * This command uses the encoders to drive a certain distance at a set speed.
@@ -23,11 +21,11 @@ static double lastPitch = 0;
  */
 
 DistanceDrive::DistanceDrive(double distance, double speed, int timeout, bool strafe, bool bumpDetection, double lidar) :
-		frc::Command("DistanceDrive"), frc::PIDOutput() {
+	frc::Command("DistanceDrive"), frc::PIDOutput() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distance = distance;
-	m_ticks = (int)(distance * (strafe ? TICKS_PER_INCH_STRAFE : TICKS_PER_INCH));
+	m_ticks = (int) (distance * (strafe ? TICKS_PER_INCH_STRAFE : TICKS_PER_INCH));
 	m_speed = speed;
 	m_timeout = timeout;
 	m_strafe = strafe;
@@ -54,7 +52,6 @@ void DistanceDrive::Initialize() {
 
 	turnController->SetSetpoint(0.0f);
 	turnController->Enable();
-
 
 	initEncPosition = getPosition();
 }
@@ -93,13 +90,11 @@ void DistanceDrive::Execute() {
 		coefficient *= -1.0;
 
 	double actualSpeed = coefficient * m_speed;
-	//std::stringstream str;
-	//str << "percent done % " << (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
-	//DriverStation::ReportError(str.str());
-	//actualSpeed *= sqrt(
-	//		1 - (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition)));
-	if (m_strafe)
-	{
+	std::stringstream str;
+	str << "percent done % " << (((double) getPosition() - (double) initEncPosition) / ((double) getMaxTicks() - (double) initEncPosition) * 100.0);
+	DriverStation::ReportError(str.str());
+
+	if (m_strafe) {
 		Robot::driveTrain->MecanumDrive(actualSpeed, 0, rotateToAngleRate, 0);
 	} else {
 		Robot::driveTrain->MecanumDrive(0, actualSpeed, rotateToAngleRate, 0);
@@ -111,20 +106,21 @@ bool DistanceDrive::IsFinished() {
 	//DriverStation::ReportError(std::to_string(getPosition() - initEncPosition));
 	//COMMENTED OUT BUMP DETECTION FOR BATTLEFIELD
 	/*
-	if (m_doBumpDetection && checkForBump()) {
-		DriverStation::ReportError("Detected bump. Stopping DDC.");
-		return true;
-	}*/
+	 if (m_doBumpDetection && checkForBump()) {
+	 DriverStation::ReportError("Detected bump. Stopping DDC.");
+	 return true;
+	 }*/
 	if (m_timer && m_timer->Get() > m_timeout) {
+		DriverStation::ReportError("Distance Drive timeout reached");
 		return true;
 	}
 	if (m_lidar >= 0 && RobotMap::lidar->GetDistance() >= m_lidar) {
-		DriverStation::ReportError("LIDAR limit reached.");
+		DriverStation::ReportError("Distance Drive LIDAR limit reached.");
 		return true;
 	}
 	if (fabs(getPosition() - initEncPosition) >= fabs(getMaxTicks())) {
-		DriverStation::ReportError("Distance Drove.");
-		std::cout << "Distance Driven: " << ((getPosition() - initEncPosition) * TICKS_PER_INCH)<< std::endl;
+		DriverStation::ReportError("Distance Drive tick limit reached");
+		//std::cout << "Distance Driven: " << ((getPosition() - initEncPosition) * TICKS_PER_INCH) << std::endl;
 		return true;
 	}
 	return false;

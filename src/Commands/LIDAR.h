@@ -14,6 +14,7 @@ class LIDAR {
 
 private:
 	std::shared_ptr<frc::SerialPort> sp;
+	void ReadNewData();
 
 public:
 	LIDAR();

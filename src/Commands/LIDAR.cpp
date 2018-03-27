@@ -11,9 +11,8 @@
 #include "WPILib.h"
 
 LIDAR::LIDAR() {
-	sp.reset(
-			new frc::SerialPort(115200, frc::SerialPort::Port::kMXP, 8, SerialPort::Parity::kParity_None,
-					SerialPort::StopBits::kStopBits_One));
+	sp.reset(new frc::SerialPort(115200, frc::SerialPort::Port::kMXP, 8, SerialPort::Parity::kParity_None, SerialPort::StopBits::kStopBits_One));
+	stored = -1;
 }
 
 void LIDAR::ResetPort() {
@@ -21,10 +20,15 @@ void LIDAR::ResetPort() {
 }
 
 double LIDAR::GetDistance() {
-	if (sp->GetBytesReceived() < 18) {
-		//DriverStation::ReportError("Not enough bytes!!!!!!!!!!!!!!!!!!!!");
-		return -1;
+	if (sp->GetBytesReceived() >= 9) {
+		ReadNewData();
 	}
+	return stored;
+
+}
+
+//Reads new data from the socket and stores it in stored.
+void LIDAR::ReadNewData() {
 	char array[9 * LIDAR_ARR_SIZE];
 	int amount = sp->Read(array, 9 * LIDAR_ARR_SIZE);
 	int index = -1;
@@ -34,7 +38,7 @@ double LIDAR::GetDistance() {
 			break;
 		}
 	if (index == -1)
-		return -1;
+		stored = -1;
 
 	//calculate quality
 	int quality = array[index + 5];
@@ -47,9 +51,8 @@ double LIDAR::GetDistance() {
 	int distance = array[index + 3];
 	distance <<= 8;
 	distance += array[index + 2];
-	double var1 = distance * CM_TO_INCHES;
-	DriverStation::ReportError("LIDAR Distance: " + std::to_string(var1) + " Quality: " + std::to_string(quality));
+	stored = distance * CM_TO_INCHES;
+	DriverStation::ReportError("LIDAR Distance: " + std::to_string(stored) + " Quality: " + std::to_string(quality));
 	//SmartDashboard::PutNumber("Distance", var1);
-	return var1;
 }
 
