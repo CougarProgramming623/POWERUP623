@@ -31,6 +31,7 @@ nt::NetworkTableEntry CougarOpticBoard::entryIsAutonomous;
 nt::NetworkTableEntry CougarOpticBoard::entryIsTeleop;
 nt::NetworkTableEntry CougarOpticBoard::entryIsEnabled;
 nt::NetworkTableEntry CougarOpticBoard::entryLidar;
+nt::NetworkTableEntry CougarOpticBoard::entryUpdate;
 
 
 /**
@@ -64,6 +65,8 @@ CougarOpticBoard::CougarOpticBoard() {
 	CougarOpticBoard::entryIsTeleop = table->GetEntry("gamedata/is-teleop");
 	CougarOpticBoard::entryIsEnabled = table->GetEntry("gamedata/is-enabled");
 	CougarOpticBoard::entryLidar = table->GetEntry("lidar");
+	CougarOpticBoard::entryUpdate = table->GetEntry("update");
+
 }
 
 void CougarOpticBoard::InitBoard() {
@@ -89,6 +92,7 @@ void CougarOpticBoard::InitBoard() {
 	CougarOpticBoard::entryIsTeleop = table->GetEntry("gamedata/is-teleop");
 	CougarOpticBoard::entryIsEnabled = table->GetEntry("gamedata/is-enabled");
 	CougarOpticBoard::entryLidar = table->GetEntry("lidar");
+	CougarOpticBoard::entryUpdate = table->GetEntry("update");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~ SET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -223,6 +227,13 @@ void CougarOpticBoard::PushArmCubeGrabbed(bool cubeGrabbed) {
  */
 void CougarOpticBoard::PushArmClimbStatus(double climbStatus) {
 	entryArmClimbStatus.SetDouble(climbStatus);
+}
+
+void CougarOpticBoard::Update() {
+	if (entryUpdate.Exists())
+		entryUpdate.SetBoolean(!entryUpdate.GetValue().get()->GetBoolean());
+	else
+		entryUpdate.SetBoolean(false);
 }
 
 //~~~~~~~~~~~~~~~~~~~~~ GET METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

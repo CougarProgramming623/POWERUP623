@@ -18,7 +18,7 @@ const static double kToleranceDegrees = 2.0f;
 #define ROTATE_FIX_SPEED 0.05
 
 VisionDrive::VisionDrive(double speed, int timeout) :
-		frc::Command(), frc::PIDOutput() {
+	frc::Command(), frc::PIDOutput() {
 	// Use Requires() here to declare subsystem dependenciesactualSpeed
 	// eg. Requires(Robot::chassis.get());
 	m_distanceToTarget = -1.0;
@@ -68,7 +68,7 @@ void VisionDrive::Execute() {
 		m_currentAngle = GetVisionTargetDriveAngle(arr[0], arr[1]);
 		m_distanceToTarget = GetVisionTargetDriveDistance(arr[0], arr[1]); //drawn from networktables
 
-		DriverStation::ReportError("First CenterX is :" +std::to_string(arr[0])+ " Second CenterX is :"+std::to_string(arr[1]));
+		DriverStation::ReportError("First CenterX is :" + std::to_string(arr[0]) + " Second CenterX is :" + std::to_string(arr[1]));
 		DriverStation::ReportError("Vision angle is :" + std::to_string(m_currentAngle));
 		DriverStation::ReportError("Distance is :" + std::to_string(m_distanceToTarget));
 
@@ -85,17 +85,17 @@ void VisionDrive::Execute() {
 	}
 	/*
 	 * This allows the robot to continue moving in the correct direction in order to gain view of the target
-	else if (arr.size() > 0 && arr.size() < 2) {
-			if (DriverStation::GetInstance().GetGameSpecificMessage().find("L") == 0) {
-				Robot::driveTrain->MecanumDrive(-m_speed * 0.3, 0, 0, 0);
-				DriverStation::ReportError("Driving Left Vision");
-			}
+	 else if (arr.size() > 0 && arr.size() < 2) {
+	 if (DriverStation::GetInstance().GetGameSpecificMessage().find("L") == 0) {
+	 Robot::driveTrain->MecanumDrive(-m_speed * 0.3, 0, 0, 0);
+	 DriverStation::ReportError("Driving Left Vision");
+	 }
 
-			else {
-				Robot::driveTrain->MecanumDrive(m_speed * 0.3, 0, 0, 0);
-				DriverStation::ReportError("Driving Right Vision");
-			}
-	}*/
+	 else {
+	 Robot::driveTrain->MecanumDrive(m_speed * 0.3, 0, 0, 0);
+	 DriverStation::ReportError("Driving Right Vision");
+	 }
+	 }*/
 	else {
 		DriverStation::ReportError("Can't see targets");
 		cantSeeTarget = true;
@@ -120,8 +120,8 @@ bool VisionDrive::IsFinished() {
 		return true;
 	} else if (arr.size() >= 2) {
 
-		double height1 = arr[arr.size()-1];//The last two contours, if there are more than 2, are the tape contours
-		double height2 = arr[arr.size()-2];
+		double height1 = arr[arr.size() - 1]; //The last two contours, if there are more than 2, are the tape contours
+		double height2 = arr[arr.size() - 2];
 		if ((height1 + height2) / 2 >= 550) {
 			DriverStation::ReportError("ENDAUTOVISION-HEIGHT");
 			return true;
@@ -170,17 +170,15 @@ void VisionDrive::PIDWrite(double output) {
 double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 
 	double lengthPixels = (y1 + y2) / 2 - 480;
-
 	return atan(lengthPixels / FOCAL_LENGTH);
-
 
 }
 
-double VisionDrive::GetVisionPowerX(){
-	if(m_currentAngle < 0 )
+double VisionDrive::GetVisionPowerX() {
+	if (m_currentAngle < 0)
 		return sin(m_currentAngle) * m_speed * 3;
 	else
-		return 	sin(m_currentAngle) * m_speed * 3;
+		return sin(m_currentAngle) * m_speed * 3;
 }
 
 double VisionDrive::GetVisionTargetDriveDistance(double y1, double y2) {

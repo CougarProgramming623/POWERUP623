@@ -91,16 +91,17 @@ void Robot::DisabledPeriodic() {
 	 oi->GetButtonBoard()->SetOutput(3, false);
 	 }
 	 */
-#ifndef TEST_BOT
 	if (counter > (1000 / 20)) {
+		Robot::cob->Update();
+//#ifndef TEST_BOT
 		PrintEntry(cob->entryAutonomousStartPos);
 		PrintEntry(cob->entryAutonomousNoAuto);
 		PrintEntry(cob->entryAutonomousEnableCrossing);
 		PrintEntry(cob->entryAutonomousInstructions);
+//#endif
 		counter = 0;
 	}
 	counter++;
-#endif
 	frc::Scheduler::GetInstance()->Run();
 }
 
@@ -123,7 +124,7 @@ void Robot::PrintEntry(nt::NetworkTableEntry& entry) {
 	str << name.substr(slash, length) << " = ";
 
 	if (name.find("instructions") != std::string::npos) {
-		str << "[Instructions]" << (int)entry.GetDouble(-623);
+		str << "[Instructions]" << (int) entry.GetDouble(-623);
 	} else {
 
 		switch (entry.GetType()) {
@@ -134,7 +135,7 @@ void Robot::PrintEntry(nt::NetworkTableEntry& entry) {
 			str << "[double] " << entry.GetDouble(-623);
 			break;
 		case nt::NetworkTableType::kUnassigned:
-			str << "unassigned";
+			str << "UNASSIGNED!!!";
 			break;
 		case nt::NetworkTableType::kString:
 			str << "[string] " << entry.GetString("Default String");
@@ -169,7 +170,7 @@ void Robot::TeleopInit() {
 	//Robot::elevator.get()->SetDefaultCommand(new SetElevatorSetpointTeleop());
 	if (autonomousCommand)
 		autonomousCommand->Cancel();
-	CougarOpticBoard::PushArmRotation(0.0); //temporary fix
+	CougarOpticBoard::PushArmRotation(0.0);	//temporary fix
 }
 
 void Robot::TeleopPeriodic() {
@@ -189,9 +190,8 @@ void Robot::TeleopPeriodic() {
 
 void Robot::TestPeriodic() {
 	DriverStation::ReportError(
-			"LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()) + "/ Pot Reading: " + std::to_string(RobotMap::pot->Get())
-					+ " / Setpoint:" + std::to_string(Robot::elevator->GetPosition()));
+		"LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()) + "/ Pot Reading: " + std::to_string(RobotMap::pot->Get()) + " / Setpoint:" + std::to_string(Robot::elevator->GetPosition()));
 }
 
-START_ROBOT_CLASS(Robot);
+START_ROBOT_CLASS (Robot);
 
