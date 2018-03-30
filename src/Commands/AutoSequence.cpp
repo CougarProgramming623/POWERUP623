@@ -147,9 +147,9 @@ void AutoSequence::DoSwitchNear() {
 	AddSequential(new DistanceDrive(DISTANCE_TO_SWITCH - HALF_ROBOT_LENGTH - 12 - 6 - 24 - 24/*For forward drive in init*/, SPEED,
 	TIMEOUT, false, false)); //SUBTRACTED ONE FOOT
 	WAIT
-	RaiseElevatorToSwitch();
-	WAIT
 	AddSequential(new Turn(invertIfRight(90), TURN_TIMEOUT));
+	WAIT
+	RaiseElevatorToSwitch();
 	WAIT
 
 	//WAIT
@@ -188,18 +188,29 @@ void AutoSequence::DoSwitchFar() {
  */
 void AutoSequence::DoScaleNear() {
 	DriverStation::ReportError("Doing Scale Near...");
-	AddSequential(new DistanceDrive((18 - 2 /* -2 to account for initial drive*/) * FEET_TO_INCHES, 0.7, TIMEOUT, false, false));
+	AddSequential(new DistanceDrive((18 - 2 - 3 + 0.5 /* -2 to account for initial drive*/) * FEET_TO_INCHES, 0.7, TIMEOUT, false, false));
 	RaiseElevatorToSwitch();
 	//Can we raise here? Or after we detect the bump on the next line
 	AddSequential(new DistanceDrive(9 * FEET_TO_INCHES/*For forward drive in init*/, SPEED, TIMEOUT, false, false, 27 * FEET_TO_INCHES - HALF_ROBOT_LENGTH));
 	//strafe
-	AddSequential(new DistanceDrive(invertIfRight(-10), SPEED, TIMEOUT, true, false));
+	AddSequential(new Turn(0., 1.)); //new 11:31 qh
 	WAIT
+	AddSequential(new DistanceDrive(invertIfRight(-24), SPEED, TIMEOUT, true, false)); //was -24 for qual 46 (Quintin)
 	//turn
-	RaiseElevatorToScale();
+	WAIT
 	AddSequential(new Turn(invertIfRight(90), 1));
+	WAIT
+	AddSequential(new Turn(invertIfRight(90), 1)); //to correct for initial turn overshoot
+	WAIT
+	AddSequential(new DistanceDrive(-6, SPEED, TIMEOUT)); //new as of 10:28
+	WAIT
+	AddSequential(new Turn(invertIfRight(90), 1));
+	WAIT
+	RaiseElevatorToScale();
+
+	WAIT_SEC(2.0)
 	//drive forward
-	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
+	AddSequential(new DistanceDrive(1 * FEET_TO_INCHES / 2, FAST_SPEED, TIMEOUT));
 	//dropping cube
 	WAIT_SEC(1.0)
 	DropCube();
@@ -285,7 +296,7 @@ void AutoSequence::DoBaseline() {
 		//We should be in front of the cubes
 	} else {	//If we are on the outside
 		//Just drive across since there are no blocks to pervent our passage
-		AddSequential(new DistanceDrive(10 * FEET_TO_INCHES, SPEED, TIMEOUT));
+		AddSequential(new DistanceDrive(13 * FEET_TO_INCHES, SPEED, TIMEOUT));
 	}
 }
 
@@ -320,8 +331,8 @@ void AutoSequence::DoCenter() {
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
 		AddSequential(new VisionDrive(0.3, 2.5));
-		//AddSequential(new DistanceDrive(2.0 * FEET_TO_INCHES, SPEED, 2.0));
-		//RaiseElevatorToSwitch();
+		AddSequential(new DistanceDrive(2.0 * FEET_TO_INCHES, SPEED, 2.0));
+		RaiseElevatorToSwitch();
 
 		DropCube();
 	} else {		//Use vision

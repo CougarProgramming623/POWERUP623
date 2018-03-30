@@ -176,9 +176,9 @@ double VisionDrive::GetVisionTargetDriveAngle(double y1, double y2) {
 
 double VisionDrive::GetVisionPowerX() {
 	if (m_currentAngle < 0)
-		return sin(m_currentAngle) * m_speed * 3;
+		return sin(m_currentAngle) * m_speed;
 	else
-		return sin(m_currentAngle) * m_speed * 3;
+		return sin(m_currentAngle) * m_speed;
 }
 
 double VisionDrive::GetVisionTargetDriveDistance(double y1, double y2) {
