@@ -28,10 +28,16 @@ void CubeIntake::Periodic() {
 
 void CubeIntake::Intake() {
 	cubeIntake->Set(INTAKE_SPEED);
+#ifdef TEST_BOT
+	testBotIntake2->Set(INTAKE_SPEED);
+#endif
 }
 
 void CubeIntake::Expunge() {
 	cubeIntake->Set(-TELEOP_EXPUNGE_SPEED);
+#ifdef TEST_BOT
+	testBotIntake2->Set(-TELEOP_EXPUNGE_SPEED);
+#endif
 	/*
 		double speed = DriverStation::GetInstance().IsAutonomous() ? AUTO_EXPUNGE_SPEED : TELEOP_EXPUNGE_SPEED;
 		cubeIntake->Set(speed);
@@ -40,6 +46,9 @@ void CubeIntake::Expunge() {
 
 void CubeIntake::Stop() {
 	cubeIntake->StopMotor();
+#ifdef TEST_BOT
+	testBotIntake2->StopMotor();
+#endif
 }
 
 double CubeIntake::GetCurrent() {

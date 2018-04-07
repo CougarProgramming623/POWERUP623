@@ -12,6 +12,22 @@
 #ifndef OI_H
 #define OI_H
 
+
+#define INTAKE_BUTTON 1
+#define EXPUNGE_BUTTON 2
+#define TOGGLE_SLIDER_BUTTON 3
+#define RELEASE_SHAFT_BUTTON 4
+#define RELEASE_RAMP_BUTTON 9
+#define TOGGLE_POT_BUTTON 8
+#define ENDGAME_OVERRIDE_BUTTON 5
+#define CLIMB_BUTTON 6
+#define RAMP_LIFT_BUTTON 7
+
+#define CLIMB_LED 1
+
+#define TOGGLE_PID_LED 3
+#define TOGGLE_SLIDER_LED 4
+
 #include "WPILib.h"
 
 class OI {

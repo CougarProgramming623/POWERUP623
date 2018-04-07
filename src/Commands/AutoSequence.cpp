@@ -65,7 +65,33 @@ AutoSequence::AutoSequence() :
 				DriverStation::ReportError("Doing baseline");
 				DoBaseline();
 			}
+		} else if (Robot::cob->GetAutonomousInstructions() == OPTION_DO_HARD) {
+
+			if (switchOnOurSide() && scaleOnOurSide()) {
+				DriverStation::ReportError("Doing scale near");
+				DoScaleNear();
+			} else if (switchOnOurSide() && !scaleOnOurSide()) {
+				DriverStation::ReportError("Doing switch near");
+				DoSwitchNear();
+			} else if (!switchOnOurSide() && scaleOnOurSide()) {
+				DriverStation::ReportError("Doing scale near");
+				DoScaleNear();
+			} else if (!switchOnOurSide() && !scaleOnOurSide()) {
+				if (!Robot::cob->GetAutonomousEnableCrossing()) {
+					DriverStation::ReportError("Doing baseline");
+					DoScaleFar();
+				} else {
+					DriverStation::ReportError("Doing baseline");
+					DoBaseline();
+				}
+			} else {
+				DriverStation::ReportError("UNKNOWN PLACE CASE");
+				DriverStation::ReportError("Doing baseline");
+				DoBaseline();
+			}
+
 		} else {		// Cases except do easy (Only Switch, Only Scale, Baseline)
+
 			AutoPlace place;
 			int autoInstructions = Robot::cob->GetAutonomousInstructions();
 

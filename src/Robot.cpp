@@ -14,6 +14,7 @@ std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
 std::shared_ptr<Release> Robot::release;
 std::shared_ptr<EndgameSystem> Robot::endgameSystem;
+std::shared_ptr<Aesthetics> Robot::aesthetics;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
@@ -24,13 +25,14 @@ void Robot::RobotInit() {
 	endgameSystem.reset(new EndgameSystem());
 	elevator.reset(new Shaft());
 	elevator->SetDefaultCommand(new ElevatorTeleop());
+	aesthetics.reset(new Aesthetics());
 	//SmartDashboard::PutData(driveTrain.get());
 	//CougarOpticBoard::InitBoard();
 	oi.reset(new OI());
 	//frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
 	//reset light
-	oi->GetButtonBoard()->SetOutput(4, true);
+	oi->GetButtonBoard()->SetOutput(TOGGLE_SLIDER_LED, true);
 
 	Robot::cob->InitBoard();
 	Robot::cob->PushArmHeight(0);
@@ -63,6 +65,7 @@ void Robot::RobotPeriodic() {
 	 Robot::cob->PushRotation(angle);
 	 Robot::cob->PushVelocityMagnitude(sqrt(XAxis * XAxis + YAxis * YAxis));
 	 */
+	DriverStation::ReportError(std::to_string(RobotMap::shaftController->GetOutputCurrent()));
 }
 
 void Robot::DisabledInit() {
@@ -173,19 +176,28 @@ void Robot::TeleopInit() {
 	CougarOpticBoard::PushArmRotation(0.0);	//temporary fix
 }
 
+bool Robot::IsEndGame() {
+	bool override = Robot::oi->GetButtonBoard()->GetRawButton(ENDGAME_OVERRIDE_BUTTON);
+	if(frc::DriverStation::GetInstance().GetMatchTime() < 0 && !override) return false;
+	return frc::DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME;
+}
+
 void Robot::TeleopPeriodic() {
 	//DriverStation::ReportError(std::to_string(RobotMap::pot->Get()));
 	//push time to cob
 	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());
-	if (frc::DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME || Robot::oi->GetButtonBoard()->GetRawButton(5)) {
-		oi->GetButtonBoard()->SetOutput(1, true);
-		endgameSystem->setIsEndGame(true);
-	} else {
-		oi->GetButtonBoard()->SetOutput(1, false);
-
-		endgameSystem->setIsEndGame(false);
-	}
 	frc::Scheduler::GetInstance()->Run();
+	Robot::aesthetics->Update();
+	if(!lastEndgame && Robot::IsEndGame()) {
+		lastEndgame = true;
+		aesthetics->OnEndgame();
+		DriverStation::ReportError("ONENDGAME!!!");
+		DriverStation::ReportError("ONENDGAME!!!");
+		DriverStation::ReportError("ONENDGAME!!!");
+		DriverStation::ReportError("ONENDGAME!!!");
+		DriverStation::ReportError("ONENDGAME!!!");
+		DriverStation::ReportError("ONENDGAME!!!");
+	}
 }
 
 void Robot::TestPeriodic() {
@@ -193,5 +205,5 @@ void Robot::TestPeriodic() {
 		"LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()) + "/ Pot Reading: " + std::to_string(RobotMap::pot->Get()) + " / Setpoint:" + std::to_string(Robot::elevator->GetPosition()));
 }
 
-START_ROBOT_CLASS (Robot);
+START_ROBOT_CLASS(Robot);
 

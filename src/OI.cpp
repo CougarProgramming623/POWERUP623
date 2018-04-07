@@ -21,7 +21,6 @@
 #include "Commands/Autonomous/SetShaftSetpointAuto.h"
 #include "Commands/TeleOp/ReleaseRamp.h"
 #include "Commands/TeleOp/ReleaseShaft.h"
-#include "Commands/TeleOp/EnableEndGameButtons.h"
 #include "Commands/TeleOp/Climb.h"
 #include "Commands/TeleOp/LiftRamp.h"
 #include "Commands/ElevatorDoNothing.h"
@@ -32,16 +31,16 @@ OI::OI() {
 	driverJoystick.reset(new frc::Joystick(0));
 	buttonBoard.reset(new frc::Joystick(1));
 
-	intakeButton.reset(new frc::JoystickButton(buttonBoard.get(), 1));
-	expungeButton.reset(new frc::JoystickButton(buttonBoard.get(), 2));
-	toggleSliderControl.reset(new frc::JoystickButton(buttonBoard.get(), 3));
-	releaseShaftButton.reset(new frc::JoystickButton(buttonBoard.get(), 4));
-	releaseRampButton.reset(new frc::JoystickButton(buttonBoard.get(), 9)); //FIXME maybe i dunno
-	togglePot.reset(new frc::JoystickButton(buttonBoard.get(), 8));
+	intakeButton.reset(new frc::JoystickButton(buttonBoard.get(), INTAKE_BUTTON));
+	expungeButton.reset(new frc::JoystickButton(buttonBoard.get(), EXPUNGE_BUTTON));
+	toggleSliderControl.reset(new frc::JoystickButton(buttonBoard.get(), TOGGLE_SLIDER_BUTTON));
+	releaseShaftButton.reset(new frc::JoystickButton(buttonBoard.get(), RELEASE_SHAFT_BUTTON));
+	releaseRampButton.reset(new frc::JoystickButton(buttonBoard.get(), RELEASE_RAMP_BUTTON)); //FIXME maybe i dunno
+	togglePot.reset(new frc::JoystickButton(buttonBoard.get(), TOGGLE_POT_BUTTON));
 
-	endgameOverride.reset(new frc::JoystickButton(buttonBoard.get(), 5));
-	climb.reset(new frc::JoystickButton(buttonBoard.get(), 6));
-	rampLift.reset(new frc::JoystickButton(buttonBoard.get(), 7));
+	endgameOverride.reset(new frc::JoystickButton(buttonBoard.get(), ENDGAME_OVERRIDE_BUTTON));
+	climb.reset(new frc::JoystickButton(buttonBoard.get(), CLIMB_BUTTON));
+	rampLift.reset(new frc::JoystickButton(buttonBoard.get(), RAMP_LIFT_BUTTON));
 
 	toggleSliderControl->WhenPressed(new ToggleSliderUsage());
 	togglePot->WhenPressed(new TogglePot());
@@ -57,25 +56,27 @@ OI::OI() {
 }
 
 void OI::ResetElevatorLogic() {
+	DriverStation::ReportError("Resetting lights");
 	if(!sliderEnabled) {
 		DriverStation::ReportError("Doing Nothing");
-		GetButtonBoard()->SetOutput(4, true);
+		GetButtonBoard()->SetOutput(TOGGLE_SLIDER_LED, true);
 		Robot::elevator->Disable();
 		DriverStation::ReportError("Disabling PID");
 	} else {
-		GetButtonBoard()->SetOutput(4, false);
+		GetButtonBoard()->SetOutput(TOGGLE_SLIDER_LED, false);
 		if (usePID) {
-			GetButtonBoard()->SetOutput(3, false);
+			GetButtonBoard()->SetOutput(TOGGLE_PID_LED, false);
 			DriverStation::ReportError("Using POT");
 			Robot::elevator->Enable();
 			DriverStation::ReportError("Enabling PID");
 		} else {
-			GetButtonBoard()->SetOutput(3, true);
+			GetButtonBoard()->SetOutput(TOGGLE_PID_LED, true);
 			DriverStation::ReportError("Using Manual Control");
 			Robot::elevator->Disable();
 			DriverStation::ReportError("Disabling PID");
 		}
 	}
+	Robot::aesthetics->Update();
 }
 
 std::shared_ptr<frc::Joystick> OI::GetDriverJoystick() {

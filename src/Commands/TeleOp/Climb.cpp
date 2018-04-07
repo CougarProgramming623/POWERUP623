@@ -14,8 +14,9 @@ Climb::Climb() {
 
 // Called just before this Command runs the first time
 void Climb::Initialize() {
-	if(Robot::endgameSystem->getIsEndGame()) {
+	if(Robot::IsEndGame()) {
 		RobotMap::endgameMotor->Set(CLIMB_SPEED);
+		Robot::aesthetics->hasClimbed = true;
 	}
 }
 

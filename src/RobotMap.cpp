@@ -102,6 +102,12 @@ void RobotMap::init() {
 	endgameMotor.reset(new WPI_TalonSRX(17)); //FIXME this is actually the shaft motor
 	pot.reset(new AnalogPotentiometer(analogInput, 1.0, 0.0));
 
+	//current config
+	shaftController->ConfigPeakCurrentLimit(30, 10);
+	shaftController->ConfigPeakCurrentDuration(200, 10);
+	shaftController->ConfigContinuousCurrentLimit(0, 10);
+	shaftController->EnableCurrentLimit(true);
+
 #ifdef TEST_BOT
 	RobotMap::driveTrainleftFront->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 5);
 #else

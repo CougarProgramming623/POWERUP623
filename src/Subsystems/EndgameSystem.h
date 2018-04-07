@@ -13,12 +13,9 @@
 class EndgameSystem : public frc::Subsystem {
 private:
 	std::shared_ptr<WPI_TalonSRX> climbAndRampMotor;
-	bool isEndGame;
 
 public:
 	EndgameSystem();
 	void InitDefaultCommand() override;
-	void setIsEndGame(bool);
-	bool getIsEndGame();
 };
 

@@ -13,9 +13,10 @@
 #include "DriverStation.h"
 
 #define OPTION_DO_EASY 0
-#define OPTION_DO_SWITCH 1
-#define OPTION_DO_SCALE 2
-#define OPTION_DO_BASELINE 3
+#define OPTION_DO_HARD 1
+#define OPTION_DO_SWITCH 2
+#define OPTION_DO_SCALE 3
+#define OPTION_DO_BASELINE 4
 #define CROSSING_ENABLED true
 #define CROSSING_DISABLED false
 

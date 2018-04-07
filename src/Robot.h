@@ -21,6 +21,7 @@
 #include "Commands/AutonomousCommand.h"
 #include "ahrs.h"
 #include "CougarOpticBoard.h"
+#include "Aesthetics.h"
 
 #include "string"
 #include "OI.h"
@@ -38,6 +39,8 @@ public:
 	static std::shared_ptr<CubeIntake> cubeIntake;
 	static std::shared_ptr<Release> release;
 	static std::shared_ptr<EndgameSystem> endgameSystem;
+	static std::shared_ptr<Aesthetics> aesthetics;
+	bool lastEndgame = false;
 
 	void RobotInit() override;
 	void DisabledInit() override;
@@ -50,6 +53,7 @@ public:
 	void TestPeriodic() override;
 	void InitLights();
 	void PrintEntry(nt::NetworkTableEntry& entry);
+	static bool IsEndGame();
 private:
 	Timer *m_timer;
 	int counter = 0;

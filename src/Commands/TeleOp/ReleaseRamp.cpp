@@ -18,7 +18,7 @@ ReleaseRamp::ReleaseRamp() {
 
 // Called just before this Command runs the first time
 void ReleaseRamp::Initialize() {
-	if (Robot::endgameSystem->getIsEndGame())
+	if (Robot::IsEndGame())
 		RobotMap::shaftOrRampRelay->Set(Relay::Value::kReverse);// FIXME put in proper direction
 }
 
