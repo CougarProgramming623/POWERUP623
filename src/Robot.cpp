@@ -10,14 +10,18 @@
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
 std::shared_ptr<Shaft> Robot::elevator;
-std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
 std::shared_ptr<Release> Robot::release;
 std::shared_ptr<EndgameSystem> Robot::endgameSystem;
 std::shared_ptr<Aesthetics> Robot::aesthetics;
+std::unique_ptr<OI> Robot::oi;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
+	SmartDashboard::SetDefaultNumber("et", -0.0);
+
+	SmartDashboard::GetNumber("eb", -0.0);
+
 	RobotMap::init();
 	driveTrain.reset(new DriveTrain());
 	cubeIntake.reset(new CubeIntake());
@@ -53,6 +57,7 @@ void Robot::RobotPeriodic() {
 	Robot::cob->PushEnabled(DriverStation::GetInstance().IsEnabled());
 	Robot::cob->PushAutonomous(DriverStation::GetInstance().IsAutonomous());
 	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
+	Robot::cob->PushLidar(RobotMap::elevatorBottom);
 	/*Robot::cob->PushLidar(RobotMap::lidar->GetDistance());
 	 Robot::cob->PushArmHeight((elevator->GetElevatorPosition() - ELEVATOR_BOTTOM) / ELEVATOR_DELTA);
 	 double XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
@@ -65,14 +70,14 @@ void Robot::RobotPeriodic() {
 	 Robot::cob->PushRotation(angle);
 	 Robot::cob->PushVelocityMagnitude(sqrt(XAxis * XAxis + YAxis * YAxis));
 	 */
-	DriverStation::ReportError(std::to_string(RobotMap::shaftController->GetOutputCurrent()));
+	DriverStation::ReportError("Setpoint: " + std::to_string(elevator->GetPosition()) + " current position " + std::to_string(RobotMap::pot->Get()));
 }
 
 void Robot::DisabledInit() {
 	//m_timer = new Timer();
 	//m_timer->Start();
-	Robot::oi->sliderEnabled = false;
-	Robot::oi->usePID = true;
+	oi->sliderEnabled = false;
+	oi->usePID = true;
 	oi->ResetElevatorLogic();
 }
 
@@ -178,7 +183,8 @@ void Robot::TeleopInit() {
 
 bool Robot::IsEndGame() {
 	bool override = Robot::oi->GetButtonBoard()->GetRawButton(ENDGAME_OVERRIDE_BUTTON);
-	if(frc::DriverStation::GetInstance().GetMatchTime() < 0 && !override) return false;
+	if (frc::DriverStation::GetInstance().GetMatchTime() < 0 && !override)
+		return false;
 	return frc::DriverStation::GetInstance().GetMatchTime() <= END_GAME_TIME;
 }
 
@@ -188,21 +194,26 @@ void Robot::TeleopPeriodic() {
 	Robot::cob->PushFMSTime(DriverStation::GetInstance().GetMatchTime());
 	frc::Scheduler::GetInstance()->Run();
 	Robot::aesthetics->Update();
-	if(!lastEndgame && Robot::IsEndGame()) {
+	if (!lastEndgame && Robot::IsEndGame()) {
 		lastEndgame = true;
 		aesthetics->OnEndgame();
-		DriverStation::ReportError("ONENDGAME!!!");
-		DriverStation::ReportError("ONENDGAME!!!");
-		DriverStation::ReportError("ONENDGAME!!!");
-		DriverStation::ReportError("ONENDGAME!!!");
-		DriverStation::ReportError("ONENDGAME!!!");
-		DriverStation::ReportError("ONENDGAME!!!");
 	}
 }
 
 void Robot::TestPeriodic() {
 	DriverStation::ReportError(
 		"LIDAR: " + std::to_string(RobotMap::lidar->GetDistance()) + "/ Pot Reading: " + std::to_string(RobotMap::pot->Get()) + " / Setpoint:" + std::to_string(Robot::elevator->GetPosition()));
+}
+
+double Robot::GetElevatorTop() {
+	return RobotMap::elevatorTop;
+}
+double Robot::GetElevatorBottom() {
+	return RobotMap::elevatorBottom;
+}
+
+OI* Robot::GetOI() {
+	return oi.get();
 }
 
 START_ROBOT_CLASS(Robot);

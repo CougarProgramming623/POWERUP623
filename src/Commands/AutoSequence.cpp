@@ -33,10 +33,6 @@ AutoSequence::AutoSequence() :
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
 	AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, 0.7, 1.5));
 	releaseShaft();
-	WAIT
-	//WAIT_SEC(1)
-	//RaiseElevatorToSwitch();
-	//DropCube();
 
 	if (isCenterStart()) {
 		DriverStation::ReportError("Doing Center");
@@ -98,7 +94,7 @@ AutoSequence::AutoSequence() :
 			if (autoInstructions == OPTION_DO_SWITCH) {
 				place = switchOnOurSide() ? AutoPlace::SWITCH_NEAR : AutoPlace::BASELINE;
 			} else if (autoInstructions == OPTION_DO_SCALE) {
-				place = scaleOnOurSide() ? AutoPlace::SCALE_NEAR : AutoPlace::BASELINE;
+				place = scaleOnOurSide() ? AutoPlace::SCALE_NEAR : AutoPlace::SCALE_FAR;
 			} else if (autoInstructions == OPTION_DO_BASELINE) {
 				place = AutoPlace::BASELINE;
 			} else {
@@ -119,7 +115,7 @@ AutoSequence::AutoSequence() :
 				DoScaleNear();
 			} else if (place == AutoPlace::SCALE_FAR) {
 				DriverStation::ReportError("Doing baseline");
-				DoBaseline();
+				DoScaleFar();
 			} else if (place == AutoPlace::BASELINE) {
 				DriverStation::ReportError("Doing baseline");
 				DoBaseline();
@@ -213,22 +209,40 @@ void AutoSequence::DoSwitchFar() {
  * This function is only to be used when we are starting on the outside.
  */
 void AutoSequence::DoScaleNear() {
+	AddSequential(new DistanceDrive(15 * FEET_TO_INCHES - HALF_ROBOT_WIDTH, 1.0, TIMEOUT, false));	//Drive to the nearest corner of the scale
+	WAIT_SEC(0.5)
+	//RaiseElevatorToScale();
+	AddSequential(new Turn(invertIfRight(45), 2));	//Turn to face it
+	WAIT_SEC(0.5)
+	AddSequential(new DistanceDrive(0.5 * FEET_TO_INCHES, 0.5, TIMEOUT));
+
+	WAIT_SEC(0.5)
+	DropCube();
+	AddSequential(new DistanceDrive(-1 * FEET_TO_INCHES, 0.4, TIMEOUT));
+	WAIT
+	//RaiseElevatorToSwitch();
+	AddSequential(new Turn(0, 1));	//After dropping turn back to the initial rotation
+	AddSequential(new DistanceDrive(-2 * FEET_TO_INCHES, SPEED, TIMEOUT));	//Drive back twords the corridor
+	AddSequential(new Turn(invertIfRight(180), 2));	//Turn to face some of the cubes
+	AddSequential(new DistanceDrive(invertIfLeft(6 * FEET_TO_INCHES), SPEED, TIMEOUT, true, false));	//Strafe to be infront of the cubes
+
+#if 0
 	DriverStation::ReportError("Doing Scale Near...");
 	AddSequential(new DistanceDrive((18 - 2 - 3 + 0.5 /* -2 to account for initial drive*/) * FEET_TO_INCHES, 0.7, TIMEOUT, false, false));
 	RaiseElevatorToSwitch();
 	//Can we raise here? Or after we detect the bump on the next line
 	AddSequential(new DistanceDrive(9 * FEET_TO_INCHES/*For forward drive in init*/, SPEED, TIMEOUT, false, false, 27 * FEET_TO_INCHES - HALF_ROBOT_LENGTH));
 	//strafe
-	AddSequential(new Turn(0., 1.)); //new 11:31 qh
+	AddSequential(new Turn(0., 1.));//new 11:31 qh
 	WAIT
-	AddSequential(new DistanceDrive(invertIfRight(-24), SPEED, TIMEOUT, true, false)); //was -24 for qual 46 (Quintin)
+	AddSequential(new DistanceDrive(invertIfRight(-24), SPEED, TIMEOUT, true, false));//was -24 for qual 46 (Quintin)
 	//turn
 	WAIT
 	AddSequential(new Turn(invertIfRight(90), 1));
 	WAIT
-	AddSequential(new Turn(invertIfRight(90), 1)); //to correct for initial turn overshoot
+	AddSequential(new Turn(invertIfRight(90), 1));//to correct for initial turn overshoot
 	WAIT
-	AddSequential(new DistanceDrive(-6, SPEED, TIMEOUT)); //new as of 10:28
+	AddSequential(new DistanceDrive(-6, SPEED, TIMEOUT));//new as of 10:28
 	WAIT
 	AddSequential(new Turn(invertIfRight(90), 1));
 	WAIT
@@ -244,6 +258,7 @@ void AutoSequence::DoScaleNear() {
 	WAIT
 	RaiseElevatorToSwitch();
 	WAIT
+#endif
 	/*
 	 //move back
 	 //WAIT
@@ -290,19 +305,26 @@ void AutoSequence::DoScaleNear() {
  * This function is only to be used when we are starting on the outside.
  */
 void AutoSequence::DoScaleFar() {
-	/*
+
 	 DriverStation::ReportError("Doing Scale Far...");
-	 AddSequential(new DistanceDrive(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH, FAST_SPEED, TIMEOUT));
+	 RaiseElevatorToSwitch();
+	 AddSequential(new DistanceDrive(20 * FEET_TO_INCHES - HALF_ROBOT_WIDTH, 1.0, TIMEOUT));
+	 WAIT_SEC(.5)
+	 AddSequential(new Turn(invertIfRight(90), 1));
+	 AddSequential(new Turn(invertIfRight(90), 1));
 	 WAIT
-	 AddSequential(new DistanceDrive(invertIfRight(14 * FEET_TO_INCHES), SPEED, TIMEOUT, true));
+	 AddSequential(new DistanceDrive(invertIfRight(16 * FEET_TO_INCHES), 0.9, TIMEOUT));
+	 WAIT_SEC(.5)
+	 AddSequential(new Turn(0, 1));
+	 AddSequential(new Turn(0, 1));
 	 WAIT
-	 AddSequential(new DistanceDrive(0.5 * FEET_TO_INCHES, SPEED, TIMEOUT));
-	 WAIT
+	 AddSequential(new DistanceDrive(5 * FEET_TO_INCHES, FAST_SPEED, TIMEOUT));
+	 WAIT_SEC(0.75)
 	 RaiseElevatorToScale();
-	 WAIT
-	 DropCube(); //to be implemented later
-	 */
-	DoBaseline();
+	 WAIT_SEC(2.0)
+	 DropCube(); //to be implemented NOW
+
+	//DoBaseline();
 }
 
 /**

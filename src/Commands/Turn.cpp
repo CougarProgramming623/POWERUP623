@@ -27,7 +27,7 @@ void Turn::Initialize() {
 
 void Turn::Execute() {
 	double angle = RobotMap::ahrs->GetYaw();
-	Robot::driveTrain->MecanumDrive(0, 0, rotateToAngleRate, RobotMap::ahrs->GetYaw());
+	Robot::driveTrain->MecanumDrive(0, 0, rotateToAngleRate * 0.75, RobotMap::ahrs->GetYaw());
 	frc::SmartDashboard::PutNumber("Current Angle", angle);
 	frc::SmartDashboard::PutNumber("Current Rotation Rate", rotateToAngleRate);
 	//frc::SmartDashboard::PutNumber("P", RobotMap::turnP);

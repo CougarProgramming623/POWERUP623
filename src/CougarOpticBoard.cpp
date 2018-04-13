@@ -320,6 +320,6 @@ void CougarOpticBoard::PushEnabled(bool isEnabled) {
 	entryIsEnabled.SetBoolean(isEnabled);
 }
 
-void CougarOpticBoard::PushLidar(int lidar) {
+void CougarOpticBoard::PushLidar(double lidar) {
 	entryLidar.SetString(std::to_string(lidar));
 }

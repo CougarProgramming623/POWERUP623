@@ -21,12 +21,11 @@ void ElevatorTeleop::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void ElevatorTeleop::Execute() {
 	currentSpike->Update();
-	bool hitSpike = currentSpike->GetSpike();
-	OI* oi = Robot::oi.get();
+	OI* oi = Robot::GetOI();
 	if(oi->sliderEnabled) {//Read from the joystick
-		double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
+		double slider = oi->GetButtonBoard()->GetRawAxis(0);
 		if(oi->usePID) {//Use pid
-			double m_setpoint = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
+			double m_setpoint = map(slider, -1, +1, Robot::GetElevatorBottom(), Robot::GetElevatorTop());
 			Robot::elevator->SetSetpoint(m_setpoint);
 		} else {//Use maunal control
 			RobotMap::shaftController->Set(slider);
@@ -34,9 +33,11 @@ void ElevatorTeleop::Execute() {
 	} else {//Do nothing
 		//DriverStation::ReportError("Doing nothing");
 	}
+	/*
 	double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
 	double m_setpoint = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
 	Robot::elevator->SetSetpoint(m_setpoint);
+	*/
 	//DriverStation::ReportError(std::to_string(m_setpoint));
 }
 

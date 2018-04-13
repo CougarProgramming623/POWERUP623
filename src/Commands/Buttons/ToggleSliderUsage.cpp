@@ -8,14 +8,14 @@
 #include "ToggleSliderUsage.h"
 #include "../../Robot.h"
 #include "../ElevatorDoNothing.h"
-#include "../ManualShaftControl.h"
+#include "ManualShaftControl.h"
 
 ToggleSliderUsage::ToggleSliderUsage() {
 }
 
 // Called just before this Command runs the first time
 void ToggleSliderUsage::Initialize() {
-	OI* oi = Robot::oi.get();
+	OI* oi = Robot::GetOI();
 	oi->sliderEnabled = !oi->sliderEnabled;
 	oi->ResetElevatorLogic();
 }

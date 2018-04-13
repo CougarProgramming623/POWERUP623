@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "ManualShaftControl.h"
-#include "../Robot.h"
+#include "../../Robot.h"
 
 ManualShaftControl::ManualShaftControl() : frc::Command("ManualShaftControl") {
 	Requires(Robot::elevator.get());
@@ -19,7 +19,7 @@ void ManualShaftControl::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void ManualShaftControl::Execute() {
-	double value = Robot::oi.get()->GetButtonBoard()->GetRawAxis(0);
+	double value = Robot::GetOI()->GetButtonBoard()->GetRawAxis(0);
 	RobotMap::shaftController->Set(value);
 	DriverStation::ReportError(std::to_string(value));
 }

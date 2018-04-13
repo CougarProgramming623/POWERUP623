@@ -7,7 +7,7 @@
 
 #include "TogglePot.h"
 #include "ManualShaftControl.h"
-#include "../Robot.h"
+#include "../../Robot.h"
 
 TogglePot::TogglePot() {
 	// Use Requires() here to declare subsystem dependencies
@@ -16,7 +16,7 @@ TogglePot::TogglePot() {
 
 // Called just before this Command runs the first time
 void TogglePot::Initialize() {
-	OI* oi = Robot::oi.get();
+	OI* oi = Robot::GetOI();
 	oi->usePID = !oi->usePID;
 	oi->ResetElevatorLogic();
 }

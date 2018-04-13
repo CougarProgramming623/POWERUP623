@@ -1,7 +1,6 @@
 #include "Aesthetics.h"
 #include "DriverStation.h"
 #include "Robot.h"
-#include "OI.h"
 #include "math.h"
 
 Aesthetics::Aesthetics() {
@@ -12,7 +11,7 @@ void Aesthetics::OnEndgame() {
 }
 
 void Aesthetics::Update() {
-	DriverStation::ReportError("Updating aes");
+	Robot::oi->GetButtonBoard()->SetOutput(2,Robot::oi->setBottom);
 	if (Robot::IsEndGame() || hasClimbed) {
 		if (hasClimbed) {
 			Robot::oi->GetButtonBoard()->SetOutput(CLIMB_LED, true);

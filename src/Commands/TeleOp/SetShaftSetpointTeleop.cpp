@@ -19,7 +19,6 @@ SetShaftSetpointTeleop::SetShaftSetpointTeleop(double setpoint) : frc::Command("
 void SetShaftSetpointTeleop::Initialize() {
 
 	currentSpike.reset(new CurrentSpikeIndicator(30, RobotMap::shaftController));
-	DriverStation::ReportError("Starting set setpoint");
 	Robot::elevator->SetSetpoint(m_setpoint);
 	Robot::elevator->Enable();
 }
@@ -31,10 +30,9 @@ void SetShaftSetpointTeleop::Execute() {
 	if (hitSpike) {
 		Robot::elevator->SetCurrentCommand(new ElevatorDoNothing());
 	}
-	double slider = Robot::oi->GetButtonBoard()->GetRawAxis(0);
-	double m_setpoint = map(slider, -1, +1, ELEVATOR_BOTTOM, ELEVATOR_TOP);
+	double slider = Robot::GetOI()->GetButtonBoard()->GetRawAxis(0);
+	double m_setpoint = map(slider, -1, +1, Robot::GetElevatorBottom(), Robot::GetElevatorTop());
 	Robot::elevator->SetSetpoint(m_setpoint);
-	DriverStation::ReportError(std::to_string(m_setpoint));
 }
 
 // Make this return true when this Command no longer needs to run execute()

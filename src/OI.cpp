@@ -15,8 +15,8 @@
 #include "Commands/AutonomousCommand.h"
 #include "Commands/Drive/DriveWithJoystick.h"
 #include "Commands/TeleOp/CubeIntakeCommand.h"
-#include "Commands/TeleOp/ToggleSliderUsage.h"
-#include "Commands/TogglePot.h"
+#include "Commands/Buttons/ToggleSliderUsage.h"
+#include "Commands/Buttons/TogglePot.h"
 #include <iostream>
 #include "Commands/Autonomous/SetShaftSetpointAuto.h"
 #include "Commands/TeleOp/ReleaseRamp.h"
@@ -25,7 +25,8 @@
 #include "Commands/TeleOp/LiftRamp.h"
 #include "Commands/ElevatorDoNothing.h"
 #include "Commands/TeleOp/SetShaftSetpointTeleop.h"
-#include "Commands/ManualShaftControl.h"
+#include "Commands/Buttons/ManualShaftControl.h"
+#include "Commands/Buttons/SetBottom.h"
 
 OI::OI() {
 	driverJoystick.reset(new frc::Joystick(0));
@@ -40,7 +41,7 @@ OI::OI() {
 
 	endgameOverride.reset(new frc::JoystickButton(buttonBoard.get(), ENDGAME_OVERRIDE_BUTTON));
 	climb.reset(new frc::JoystickButton(buttonBoard.get(), CLIMB_BUTTON));
-	rampLift.reset(new frc::JoystickButton(buttonBoard.get(), RAMP_LIFT_BUTTON));
+	potRezeroLift.reset(new frc::JoystickButton(buttonBoard.get(), POT_REZERO_BUTTON));
 
 	toggleSliderControl->WhenPressed(new ToggleSliderUsage());
 	togglePot->WhenPressed(new TogglePot());
@@ -51,7 +52,7 @@ OI::OI() {
 	releaseShaftButton->WhenPressed(new ReleaseShaft());
 
 	climb->WhileHeld(new Climb());
-	rampLift->WhenPressed(new LiftRamp());
+	potRezeroLift->WhenPressed(new SetBottom());
 
 }
 
@@ -92,7 +93,7 @@ std::shared_ptr<frc::JoystickButton> OI::GetReleaseRampButton() {
 }
 
 std::shared_ptr<frc::JoystickButton> OI::GetLiftRampButton() {
-	return rampLift;
+	return potRezeroLift;
 }
 
 std::shared_ptr<frc::JoystickButton> OI::GetClimbButton() {

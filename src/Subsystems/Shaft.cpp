@@ -13,10 +13,11 @@
 #include "../RobotMap.h"
 #include "../Commands/ElevatorDoNothing.h"
 #include "../Commands/ElevatorTeleop.h"
+#include "../Robot.h"
 
 Shaft::Shaft() : PIDSubsystem("Shaft", 9.0, 0.0, 0.0) {
 	shaftDrive = RobotMap::shaftController;
-	SetInputRange(ELEVATOR_BOTTOM, ELEVATOR_TOP);
+	SetInputRange(Robot::GetElevatorBottom(), Robot::GetElevatorTop());
 	SetOutputRange(-1.0, 1.0);
 }
 

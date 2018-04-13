@@ -43,7 +43,7 @@ public:
 	static void PushTeleop(bool isTeleop);
 	static void PushAutonomous(bool isAutonomous);
 	static void PushEnabled(bool isEnabled);
-	static void PushLidar(int lidar);
+	static void PushLidar(double lidar);
 	static void Update();
 	//getters
 	static int GetAutonomousStartPos();

@@ -54,6 +54,9 @@ public:
 	void InitLights();
 	void PrintEntry(nt::NetworkTableEntry& entry);
 	static bool IsEndGame();
+	static double GetElevatorTop();
+	static double GetElevatorBottom();
+	static OI* GetOI();
 private:
 	Timer *m_timer;
 	int counter = 0;

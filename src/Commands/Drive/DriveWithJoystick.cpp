@@ -55,9 +55,9 @@ void DriveWithJoystick::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveWithJoystick::Execute() {
-	XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
-	YAxis = -Robot::oi->GetDriverJoystick()->GetRawAxis(1);
-	RotAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(2);
+	XAxis = Robot::GetOI()->GetDriverJoystick()->GetRawAxis(0);
+	YAxis = -Robot::GetOI()->GetDriverJoystick()->GetRawAxis(1);
+	RotAxis = Robot::GetOI()->GetDriverJoystick()->GetRawAxis(2);
 
 	turnController->Disable();
 	Robot::driveTrain->MecanumDrive(XAxis, YAxis, RotAxis, -RobotMap::ahrs->GetYaw());
