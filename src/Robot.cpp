@@ -70,7 +70,7 @@ void Robot::RobotPeriodic() {
 	 Robot::cob->PushRotation(angle);
 	 Robot::cob->PushVelocityMagnitude(sqrt(XAxis * XAxis + YAxis * YAxis));
 	 */
-	//DriverStation::ReportError("Setpoint: " + std::to_string(elevator->GetPosition()) + " current position " + std::to_string(RobotMap::pot->Get()));
+	DriverStation::ReportError("Setpoint: " + std::to_string(elevator->GetPosition()) + " current position " + std::to_string(RobotMap::pot->Get()));
 }
 
 void Robot::DisabledInit() {
