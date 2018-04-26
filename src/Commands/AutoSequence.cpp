@@ -210,10 +210,10 @@ void AutoSequence::DoSwitchFar() {
  */
 void AutoSequence::DoScaleNear() {
 	//new fast scale code (untested on samus)
-#if 0
+#if 1
 	AddSequential(new DistanceDrive(15 * FEET_TO_INCHES - HALF_ROBOT_WIDTH, 1.0, TIMEOUT, false));	//Drive to the nearest corner of the scale
 	WAIT_SEC(0.5)
-	//RaiseElevatorToScale();
+	RaiseElevatorToScale();
 	AddSequential(new Turn(invertIfRight(45), 2));//Turn to face it
 	WAIT_SEC(0.5)
 	AddSequential(new DistanceDrive(0.5 * FEET_TO_INCHES, 0.5, TIMEOUT));
@@ -222,7 +222,7 @@ void AutoSequence::DoScaleNear() {
 	DropCube();
 	AddSequential(new DistanceDrive(-1 * FEET_TO_INCHES, 0.4, TIMEOUT));
 	WAIT
-	//RaiseElevatorToSwitch();
+	RaiseElevatorToSwitch();
 	AddSequential(new Turn(0, 1));//After dropping turn back to the initial rotation
 	AddSequential(new DistanceDrive(-2 * FEET_TO_INCHES, SPEED, TIMEOUT));//Drive back twords the corridor
 	AddSequential(new Turn(invertIfRight(180), 2));//Turn to face some of the cubes

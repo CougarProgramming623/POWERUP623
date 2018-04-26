@@ -3,7 +3,7 @@
 #define BUMP_DELTA_PITCH_LIMIT 0.5
 #define BUMP_DELAY 0.5
 
-#define TEST_BOT
+//#define TEST_BOT
 
 #define SIDE_LEFT   0
 #define SIDE_CENTER 1
