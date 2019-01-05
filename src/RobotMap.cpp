@@ -33,6 +33,8 @@ std::shared_ptr<AnalogPotentiometer> RobotMap::pot;
 std::shared_ptr<AnalogInput> RobotMap::analogInput;
 std::shared_ptr<Relay> RobotMap::shaftOrRampRelay;
 std::shared_ptr<LIDAR> RobotMap::lidar;
+std::shared_ptr<Encoder> RobotMap::xEncoder;
+std::shared_ptr<Encoder> RobotMap::yEncoder;
 
 
 AHRS *RobotMap::ahrs;
@@ -105,6 +107,16 @@ void RobotMap::init() {
 	intake2->SetInverted(true);
 
 	intake2->Set(ControlMode::Follower, 18);
+
+	xEncoder.reset(new Encoder(8, 9));
+	yEncoder.reset(new Encoder(6, 7));
+
+	xEncoder->SetMaxPeriod(0.1);
+	xEncoder->SetMinRate(10);
+	xEncoder->SetSamplesToAverage(5);
+	yEncoder->SetMaxPeriod(0.1);
+	yEncoder->SetMinRate(10);
+	yEncoder->SetSamplesToAverage(5);
 #endif
 
 	shaftOrRampRelay.reset(new Relay(0));

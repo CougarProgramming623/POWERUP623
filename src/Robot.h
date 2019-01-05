@@ -21,6 +21,7 @@
 #include "Commands/AutonomousCommand.h"
 #include "ahrs.h"
 #include "CougarOpticBoard.h"
+#include "BeagleBone.h"
 #include "Aesthetics.h"
 
 #include "string"
@@ -31,6 +32,7 @@
 class Robot : public frc::TimedRobot {
 public:
 	static std::shared_ptr<CougarOpticBoard> cob;
+	static std::shared_ptr<BeagleBone> bb;
 	std::unique_ptr<Command> autonomousCommand;
 	std::unique_ptr<Command> teleOpCommand;
 	static std::unique_ptr<OI> oi;
@@ -41,6 +43,7 @@ public:
 	static std::shared_ptr<EndgameSystem> endgameSystem;
 	static std::shared_ptr<Aesthetics> aesthetics;
 	bool lastEndgame = false;
+	bool isTeleop = false;
 
 	void RobotInit() override;
 	void DisabledInit() override;
@@ -60,4 +63,5 @@ public:
 private:
 	Timer *m_timer;
 	int counter = 0;
+
 };

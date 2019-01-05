@@ -48,6 +48,8 @@ public:
 	static std::shared_ptr<Relay> shaftOrRampRelay;
 
 	static std::shared_ptr<LIDAR> lidar;
+	static std::shared_ptr<Encoder> xEncoder;
+	static std::shared_ptr<Encoder> yEncoder;
 
 
 	static AHRS *ahrs;

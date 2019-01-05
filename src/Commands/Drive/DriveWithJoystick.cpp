@@ -63,7 +63,11 @@ void DriveWithJoystick::Execute() {
 	Robot::driveTrain->MecanumDrive(XAxis, YAxis, RotAxis, -RobotMap::ahrs->GetYaw());
 	//set the maximum speed if necessary
 
-	SmartDashboard::PutNumber("Encoder", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0));
+	//SmartDashboard::PutNumber("Encoder", RobotMap::driveTrainleftFront->GetSelectedSensorPosition(0));
+	frc::DriverStation::ReportError("X Encoder Val: " + RobotMap::xEncoder->Get());
+	frc::DriverStation::ReportError("Y Encoder Val: " + RobotMap::yEncoder->Get());
+	SmartDashboard::PutNumber("X Encoder Val: ", RobotMap::xEncoder->Get());
+	SmartDashboard::PutNumber("Y Encoder Val: ", RobotMap::yEncoder->Get());
 }
 
 // Make this return true when this Command no longer needs to run execute()

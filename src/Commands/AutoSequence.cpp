@@ -33,6 +33,7 @@ AutoSequence::AutoSequence() :
 	std::cout << "EMERGENCYDISABLE " << Robot::cob->GetAutonomousNoAuto() << std::endl;
 	AddSequential(new DistanceDrive(2 * FEET_TO_INCHES, 0.7, 1.5));
 	releaseShaft();
+	AddSequential(new Turn(0, TIMEOUT));
 
 	if (isCenterStart()) {
 		DriverStation::ReportError("Doing Center");
@@ -129,7 +130,7 @@ AutoSequence::AutoSequence() :
 }
 
 void AutoSequence::releaseShaft() {
-	AddParallel(new ReleaseShaft());
+	AddSequential(new ReleaseShaft());
 }
 
 void AutoSequence::RaiseElevatorToSwitch() {
@@ -209,17 +210,18 @@ void AutoSequence::DoSwitchFar() {
  * This function is only to be used when we are starting on the outside.
  */
 void AutoSequence::DoScaleNear() {
-	//new fast scale code (untested on samus)
+	//new fast scale code (WORKS)
 #if 1
-	AddSequential(new DistanceDrive(15 * FEET_TO_INCHES - HALF_ROBOT_WIDTH, 1.0, TIMEOUT, false));	//Drive to the nearest corner of the scale
+	AddSequential(new DistanceDrive(15 * FEET_TO_INCHES - HALF_ROBOT_WIDTH - 6, 1.0, TIMEOUT, false));	//Drive to the nearest corner of the scale
 	WAIT_SEC(0.5)
 	RaiseElevatorToScale();
 	AddSequential(new Turn(invertIfRight(45), 2));//Turn to face it
 	WAIT_SEC(0.5)
-	AddSequential(new DistanceDrive(0.5 * FEET_TO_INCHES, 0.5, TIMEOUT));
+	AddSequential(new DistanceDrive(3, 0.5, TIMEOUT));
 
-	WAIT_SEC(0.5)
+	WAIT_SEC(0.75)
 	DropCube();
+	WAIT
 	AddSequential(new DistanceDrive(-1 * FEET_TO_INCHES, 0.4, TIMEOUT));
 	WAIT
 	RaiseElevatorToSwitch();
@@ -227,6 +229,9 @@ void AutoSequence::DoScaleNear() {
 	AddSequential(new DistanceDrive(-2 * FEET_TO_INCHES, SPEED, TIMEOUT));//Drive back twords the corridor
 	AddSequential(new Turn(invertIfRight(180), 2));//Turn to face some of the cubes
 	AddSequential(new DistanceDrive(invertIfLeft(6 * FEET_TO_INCHES), SPEED, TIMEOUT, true, false));//Strafe to be infront of the cubes
+	//code to pick up cube (untested)
+
+
 
 #else//old scale code (tested on samus)
 	DriverStation::ReportError("Doing Scale Near...");

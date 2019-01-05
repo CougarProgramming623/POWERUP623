@@ -11,6 +11,7 @@ std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<CubeIntake> Robot::cubeIntake;
 std::shared_ptr<Shaft> Robot::elevator;
 std::shared_ptr<CougarOpticBoard> Robot::cob;
+std::shared_ptr<BeagleBone> Robot::bb;
 std::shared_ptr<Release> Robot::release;
 std::shared_ptr<EndgameSystem> Robot::endgameSystem;
 std::shared_ptr<Aesthetics> Robot::aesthetics;
@@ -18,6 +19,7 @@ std::unique_ptr<OI> Robot::oi;
 
 //Called when the driver presses enable. Usually called before the game start
 void Robot::RobotInit() {
+	isTeleop = false;
 	SmartDashboard::SetDefaultNumber("et", -0.0);
 
 	SmartDashboard::GetNumber("eb", -0.0);
@@ -38,6 +40,8 @@ void Robot::RobotInit() {
 	//reset light
 	oi->GetButtonBoard()->SetOutput(TOGGLE_SLIDER_LED, true);
 
+	bb.reset(new BeagleBone());
+	//Robot::bb->InitBeagleBoneTable();
 	Robot::cob->InitBoard();
 	Robot::cob->PushArmHeight(0);
 	RobotMap::ahrs->ZeroYaw();
@@ -58,6 +62,7 @@ void Robot::RobotPeriodic() {
 	Robot::cob->PushAutonomous(DriverStation::GetInstance().IsAutonomous());
 	Robot::cob->PushTeleop(DriverStation::GetInstance().IsOperatorControl() && DriverStation::GetInstance().IsEnabled());
 	Robot::cob->PushLidar(RobotMap::elevatorBottom);
+	//DriverStation::ReportError(DriverStation::GetInstance().IsAutonomous() ? "Auto" : "Not Auto");
 	/*Robot::cob->PushLidar(RobotMap::lidar->GetDistance());
 	 Robot::cob->PushArmHeight((elevator->GetElevatorPosition() - ELEVATOR_BOTTOM) / ELEVATOR_DELTA);
 	 double XAxis = Robot::oi->GetDriverJoystick()->GetRawAxis(0);
@@ -79,6 +84,15 @@ void Robot::DisabledInit() {
 	oi->sliderEnabled = false;
 	oi->usePID = true;
 	oi->ResetElevatorLogic();
+
+	if(isTeleop)
+	{
+		bb->PushShutdown(true);
+		isTeleop = false;
+	} else {
+		bb->PushShutdown(false);
+	}
+
 }
 
 void Robot::DisabledPeriodic() {
@@ -108,8 +122,10 @@ void Robot::DisabledPeriodic() {
 		PrintEntry(cob->entryAutonomousInstructions);
 //#endif
 		counter = 0;
+
 	}
 	counter++;
+	bb->PushColorEntry(DriverStation::GetInstance().GetAlliance());
 	frc::Scheduler::GetInstance()->Run();
 }
 
@@ -179,6 +195,7 @@ void Robot::TeleopInit() {
 	if (autonomousCommand)
 		autonomousCommand->Cancel();
 	CougarOpticBoard::PushArmRotation(0.0);	//temporary fix
+	isTeleop = true;
 }
 
 bool Robot::IsEndGame() {
